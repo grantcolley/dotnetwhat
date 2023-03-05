@@ -19,6 +19,7 @@ The **CTS** establishes a framework for cross language execution by defining rul
 >
 > **Reference type** objects are represented by a reference to the actual value of the object i.e. the object is stored in memory and a reference is the address that points to the object. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object and any changes to the object will be reflected by the variables pointing to it.
 
+The .NET SDK is a set of libraries and tools for developing .NET applications. 
 
 # Glossary
 * **Base Class Library  BCL** *- a standard set of class libraries providing implementation for general functionality*
@@ -27,6 +28,7 @@ The **CTS** establishes a framework for cross language execution by defining rul
 * **Common Type System CTS** *- defines rules all languages must follow when it comes to working with types*
 * **Just-in-time compilation JIT** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Managed Code** *- code whose execution is managed by a runtime*
+* **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Value types** *- objects represented by the value of the object*
 * **Variables** *- slot of memory that stores value and reference type objects*
