@@ -31,6 +31,7 @@ Managed code is compiled into **Microsoft intermediate language MSIL**, which is
 * **Common Type System CTS** *- defines rules all languages must follow when it comes to working with types*
 * **Just-in-time compilation JIT** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Managed Code** *- code whose execution is managed by a runtime*
+* **Microsoft intermediate language MSIL** *- ...instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc...*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Value types** *- objects represented by the value of the object*
@@ -42,6 +43,7 @@ Managed code is compiled into **Microsoft intermediate language MSIL**, which is
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
   * [CTS & CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)
   * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
+  * [Managed Execution Process](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
 
 
