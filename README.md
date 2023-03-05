@@ -19,9 +19,7 @@ The **CTS** establishes a framework for cross language execution by defining rul
 >
 > **Reference type** objects are represented by a reference to the actual value of the object i.e. the object is stored in memory and a reference is the address that points to the object. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object and any changes to the object will be reflected by the variables pointing to it.
 
-The .NET SDK is a set of libraries and tools for developing .NET applications. 
-
-Managed code is compiled into **Microsoft intermediate language MSIL**, which is CPU-independent instructions that can be converted to native (CPU-specific) code.
+The **.NET SDK** is a set of libraries and tools for developing .NET applications. The managed code is compiled into **Microsoft intermediate language MSIL**, which is CPU-independent instructions that can be converted to native (CPU-specific) code. The **CLR** ensures before each method is run for the first time it’s **MSIL** is **Just In Time JIT** compiled to processor-specific code. The **JIT**-compiled native code for that method is then used on subsequent runs.
 
 
 # Glossary
