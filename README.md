@@ -6,7 +6,7 @@
 - [References](#references)
 
 # Overview
-.NET is managed code because its execution is managed by a runtime called the **Common Language Runtime CLR**. The **CLR** is a set of libraries for running .NET applications and uses a garbage collector to manage memory. It is also responsible for things like enforcing memory safety and type safety. 
+.NET provides a runtime environment called the **Common Language Runtime CLR** to manage code execution. The **CLR** is a set of libraries for running .NET applications and uses a garbage collector to manage memory. It is also responsible for things like enforcing memory safety and type safety. 
 
 The **CLR** supports many languages, each of which must adhere to rules laid out in the **Common Type System CTS** and **Common Language Specification CLS**.
 The **CTS** establishes a framework for cross language execution by defining rules all languages must follow when it comes to working with types. It also contains a library containing the basic primitive types including char, bool, byte etc. The **CTS** also defines two main kinds of types that must be supported: value and reference types. The **CLS** is a subset of the **CTS** and defines a set of common features needed by applications.
