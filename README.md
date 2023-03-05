@@ -38,6 +38,7 @@ The .NET SDK is a set of libraries and tools for developing .NET applications.
   * [BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries)
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
   * [CTS & CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)
-  * [managed code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
+  * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
+  * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
 
 
