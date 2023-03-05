@@ -21,6 +21,9 @@ The **CTS** establishes a framework for cross language execution by defining rul
 
 The .NET SDK is a set of libraries and tools for developing .NET applications. 
 
+Managed code is compiled into **Microsoft intermediate language MSIL**, which is CPU-independent instructions that can be converted to native (CPU-specific) code.
+
+
 # Glossary
 * **Base Class Library  BCL** *- a standard set of class libraries providing implementation for general functionality*
 * **Common Language Runtime CLR** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
