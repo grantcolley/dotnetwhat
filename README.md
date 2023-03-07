@@ -27,13 +27,13 @@ The **CLR** also ensures before each method is run for the first time it’s **M
 When a .NET application is run the operating system loads the CLR, which is responsible for managing the execution of .NET code. The CLR loads the applications assemblies into memory. The CLR then starts JIT compiling the MSIL code into machine code that can be executed by the computers CPU. Finally, the CLR hands control over to the applications entry point, typically the static Main method, while continuing to provide services such as memory management, garbage collection, exception handling, and JIT compiling any method being executed for the first time.
 
 # Glossary
-* **Base Class Library  BCL** *- a standard set of class libraries providing implementation for general functionality*
-* **Common Language Runtime CLR** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
-* **Common Language Specification CLS** *- subset of CTS that defines a set of common features needed by applications*
-* **Common Type System CTS** *- defines rules all languages must follow when it comes to working with types*
-* **Just-in-time compilation JIT** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
+* **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
+* **Common Language Runtime (CLR)** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
+* **Common Language Specification (CLS)** *- subset of CTS that defines a set of common features needed by applications*
+* **Common Type System (CTS)** *- defines rules all languages must follow when it comes to working with types*
+* **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Managed Code** *- code whose execution is managed by a runtime*
-* **Microsoft intermediate language MSIL** *- instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc*
+* **Microsoft Intermediate Language (MSIL)** *- instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Value types** *- objects represented by the value of the object*
@@ -46,6 +46,7 @@ When a .NET application is run the operating system loads the CLR, which is resp
   * [CTS & CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)
   * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
   * [Managed Execution Process](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process)
+  * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
 
 
