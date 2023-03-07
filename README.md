@@ -21,6 +21,7 @@ The **CTS** establishes a framework for cross language execution by defining rul
 
 The **.NET SDK** is a set of libraries and tools for developing .NET applications. The managed code is compiled into **Microsoft intermediate language MSIL**, which is CPU-independent instructions that can be converted to native (CPU-specific) code. The **CLR** ensures before each method is run for the first time it’s **MSIL** is **Just In Time JIT** compiled to processor-specific code. The **JIT**-compiled native code for that method is then used on subsequent runs.
 
+When a .NET application is run the operating system loads the CLR, which is responsible for managing the execution of .NET code. The CLR loads the applications assemblies into memory. The CLR then starts JIT compiling the IL code into machine code that can be executed by the computers CPU. Finally, the CLR hands control over to the applications entry point, typically the static Main method, while continuing top provide services such as memory management, garbage collection, exception handling, and JIT compiling methods being executed for the first time.
 
 # Glossary
 * **Base Class Library  BCL** *- a standard set of class libraries providing implementation for general functionality*
