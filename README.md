@@ -2,6 +2,11 @@
 
 # Table of Contents
 - [Overview](#overview)
+- [Memory Allocation](#memory-allocation)
+  - [Stack](#stack)
+  - [Heap](#heap)
+    - [Gen0, Gen1 and Gen2](#gen0-gen1-and-gen2)
+    - [LOH](#loh)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -11,6 +16,15 @@ The **.NET SDK** is a set of libraries and tools for developing .NET application
 
 The **CTS** establishes a framework for cross language execution by defining rules all languages must follow when it comes to working with types. It also contains a library containing the basic primitive types including char, bool, byte etc. The **CTS** also defines two main kinds of types that must be supported: value and reference types. The **CLS** is a subset of the **CTS** and defines a set of common features needed by applications.
 
+The managed code is compiled into **Microsoft intermediate language (MSIL)**, which is CPU-independent instructions that can be converted to native (CPU-specific) code.
+
+.NET provides a runtime environment called the **Common Language Runtime (CLR)** to manage code execution. The **CLR** is a set of libraries for running .NET applications and uses a garbage collector to manage memory. It is also responsible for things like enforcing memory safety and type safety. 
+The **CLR** also ensures before each method is run for the first time it’s **MSIL** is **Just In Time (JIT)** compiled to native processor-specific code. The **JIT** compiled native code for that method then gets reused.
+
+When a .NET application is run the operating system loads the **CLR** which loads the applications assemblies into memory and starts **JIT** compiling the **MSIL** code into machine code that can be executed by the computers CPU. The **CLR** initializes and creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. The main thread executes the applications entry point, typically the static Main method and the **CLR** continues to provide services such as memory management, garbage collection, exception handling, and **JIT** compiling any method being executed for the first time.
+
+# Memory Allocation
+
 > **Value and Reference Types and Variables**
 >
 > The main difference between value type and reference types are the way they are represented and how they get assigned between variables. **Variables** are simply slots of memory for storing types according to how they are represented.
@@ -19,12 +33,13 @@ The **CTS** establishes a framework for cross language execution by defining rul
 >
 > **Reference type** objects are represented by a reference to the actual object i.e. the object is stored at an address in memory and the reference points to the object. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Any changes to the object will be reflected by the variables pointing to it.
 
-The managed code is compiled into **Microsoft intermediate language (MSIL)**, which is CPU-independent instructions that can be converted to native (CPU-specific) code.
+## Stack
 
-.NET provides a runtime environment called the **Common Language Runtime (CLR)** to manage code execution. The **CLR** is a set of libraries for running .NET applications and uses a garbage collector to manage memory. It is also responsible for things like enforcing memory safety and type safety. 
-The **CLR** also ensures before each method is run for the first time it’s **MSIL** is **Just In Time (JIT)** compiled to native processor-specific code. The **JIT** compiled native code for that method then gets reused.
+## Heap
+#### Gen0, Gen1 and Gen2
 
-When a .NET application is run the operating system loads the **CLR** which loads the applications assemblies into memory and starts **JIT** compiling the **MSIL** code into machine code that can be executed by the computers CPU. The **CLR** initializes and creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. The main thread executes the applications entry point, typically the static Main method and the **CLR** continues to provide services such as memory management, garbage collection, exception handling, and **JIT** compiling any method being executed for the first time.
+#### LOH
+
 
 # Glossary
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
