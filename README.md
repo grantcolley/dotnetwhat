@@ -20,9 +20,10 @@ The **[.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)** is a set o
 
 When a .NET application is run the operating system loads the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** which then loads the application assemblies into memory. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** initializes and creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. The thread stack provides the thread context. The main thread executes the applications entry point, typically the static Main method, and the application starts running. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** continues to provide services such as memory management, garbage collection, exception handling, and **JIT** compiling **MSIL** code into native code.
 
-The main thread creates the GUI and executes the message loop, which is responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks.
+The main thread creates the GUI and executes the message loop, which is responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks. Each user control is bound to the thread that creates it, which is typically the main thread.
 
-The message loop (or message pump as it is sometimes called looks something like this:
+The message loop, or message pump, looks something like this:
+
 ```C#
 MSG msg;
 while (GetMessage(&msg, NULL, 0, 0))
@@ -32,6 +33,7 @@ while (GetMessage(&msg, NULL, 0, 0))
 } 
 ```
 
+The message loop calls `GetMessage(&msg, NULL, 0, 0)` to check the message queue. If there is no message the thread is blocked until one arrives e.g. mouse move, mouse click or key press etc. When a message is placed in the queue the thread picks it off and calls `TranslateMessage(&msg);` to translate it into something meaningful. The message is then passed into `DispatchMessage(&msg);`, which routes it to the applicable even handler for processing e.g. `Button1_Click(object sender, EventArgs e)`. When the event has finished processing `GetMessage(&msg, NULL, 0, 0)` and the process is repeated until the application shuts down.
 
 
 # Memory Allocation
