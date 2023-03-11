@@ -12,15 +12,27 @@
 
 # Overview
 
-.NET is known as managed because it provides a runtime environment called the **Common Language Runtime (CLR)** to manage code execution. The **CLR** is a set of libraries for running .NET applications and is responsible for things like enforcing type safety and memory management. The **CLR** also **Just In Time (JIT)** compiles managed code into native processor-specific code on demand at runtime. Only code that is used gets **JIT** compiled to avoid wasting resources.
+.NET is known as [managed](https://learn.microsoft.com/en-us/dotnet/standard/managed-code) because it provides a runtime environment called the **Common Language Runtime ([CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr))** to [managed code execution](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process). The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** is a set of libraries for running .NET applications and is responsible for things like enforcing type safety and memory management. The **CLR** also **Just In Time (JIT)** compiles managed code into native processor-specific code on demand at runtime. Only code that is used gets **JIT** compiled to avoid wasting resources.
 
-The **.NET SDK** is a set of libraries and tools for developing .NET applications. The code written by a developer is compiled into **Microsoft Intermediate language (MSIL)**, in the form of Portable Executable files such as *.exe* and *.dll* files. **Microsoft intermediate language (MSIL)** is CPU-independent instructions that can be converted to native (CPU-specific) code by the **CLR** as runtime.
+The **[.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)** is a set of libraries and tools for developing .NET applications. The code written by a developer is compiled into **Microsoft Intermediate language ([MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil))**, in the form of Portable Executable files such as *.exe* and *.dll* files. **Microsoft intermediate language (MSIL)** is CPU-independent instructions that can be converted to native (CPU-specific) code by the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** as runtime.
 
-.NET applications can be written in different languages and the language compiler must adhere to the rules laid out in the **Common Type System (CTS)** and **Common Language Specification (CLS)**. The **CTS** establishes a framework for cross language execution by defining rules all languages must follow when it comes to working with types. It also has a library containing the basic primitive types including char, bool, byte etc. The **CTS** also defines two main kinds of types that must be supported: value and reference types. The **CLS** is a subset of the **CTS** and defines a set of common features needed by applications.
+.NET applications can be written in different languages and the language compiler must adhere to the rules laid out in the **Common Type System ([CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system))** and **Common Language Specification ([CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system))**. The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** establishes a framework for cross language execution by defining rules all languages must follow when it comes to working with types. It also has a library containing the basic primitive types including char, bool, byte etc. The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** also defines two main kinds of types that must be supported: value and reference types. The **[CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** is a subset of the **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** and defines a set of common features needed by applications.
 
-When a .NET application is run the operating system loads the **CLR** which then loads the application assemblies into memory. The **CLR** initializes and creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. The thread stack provides the thread context. The main thread executes the applications entry point, typically the static Main method, and the application starts running. The **CLR** continues to provide services such as memory management, garbage collection, exception handling, and **JIT** compiling **MSIL** code into native code.
+When a .NET application is run the operating system loads the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** which then loads the application assemblies into memory. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** initializes and creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. The thread stack provides the thread context. The main thread executes the applications entry point, typically the static Main method, and the application starts running. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** continues to provide services such as memory management, garbage collection, exception handling, and **JIT** compiling **MSIL** code into native code.
 
-The main thread creates the GUI and executes the message loop, which is responsible for processing and dispatching messages queued by the operating system such as key presses and mouse clicks.
+The main thread creates the GUI and executes the message loop, which is responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks.
+
+The message loop (or message pump as it is sometimes called looks something like this:
+```C#
+MSG msg;
+while (GetMessage(&msg, NULL, 0, 0))
+{ 
+   TranslateMessage(&msg); 
+   DispatchMessage(&msg); 
+} 
+```
+
+
 
 # Memory Allocation
 
