@@ -65,16 +65,37 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 <br>
 
 ## Memory Allocation
-When code execution enters a method, parameters passed into the method and local variables are allocated on the threads **stack** memory. The **stack** gives the context in which the thread runs. For [value type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables the value of the type is stored on the **stack**. For [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) variables the reference to the object is stored on the **stack**, while the object is stored on the [heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
+When code execution enters a method, parameters passed into the method and local variables are allocated on the threads **stack** memory. For [value type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables the value of the type is stored on the **stack**. For [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) variables the reference to the object is stored on the **stack**, while the object is stored on the [heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
 <br>
 
 > ***NOTE: [Value types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) live where they are created.***
 >
-> Local variables and parameters that are [value types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) will be stored on the **stack**.
-> If a [value type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) is a field on a [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) then it will be stored on the heap with the [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object.
+> While local variables and parameters that are [value types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) will be stored on the **stack**, if a [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object contains a member that is a [value type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) then that [value type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) member will be stored on the heap with that [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object.
 <br>
 
 Local variables and parameters are pushed onto the **stack** in the order they are created and popped off the **stack** on a last in first out (LIFO) basis. Local variables and parameters are scoped to the method in which they are created. The **stack** is self-maintaining so when the executing code leaves the method they are popped off the **stack**.
+
+When a variable is passed into a method it is passed by value by default. This means a copy of the variable is passed into the method.
+
+
+```
+  IL_0000:  nop
+  IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.Foobar::.ctor()
+  IL_0006:  stloc.0
+  IL_0007:  ldc.i4.s   12
+  IL_0009:  stloc.1
+  IL_000a:  ldloc.0
+  IL_000b:  ldloc.1
+  IL_000c:  callvirt   instance void [dotnetwhat.library]dotnetwhat.library.Foobar::Method1(int32)
+  IL_0011:  nop
+  IL_0012:  ldc.i4.s   34
+  IL_0014:  stloc.2
+  IL_0015:  ldloc.0
+  IL_0016:  ldloca.s   V_2
+  IL_0018:  callvirt   instance void [dotnetwhat.library]dotnetwhat.library.Foobar::Method2(int32&)
+  IL_001d:  nop
+  IL_001e:  ret
+```
 
 
 ### Heap
