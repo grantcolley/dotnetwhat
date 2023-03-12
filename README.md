@@ -6,7 +6,6 @@
 - [Overview](#overview)
 - [Value Types, Reference Types and Variables](#value-types-reference-types-and-variables)
 - [Memory Allocation](#memory-allocation)
-  - [Stack](#stack)
   - [Heap](#heap)
     - [Gen0, Gen1 and Gen2](#gen0-gen1-and-gen2)
     - [LOH](#loh)
@@ -50,8 +49,6 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 [**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) objects are represented by the value of the object. When the value is assigned from one variable to another the value is copied and both variables will each contain their own copy of the value. Changing the value of one variable will not impact the value of the other variable.
 
 [**Reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) objects are represented by a reference to the actual object i.e. the object is stored at an address in memory and the reference points to the object. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Unlike variables for [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), multiple variables can point to the same [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object therefore operations on one variable can affect the object referenced by the other variable.
-
-<br>
 <br>
 
 >  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by Jon Skeet on [.NET Rocks!](https://www.dotnetrocks.com/details/881) (34m 42s)*
@@ -68,9 +65,17 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 <br>
 
 ## Memory Allocation
+When code execution enters a method, parameters passed into the method and local variables are allocated on the threads **stack** memory. The **stack** gives the context in which the thread runs. For [value type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables the value of the type is stored on the **stack**. For [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) variables the reference to the object is stored on the **stack**, while the object is stored on the [heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
+<br>
 
+> ***NOTE: [Value types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) live where they are created.***
+>
+> Local variables and parameters that are [value types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) will be stored on the **stack**.
+> If a [value type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) is a field on a [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) then it will be stored on the heap with the [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object.
+<br>
 
-### Stack
+Local variables and parameters are pushed onto the **stack** in the order they are created and popped off the **stack** on a last in first out (LIFO) basis. Local variables and parameters are scoped to the method in which they are created. The **stack** is self-maintaining so when the executing code leaves the method they are popped off the **stack**.
+
 
 ### Heap
 #### Gen0, Gen1 and Gen2
