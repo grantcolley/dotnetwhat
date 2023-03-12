@@ -46,7 +46,7 @@ The main difference between value type and reference types are the way they are 
 **Reference type** objects are represented by a reference to the actual object i.e. the object is stored at an address in memory and the reference points to the object. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Any changes to the object will be reflected by the variables pointing to it.
 <br>
 <br>
->  *A pimped up version of an analogy about reference types by Jon Skeet on [.NET Rocks!](https://www.dotnetrocks.com/details/881)*
+>  *A pimped up version of an analogy about reference types by Jon Skeet on [.NET Rocks!](https://www.dotnetrocks.com/details/881) (34m 42s)*
 > ### A piece of paper has the address of a house written on it
 > 
 > The house is a reference type object in memory. The address is the reference pointing to where that object is located in memory. The piece of paper is the variable containing the address to the object in memory. 
