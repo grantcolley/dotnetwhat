@@ -2,7 +2,7 @@
 
 *Programming is communicating instructions. Communication is all about meaning, semantics matter.*
 
-# Table of Contents
+### Table of Contents
 - [Overview](#overview)
 - [Value Types, Reference Types and Variables](#value-types-reference-types-and-variables)
 - [Memory Allocation](#memory-allocation)
@@ -13,7 +13,7 @@
 - [Glossary](#glossary)
 - [References](#references)
 
-# Overview
+## Overview
 
 .NET is known as [managed](https://learn.microsoft.com/en-us/dotnet/standard/managed-code) because it provides a runtime environment called the **Common Language Runtime ([CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr))** to [manage code execution](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process). The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** is a set of libraries for running .NET applications and is responsible for things like enforcing type safety and memory management. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** also **Just In Time ([JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code))** compiles managed code into native processor-specific code on demand at runtime. Only code that is used gets **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiled to avoid wasting resources.
 
@@ -39,7 +39,7 @@ while (GetMessage(&msg, NULL, 0, 0))
 
 The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows) calls `GetMessage(&msg, NULL, 0, 0)` to check the message queue. If there is no message the thread is blocked until one arrives e.g. mouse move, mouse click or key press etc. When a message is placed in the queue the thread picks it off and calls `TranslateMessage(&msg);` to translate it into something meaningful. The message is then passed into `DispatchMessage(&msg);`, which routes it to the applicable even handler for processing e.g. `Button1_Click(object sender, EventArgs e)`. When the event has finished processing `GetMessage(&msg, NULL, 0, 0)` and the process is repeated until the application shuts down.
 
-# Value Types, Reference Types and Variables
+## Value Types, Reference Types and Variables
 
 The main difference between value type and reference types are the way they are represented and how they get assigned between variables. **Variables** are simply slots of memory for storing types according to how they are represented.
 
@@ -61,18 +61,18 @@ The main difference between value type and reference types are the way they are 
 > You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). If the garbage collector came along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to make space for a new object e.g. an array of flats.
 <br>
 
-# Memory Allocation
+## Memory Allocation
 
 
-## Stack
+### Stack
 
-## Heap
+### Heap
 #### Gen0, Gen1 and Gen2
 
 #### LOH
 
 
-# Glossary
+## Glossary
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
 * **Common Language Runtime (CLR)** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
 * **Common Language Specification (CLS)** *- subset of CTS that defines a set of common features needed by applications*
@@ -86,7 +86,7 @@ The main difference between value type and reference types are the way they are 
 * **Value types** *- objects represented by the value of the object*
 * **Variables** *- slot of memory that stores value and reference type objects*
 
-# References
+## References
 * **Microsoft**
   * [BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries)
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
