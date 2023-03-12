@@ -2,6 +2,7 @@
 
 # Table of Contents
 - [Overview](#overview)
+- [Value Types, Reference Types and Variables](#value-types-reference-types-and-variables)
 - [Memory Allocation](#memory-allocation)
   - [Stack](#stack)
   - [Heap](#heap)
@@ -36,16 +37,29 @@ while (GetMessage(&msg, NULL, 0, 0))
 
 The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows) calls `GetMessage(&msg, NULL, 0, 0)` to check the message queue. If there is no message the thread is blocked until one arrives e.g. mouse move, mouse click or key press etc. When a message is placed in the queue the thread picks it off and calls `TranslateMessage(&msg);` to translate it into something meaningful. The message is then passed into `DispatchMessage(&msg);`, which routes it to the applicable even handler for processing e.g. `Button1_Click(object sender, EventArgs e)`. When the event has finished processing `GetMessage(&msg, NULL, 0, 0)` and the process is repeated until the application shuts down.
 
+# Value Types, Reference Types and Variables
+
+The main difference between value type and reference types are the way they are represented and how they get assigned between variables. **Variables** are simply slots of memory for storing types according to how they are represented.
+
+**Value type** objects are represented by the value of the object. When the value is assigned from one variable to another the value is copied and both variables will each contain their own copy of the value. Changing the value of one variable will not impact the value of the other variable.
+
+**Reference type** objects are represented by a reference to the actual object i.e. the object is stored at an address in memory and the reference points to the object. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Any changes to the object will be reflected by the variables pointing to it.
+<br>
+<br>
+>  *A pimped up version of an analogy about reference types by Jon Skeet on [.NET Rocks!](https://www.dotnetrocks.com/details/881)*
+> ### A piece of paper has the address of a house written on it
+> 
+> The house is a reference type object in memory. The address is the reference pointing to where that object is located in memory. The piece of paper is the variable containing the address to the object in memory. 
+> 
+> If you copy the same address to another piece of paper, you now have two variables pointing to the same object in memory. If you were to paint the door of the house green, both pieces of paper still point to the same house which now has a green door.
+> 
+> You cross out the address on the first piece of paper and replace it with the address of another house. Now each piece of paper (variables) have different addresses (references) each pointing to different houses (objects). 
+> 
+> You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). If the garbage collector came along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to make space for a new object e.g. an array of flats.
+<br>
 
 # Memory Allocation
 
-> **Value and Reference Types and Variables**
->
-> The main difference between value type and reference types are the way they are represented and how they get assigned between variables. **Variables** are simply slots of memory for storing types according to how they are represented.
->
-> **Value type** objects are represented by the value of the object. When the value is assigned from one variable to another the value is copied and both variables will each contain their own copy of the value. Changing the value of one variable will not impact the value of the other variable.
->
-> **Reference type** objects are represented by a reference to the actual object i.e. the object is stored at an address in memory and the reference points to the object. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Any changes to the object will be reflected by the variables pointing to it.
 
 ## Stack
 
