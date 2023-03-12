@@ -29,6 +29,8 @@ The main thread creates the GUI and executes the [message loop](https://en.wikip
 The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows), or message pump, looks something like this:
 
 ```C#
+// complexity removed for brevity
+
 MSG msg;
 while (GetMessage(&msg, NULL, 0, 0))
 { 
