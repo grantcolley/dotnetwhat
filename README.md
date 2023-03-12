@@ -47,6 +47,9 @@ The main difference between value type and reference types are the way they are 
 <br>
 <br>
 >  *A pimped up version of an analogy about reference types by Jon Skeet on [.NET Rocks!](https://www.dotnetrocks.com/details/881) (34m 42s)*
+>
+>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"communication is about meaning, semantics matters"
+>
 > ### A piece of paper has the address of a house written on it
 > 
 > The house is a reference type object in memory. The address is the reference pointing to where that object is located in memory. The piece of paper is the variable containing the address to the object in memory. 
