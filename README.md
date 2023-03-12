@@ -54,7 +54,7 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 <br>
 <br>
 
->  *A pimped up version of an analogy about reference types by Jon Skeet on [.NET Rocks!](https://www.dotnetrocks.com/details/881) (34m 42s)*
+>  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by Jon Skeet on [.NET Rocks!](https://www.dotnetrocks.com/details/881) (34m 42s)*
 >
 > ### A piece of paper has the address of a house written on it
 > 
@@ -90,7 +90,7 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Value types** *- objects represented by the value of the object*
-* **Variables** *- slot of memory that stores value and reference type objects*
+* **Variables** *- represent storage locations*
 
 ## References
 * **Microsoft**
@@ -102,7 +102,10 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
   * [Managed Execution Process](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process)
   * [Memory Management](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management)
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
+  * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
+  * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
+  * [Variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables)
 
 * **Wikipedia**
   * [Message Loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows)
