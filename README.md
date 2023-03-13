@@ -11,8 +11,10 @@
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
 - [How it Works](#how-it-works)
   - [Method Parameters](#method-parameters)
+- [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
+
 
 ## Overview
 
@@ -128,6 +130,7 @@ In lines `IL_0011` and `IL_0012` we load a copies of the variables onto the **st
 
 In lines `IL_001a` and `IL_001c` we load the address of the variables onto the **stack** with the instructions `ldloca.s   V_1` and `ldloca.s   V_2`. In line `IL_001e` we call `MyClass.Method1(int32&, Foo&)` and pass the variables addresses into the method **by refence**.    
 
+## Performance
 
 ## Glossary
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
