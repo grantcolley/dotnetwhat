@@ -25,7 +25,7 @@
 The **[.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)** is a set of libraries and tools for developing .NET applications. .NET also has a large set of libraries called the **Base Class Library ([BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries))**, which provides implementation for many general types, algorithms, and utility functionality.
 Code is compiled into **Common Intermediate language ([CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language))**, in the form of Portable Executable files such as *.exe* and *.dll* files. **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** is CPU-independent [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc. **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** is **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiled to native (CPU-specific) code by the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** as runtime.
 
-When a .NET application is initialised the operating system loads the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)**. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** then loads the application assemblies into memory and reserves a contiguous region of address space for the application called the [managed heap](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management#allocating-memory). The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** also creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. Every thread is allocated it's own stack memory which provides the thread context. The main thread executes the application's entry point, typically the static Main method, and the application starts running. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** continues to provide services such as memory management, garbage collection, exception handling, and **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiling **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** code into native code.
+When a .NET application is initialised the operating system loads the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)**. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** then loads the application assemblies into memory and reserves a contiguous region of virtual address space for the application called the [managed heap], with a default size of 2GB for 32-bit syatems.(https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management#allocating-memory). The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** also creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. Every thread is allocated it's own stack memory which provides the thread context. The main thread executes the application's entry point, typically the static Main method, and the application starts running. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** continues to provide services such as memory management, garbage collection, exception handling, and **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiling **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** code into native code.
 
 The main thread creates the GUI and executes the [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows), which is responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks. Each user control is bound to the thread that created it, typically the main thread, and cannot be updated by another. This is to ensure the [integrity of UI components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8). 
 
@@ -80,6 +80,16 @@ When code execution enters a method, parameters passed into the method and local
 <br>
 
 Local variables and parameters are pushed onto the **stack** in the order they are created and popped off the **stack** on a last in first out (LIFO) basis. Local variables and parameters are scoped to the method in which they are created. The **stack** is self-maintaining so when the executing code leaves the method they are popped off the **stack**.
+
+Local variables and parameters that are [reference types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) push the reference, or pointer, to the object onto the stack, however, the object itself is always stored on the [managed heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). While each thread has it's own stack memory, all threads share the same [heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) memory.
+
+The [managed heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) consists of two heaps, the small object heap and the [large object heap (LOH)](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) for objects that are 85,000 bytes and larger, which are usually arrays.
+The small object heap is divided into three generations, 0, 1, and 2, so it can handle short-lived and long-lived objects separately lfor optimization reasons.
+- Gen 0 - newly allocated objects that are short lived. Garbage collection is most frequent on Gen 0. 
+- Gen 1 - objects that survive a collection of Gen 0 are promoted to Gen 1, which serves as a buffer between short-lived objects and long-lived objects.
+- Gen 2 - objects that survive a collection of Gen 1 are considered long-lived objects and promoted to Gen 2.
+
+The [LOH](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3.
 
 #### Releasing Memory
 
@@ -139,11 +149,14 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 * **Common Language Specification (CLS)** *- subset of CTS that defines a set of common features needed by applications*
 * **Common Type System (CTS)** *- defines rules all languages must follow when it comes to working with types*
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
+* **Large Object Heap (LOH)** *- contains objects that are 85,000 bytes and larger, which are usually arrays*
 * **Managed Code** *- code whose execution is managed by a runtime*
+* **Managed Heap** *- a segment of memory for storing and managing objects. All threads share the same heap*
 * **Message Loop** *- responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks*
 * **Method Parameters** *- arguments passed my value or by reference. Default is by value.*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
+* **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
 * **Value types** *- objects represented by the value of the object*
 * **Variables** *- represent storage locations*
 
@@ -154,8 +167,10 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
   * [CTS & CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
+  * [LOH](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap)
   * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
   * [Managed Execution Process](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process)
+  * [Managed Heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap)
   * [Memory Management](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management)
   * [Method Parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters)
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
