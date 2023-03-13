@@ -5,10 +5,12 @@
 ### Table of Contents
 - [Overview](#overview)
 - [Value Types, Reference Types and Variables](#value-types-reference-types-and-variables)
-- [Memory Allocation](#memory-allocation)
-  - [Heap](#heap)
-    - [Gen0, Gen1 and Gen2](#gen0-gen1-and-gen2)
-    - [LOH](#loh)
+- [Memory Management](#memory-management)
+  - [Memory Allocation](#memory-allocation)
+  - [Releasing Memory](#releasing-memory)
+  - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
+- [How it Works](#how-it-works)
+  - [Method Parameters](#method-parameters)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -64,7 +66,9 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 > You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). If the garbage collector came along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to make space for a new object e.g. an array of flats.
 <br>
 
-## Memory Allocation
+## Memory Management
+
+#### Memory Allocation
 When code execution enters a method, parameters passed into the method and local variables are allocated on the threads **stack** memory. For [value type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables the value of the type is stored on the **stack**. For [reference type](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) variables the reference to the object is stored on the **stack**, while the object is stored on the [heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
 <br>
 
@@ -75,24 +79,27 @@ When code execution enters a method, parameters passed into the method and local
 
 Local variables and parameters are pushed onto the **stack** in the order they are created and popped off the **stack** on a last in first out (LIFO) basis. Local variables and parameters are scoped to the method in which they are created. The **stack** is self-maintaining so when the executing code leaves the method they are popped off the **stack**.
 
+#### Releasing Memory
 
+#### Releasing Unmanaged Resources
 
+## How it Works
+
+#### Method Parameters
 Arguments can be passed to [method parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference. 
 **Passing by value** means passing a copy of the variable to the method. **Passing by reference** means passing access to the variable to the method by passing in the address of the variable. By default arguments are passed by value for both [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types).
 
-Example C# code passing arguments to method parameters **by value** and **by reference** and the comiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
+Example C# code passing arguments to method parameters **by value** and **by reference** and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
 ``` C#
+  // C# code
+  MyClass myClass = new MyClass();
+  int param = 123;
+  Foo foo = new Foo();
 
-            MyClass myClass = new MyClass();
-            int param = 123;
-            Foo foo = new Foo();
+  myClass.Method1(param, foo);
+  myClass.Method2(ref param, ref foo);
 
-            myClass.Method1(param, foo);
-
-            myClass.Method2(ref param, ref foo);
-
-// Resulting CIL instructions 
-
+  // Compiled into CIL 
   IL_0000:  nop
   IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.MyClass::.ctor()
   IL_0006:  stloc.0
@@ -120,12 +127,6 @@ In the code listing above we see the **[CIL instructions](https://en.wikipedia.o
 In lines `IL_0011` and `IL_0012` we load a copies of the variables onto the **stack** with the instructions `ldloc.1` and `ldloc.2`. In line `IL_0013` we call `MyClass.Method1(int32, Foo)` and pass the copies of the variables into the method **by value**.
 
 In lines `IL_001a` and `IL_001c` we load the address of the variables onto the **stack** with the instructions `ldloca.s   V_1` and `ldloca.s   V_2`. In line `IL_001e` we call `MyClass.Method1(int32&, Foo&)` and pass the variables addresses into the method **by refence**.    
-
-
-### Heap
-#### Gen0, Gen1 and Gen2
-
-#### LOH
 
 
 ## Glossary
