@@ -75,27 +75,39 @@ When code execution enters a method, parameters passed into the method and local
 
 Local variables and parameters are pushed onto the **stack** in the order they are created and popped off the **stack** on a last in first out (LIFO) basis. Local variables and parameters are scoped to the method in which they are created. The **stack** is self-maintaining so when the executing code leaves the method they are popped off the **stack**.
 
-When a variable is passed into a method it is passed by value by default. This means a copy of the variable is passed into the method.
 
+
+Arguments can be passed to [method parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference. 
+**Passing by value** means passing a copy of the variable to the method. **Passing by reference** means passing access to the variable to the method by passing in the address of the variable. By default arguments are passed by value for both [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types).
 
 ```
   IL_0000:  nop
-  IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.Foobar::.ctor()
+  IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.MyClass::.ctor()
   IL_0006:  stloc.0
-  IL_0007:  ldc.i4.s   12
+  IL_0007:  ldc.i4.s   123
   IL_0009:  stloc.1
-  IL_000a:  ldloc.0
-  IL_000b:  ldloc.1
-  IL_000c:  callvirt   instance void [dotnetwhat.library]dotnetwhat.library.Foobar::Method1(int32)
-  IL_0011:  nop
-  IL_0012:  ldc.i4.s   34
-  IL_0014:  stloc.2
-  IL_0015:  ldloc.0
-  IL_0016:  ldloca.s   V_2
-  IL_0018:  callvirt   instance void [dotnetwhat.library]dotnetwhat.library.Foobar::Method2(int32&)
-  IL_001d:  nop
-  IL_001e:  ret
+  IL_000a:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.Foo::.ctor()
+  IL_000f:  stloc.2
+  IL_0010:  ldloc.0
+  IL_0011:  ldloc.1
+  IL_0012:  ldloc.2
+  IL_0013:  callvirt   instance void [dotnetwhat.library]dotnetwhat.library.MyClass::Method1(int32,
+                                                                                             class [dotnetwhat.library]dotnetwhat.library.Foo)
+  IL_0018:  nop
+  IL_0019:  ldloc.0
+  IL_001a:  ldloca.s   V_1
+  IL_001c:  ldloca.s   V_2
+  IL_001e:  callvirt   instance void [dotnetwhat.library]dotnetwhat.library.MyClass::Method2(int32&,
+                                                                                             class [dotnetwhat.library]dotnetwhat.library.Foo&)
+  IL_0023:  nop
+  IL_0024:  ret
 ```
+
+In the code listing above we see the **[MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)** for loading a class called `MyClass` and two variables, an `int32` with the value `123` and an instance of a class called `Foo`. We first pass these variables **by value** to `MyClass.Method1(int32, Foo)`. We then pass the same variables **by reference** to `MyClass.Method1(int32&, Foo&)`.
+
+In lines `IL_0011` and `IL_0012` we load a copies of the variables onto the **stack** with the instructions `ldloc.1` and `ldloc.2`. In line `IL_0013` we call `MyClass.Method1(int32, Foo)` and pass the copies of the variables into the method **by value**.
+
+In lines `IL_001a` and `IL_001c` we load the address of the variables onto the **stack** with the instructions `ldloca.s   V_1` and `ldloca.s   V_2`. In line `IL_001e` we call `MyClass.Method1(int32&, Foo&)` and pass the variables addresses into the method **by refence**.    
 
 
 ### Heap
@@ -112,6 +124,7 @@ When a variable is passed into a method it is passed by value by default. This m
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Managed Code** *- code whose execution is managed by a runtime*
 * **Message Loop** *- responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks*
+* **Method Parameters** *- arguments passed my value or by reference. Default is by value.*
 * **Microsoft Intermediate Language (MSIL)** *- instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
@@ -127,6 +140,8 @@ When a variable is passed into a method it is passed by value by default. This m
   * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
   * [Managed Execution Process](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process)
   * [Memory Management](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management)
+  * [Method Parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters)
+  * [MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
