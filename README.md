@@ -91,7 +91,7 @@ Example C# code passing arguments to method parameters **by value** and **by ref
 
             myClass.Method2(ref param, ref foo);
 
-// Resulting MSIL 
+// Resulting CIL instructions 
 
   IL_0000:  nop
   IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.MyClass::.ctor()
@@ -115,7 +115,7 @@ Example C# code passing arguments to method parameters **by value** and **by ref
   IL_0024:  ret
 ```
 
-In the code listing above we see the **[MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)** for loading a class called `MyClass` and two variables, an `int32` with the value `123` and an instance of a class called `Foo`. We first pass these variables **by value** to `MyClass.Method1(int32, Foo)`. We then pass the same variables **by reference** to `MyClass.Method1(int32&, Foo&)`.
+In the code listing above we see the **[CIL instructions](https://en.wikipedia.org/wiki/List_of_CIL_instructions)** for loading a class called `MyClass` and two variables, an `int32` with the value `123` and an instance of a class called `Foo`. We first pass these variables **by value** to `MyClass.Method1(int32, Foo)`. We then pass the same variables **by reference** to `MyClass.Method1(int32&, Foo&)`.
 
 In lines `IL_0011` and `IL_0012` we load a copies of the variables onto the **stack** with the instructions `ldloc.1` and `ldloc.2`. In line `IL_0013` we call `MyClass.Method1(int32, Foo)` and pass the copies of the variables into the method **by value**.
 
