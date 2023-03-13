@@ -130,6 +130,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 
 ## Glossary
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
+* **Common Intermediate Language (CIL)** *- instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc*
 * **Common Language Runtime (CLR)** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
 * **Common Language Specification (CLS)** *- subset of CTS that defines a set of common features needed by applications*
 * **Common Type System (CTS)** *- defines rules all languages must follow when it comes to working with types*
@@ -137,7 +138,6 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 * **Managed Code** *- code whose execution is managed by a runtime*
 * **Message Loop** *- responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks*
 * **Method Parameters** *- arguments passed my value or by reference. Default is by value.*
-* **Microsoft Intermediate Language (MSIL)** *- instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Value types** *- objects represented by the value of the object*
