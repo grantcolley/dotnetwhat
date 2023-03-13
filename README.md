@@ -19,7 +19,7 @@
 .NET applications can be written in different languages and the language compiler must adhere to the rules laid out in the **Common Type System ([CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system))** and **Common Language Specification ([CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system))**. The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** establishes a framework for cross language execution by defining rules all languages must follow when it comes to working with types. It also has a library containing the basic primitive types including char, bool, byte etc. The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** also defines two main kinds of types that must be supported: value types and reference types. The **[CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** is a subset of the **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** and defines a set of common features needed by applications.
 
 The **[.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)** is a set of libraries and tools for developing .NET applications. .NET also has a large set of libraries called the **Base Class Library ([BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries))**, which provides implementation for many general types, algorithms, and utility functionality.
-Code is compiled into **Microsoft Intermediate language ([MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil))**, in the form of Portable Executable files such as *.exe* and *.dll* files. **[MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)** is CPU-independent instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc. **[MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)** is **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiled to native (CPU-specific) code by the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** as runtime.
+Code is compiled into **Microsoft Intermediate language ([MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil))**, in the form of Portable Executable files such as *.exe* and *.dll* files. **[MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)** is CPU-independent [instructions](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc. **[MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)** is **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiled to native (CPU-specific) code by the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** as runtime.
 
 When a .NET application is initialised the operating system loads the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)**. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** then loads the application assemblies into memory and reserves a contiguous region of address space for the application called the [managed heap](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management#allocating-memory). The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** also creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. Every thread is allocated it's own stack memory which provides the thread context. The main thread executes the application's entry point, typically the static Main method, and the application starts running. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** continues to provide services such as memory management, garbage collection, exception handling, and **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiling **[MSIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)** code into native code.
 
@@ -80,7 +80,19 @@ Local variables and parameters are pushed onto the **stack** in the order they a
 Arguments can be passed to [method parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference. 
 **Passing by value** means passing a copy of the variable to the method. **Passing by reference** means passing access to the variable to the method by passing in the address of the variable. By default arguments are passed by value for both [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types).
 
-```
+Example C# code passing arguments to method parameters **by value** and **by reference** and the comiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
+``` C#
+
+            MyClass myClass = new MyClass();
+            int param = 123;
+            Foo foo = new Foo();
+
+            myClass.Method1(param, foo);
+
+            myClass.Method2(ref param, ref foo);
+
+// Resulting MSIL 
+
   IL_0000:  nop
   IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.MyClass::.ctor()
   IL_0006:  stloc.0
