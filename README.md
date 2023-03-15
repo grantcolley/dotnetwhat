@@ -9,6 +9,7 @@
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
+  - [Memory Exceptions](#memory-exceptions)
 - [How it Works](#how-it-works)
   - [Method Parameters](#method-parameters)
 - [Performance](#performance)
@@ -107,6 +108,8 @@ The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collecti
 [**Background GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/background-gc) applies only to generation 2 collections and is enabled by default. Gen 0 and 1 are collected as needed while a Gen 2 collection is in progress. Background garbage collection is performed on one or more dedicated threads, depending on whether it's workstation or server GC.
 
 #### Releasing Unmanaged Resources
+
+#### Memory Exceptions
 
 ## How it Works
 
