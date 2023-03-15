@@ -94,6 +94,14 @@ The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collecti
 #### Releasing Memory
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0.
 
+**Phases of Garbage Collection**
+- **Suspension:** *all managed threads are forced to pause*
+- **Mark:** *the garbage collector starts at each root and follows every object reference and marks those as seen. Roots are thread stacks, pinned GC handles, and static objects*
+- **Compact:** *relocate objects next to each other to reduce fragmentation of the heap. Then update all references to point to the new locations*
+- **Resume:** *manage threads are allowed to resume*
+
+
+
 #### Releasing Unmanaged Resources
 
 ## How it Works
