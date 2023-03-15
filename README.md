@@ -95,12 +95,16 @@ The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collecti
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0.
 
 **Phases of Garbage Collection**
-- **Suspension:** *all managed threads are forced to pause*
-- **Mark:** *the garbage collector starts at each root and follows every object reference and marks those as seen. Roots are thread stacks, pinned GC handles, and static objects*
+- **Suspension:** *all managed threads are suspended except for the thread that triggered the garbage collection*
+- **Mark:** *the garbage collector starts at each root and follows every object reference and marks those as seen. Roots include static fields, local variables on a thread's stack, CPU registers, GC handles, and the finalize queue*
 - **Compact:** *relocate objects next to each other to reduce fragmentation of the heap. Then update all references to point to the new locations*
 - **Resume:** *manage threads are allowed to resume*
 
+[**Workstation GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc) collection occurs on the user thread that triggered the garbage collection and remains at the same priority.
 
+[**Server GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc) collection occurs on multiple dedicated threads. On Windows, these threads run at `THREAD_PRIORITY_HIGHEST` priority level. A heap and a dedicated thread to perform garbage collection are provided for each logical CPU
+
+[**Background GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/background-gc) applies only to generation 2 collections and is enabled by default. Gen 0 and 1 are collected as needed while a Gen 2 collection is in progress. Background garbage collection is performed on one or more dedicated threads, depending on whether it's workstation or server GC.
 
 #### Releasing Unmanaged Resources
 
@@ -152,6 +156,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 ## Performance
 
 ## Glossary
+* **Background GC** *- applies only to generation 2 collections and is enabled by default*
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
 * **Common Intermediate Language (CIL)** *- instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc*
 * **Common Language Runtime (CLR)** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
@@ -172,6 +177,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 
 ## References
 * **Microsoft**
+  * [Background GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/background-gc)
   * [BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries)
   * [CIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
@@ -187,8 +193,10 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
+  * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
   * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
   * [Variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables)
+  * [Workstation GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc)
 
 * **Wikipedia**
   * [CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)
