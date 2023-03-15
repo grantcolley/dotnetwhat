@@ -108,6 +108,9 @@ The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collecti
 [**Background GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/background-gc) applies only to generation 2 collections and is enabled by default. Gen 0 and 1 are collected as needed while a Gen 2 collection is in progress. Background garbage collection is performed on one or more dedicated threads, depending on whether it's workstation or server GC.
 
 #### Releasing Unmanaged Resources
+The most common types of [**unmanaged resources**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged) are objects that wrap operating system resources, such as files, windows, network connections, or database connections. Although the garbage collector is able to track the lifetime of an object that encapsulates an unmanaged resource, it doesn't know how to release and clean up the unmanaged resource.
+
+If you use unmanaged resources you should implement [**dispose pattern**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose). Consumers can call the objects [**IDisposable.Dispose**](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable.dispose) implementation directly to free memory used by unmanaged resources. When implementing [**IDisposable.Dispose**](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable.dispose) a safeguard is required to clean up resources in the event that the Dispose method is not called by the consuming code. This can be done by either wrapping your unmanaged resource using a safe handle, which has a Finalize, or by implemting your own override of Object.Finalize. It is not recommended to implement your own override of Object.Finalize.
 
 #### Memory Exceptions
 
@@ -175,6 +178,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
+* **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
 * **Value types** *- objects represented by the value of the object*
 * **Variables** *- represent storage locations*
 
@@ -185,6 +189,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   * [CIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
   * [CTS & CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)
+  * [Dispose Pattern](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose)
   * [Garbage Collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
   * [LOH](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap)
@@ -197,6 +202,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
+  * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
   * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
   * [Variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables)
   * [Workstation GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc)
