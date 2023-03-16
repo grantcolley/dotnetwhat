@@ -9,8 +9,8 @@
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
-  - [Memory Exceptions](#memory-exceptions)
-- [How it Works](#how-it-works)
+  - [OutOfMemoryException](#outofmemoryexception)
+- [Peeking Under the Hood](#Peeking-under-the-hood)
   - [Method Parameters](#method-parameters)
 - [Performance](#performance)
 - [Glossary](#glossary)
@@ -175,9 +175,10 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
     }
 ```
 
-#### Memory Exceptions
+#### OutOfMemoryException
+[**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
-## How it Works
+## Peeking Under the Hood
 
 #### Method Parameters
 Arguments can be passed to [**method parameters**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference. 
@@ -239,6 +240,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 * **Message Loop** *- responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks*
 * **Method Parameters** *- arguments passed my value or by reference. Default is by value.*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
+* **OutOfMemoryException** *- is thrown when there is not enough memory to continue the execution of a program*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Safe Handle** *- represents a wrapper class for operating system handles*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
@@ -262,6 +264,8 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   * [Managed Heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap)
   * [Memory Management](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management)
   * [Method Parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters)
+  * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
+  * [OutOfMemoryException](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception)
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
   * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
@@ -276,5 +280,3 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   * [CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)
   * [CIL Instructions](https://en.wikipedia.org/wiki/List_of_CIL_instructions)
   * [Message Loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows)
-
-* **[ChatGPT](https://chat.openai.com/chat)**
