@@ -110,7 +110,9 @@ The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collecti
 #### Releasing Unmanaged Resources
 The most common types of [**unmanaged resources**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged) are objects that wrap operating system resources, such as files, windows, network connections, or database connections. Although the garbage collector is able to track the lifetime of an object that encapsulates an unmanaged resource, it doesn't know how to release and clean up the unmanaged resource.
 
-If you use unmanaged resources you should implement the [**dispose pattern**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose). Consumers can call the object's [**IDisposable.Dispose**](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable.dispose) implementation directly to free memory used by unmanaged resources. When implementing [**IDisposable.Dispose**](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable.dispose) a safeguard is required to clean up resources in the event that the Dispose method is not called by the consuming code. This can be done by either wrapping your unmanaged resource using a [**safe handle**](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle), which has a Finalize, or by implemeting your own override of Object.Finalize. It is not recommended to implement your own override of Object.Finalize.
+The `protected virtual void Dispose(bool disposing)` method executes in two distinct scenarios. If disposing equals true, the method has been called by a user's code and both managed and unmanaged resources can be disposed. If disposing equals false, the method has been called from inside the finalizer and you should not reference other managed objects as only unmanaged resources can be disposed in this scenario.
+
+If you use unmanaged resources you should implement the [**dispose pattern**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose) to free memory used by unmanaged resources. The `Dispose()` method should not be virtual as it musn't be overriden by a derived class. When disposing is finished it should call `GC.SuppressFinalize` to take the object off the finalization queue and prevents finalization code from executing a second time.
 
 ```C#
     public class Foo: IDisposable
@@ -136,9 +138,9 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
         // 1. If disposing equals true, the method has been called by a 
         // user's code. Both managed and unmanaged resources can be disposed.
         // 
-        // 2. If disposing equals false, the method has been called by the
+        // 2. If disposing equals false, the method has been called 
         // from inside the finalizer and you should not reference
-        // other objects. Only unmanaged resources can be disposed.
+        // other managed objects. Only unmanaged resources can be disposed.
         protected virtual void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called.
