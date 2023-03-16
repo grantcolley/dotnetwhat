@@ -110,7 +110,68 @@ The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collecti
 #### Releasing Unmanaged Resources
 The most common types of [**unmanaged resources**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged) are objects that wrap operating system resources, such as files, windows, network connections, or database connections. Although the garbage collector is able to track the lifetime of an object that encapsulates an unmanaged resource, it doesn't know how to release and clean up the unmanaged resource.
 
-If you use unmanaged resources you should implement [**dispose pattern**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose). Consumers can call the objects [**IDisposable.Dispose**](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable.dispose) implementation directly to free memory used by unmanaged resources. When implementing [**IDisposable.Dispose**](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable.dispose) a safeguard is required to clean up resources in the event that the Dispose method is not called by the consuming code. This can be done by either wrapping your unmanaged resource using a safe handle, which has a Finalize, or by implemting your own override of Object.Finalize. It is not recommended to implement your own override of Object.Finalize.
+If you use unmanaged resources you should implement the [**dispose pattern**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose). Consumers can call the object's [**IDisposable.Dispose**](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable.dispose) implementation directly to free memory used by unmanaged resources. When implementing [**IDisposable.Dispose**](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable.dispose) a safeguard is required to clean up resources in the event that the Dispose method is not called by the consuming code. This can be done by either wrapping your unmanaged resource using a [**safe handle**](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle), which has a Finalize, or by implemeting your own override of Object.Finalize. It is not recommended to implement your own override of Object.Finalize.
+
+```C#
+    public class Foo: IDisposable
+    {
+        // Pointer to an external unmanaged resource.
+        private IntPtr handle;
+
+        // Track whether Dispose has been called.
+        private bool disposed = false;
+
+        // Don't make Dispose() virtual. It mustn't be overridden by a derived class.
+        public void Dispose()
+        {
+            Dispose(disposing true);
+            
+            // GC.SuppressFinalize takes this object off the finalization queue
+            // and prevents finalization code from executing a second time.
+            GC.SuppressFinalize(this);
+        }
+
+        // Dispose(bool disposing) executes in two distinct scenarios.
+        // 
+        // 1. If disposing equals true, the method has been called by a 
+        // user's code. Both managed and unmanaged resources can be disposed.
+        // 
+        // 2. If disposing equals false, the method has been called by the
+        // from inside the finalizer and you should not reference
+        // other objects. Only unmanaged resources can be disposed.
+        protected virtual void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called.
+            if(!this.disposed)
+            {
+                if(disposing)
+                {
+                    //TODO: Dispose managed resources here.
+                }
+
+                // Dispose unmanaged resources.
+                CloseHandle(handle);
+                handle = IntPtr.Zero;
+
+                // TODO: set large fields to null.
+
+                disposed = true;
+            }
+        }
+
+        // Use interop to call the method necessary
+        // to clean up the unmanaged resource.
+        [System.Runtime.InteropServices.DllImport("Kernel32")]
+        private extern static Boolean CloseHandle(IntPtr handle);
+
+        // The finalizer will run only if the Dispose method doesn't get called.
+        // Do not provide finalizer in types derived from this class.
+        ~Foo()
+        {
+            Dispose(disposing false);
+        }
+    }
+```
 
 #### Memory Exceptions
 
@@ -177,6 +238,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 * **Method Parameters** *- arguments passed my value or by reference. Default is by value.*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
+* **Safe Handle** *- represents a wrapper class for operating system handles*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
 * **Value types** *- objects represented by the value of the object*
@@ -200,6 +262,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   * [Method Parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters)
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
+  * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
