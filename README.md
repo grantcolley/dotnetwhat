@@ -290,3 +290,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   * [CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)
   * [CIL Instructions](https://en.wikipedia.org/wiki/List_of_CIL_instructions)
   * [Message Loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows)
+
+* **.NET Blogs**
+* [What is .NET, and why should you choose it?](https://devblogs.microsoft.com/dotnet/why-dotnet/)
+* [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
