@@ -261,6 +261,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
 ## References
 * **.NET Blogs**
   * [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
+  * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
   * [What is .NET, and why should you choose it?](https://devblogs.microsoft.com/dotnet/why-dotnet/)
 
 * **Microsoft**
