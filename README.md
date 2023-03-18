@@ -12,7 +12,7 @@
   - [OutOfMemoryException](#outofmemoryexception)
 - [Peeking Under the Hood](#Peeking-under-the-hood)
   - [Method Parameters](#method-parameters)
-  - [String.Format Boxes Value Types](#string-format-boxes-value-types)
+  - [String.Format Boxes Value Types](#string.format-boxes-value-types)
 - [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
