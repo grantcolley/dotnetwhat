@@ -205,6 +205,9 @@ Example C# code passing arguments to method parameters **by value** and **by ref
   myClass.Method2(ref param, ref foo);
 
   // Compiled into CIL 
+  .locals init (class [dotnetwhat.library]dotnetwhat.library.MyClass V_0,
+           int32 V_1,
+           class [dotnetwhat.library]dotnetwhat.library.Foo V_2)  
   IL_0000:  nop
   IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.MyClass::.ctor()
   IL_0006:  stloc.0
@@ -232,6 +235,50 @@ In the code listing above we see the [**CIL instructions**](https://en.wikipedia
 In lines `IL_0011` and `IL_0012` we load a copies of the variables onto the **stack** with the instructions `ldloc.1` and `ldloc.2`. In line `IL_0013` we call `MyClass.Method1(int32, Foo)` and pass the copies of the variables into the method **by value**.
 
 In lines `IL_001a` and `IL_001c` we load the address of the variables onto the **stack** with the instructions `ldloca.s   V_1` and `ldloca.s   V_2`. In line `IL_001e` we call `MyClass.Method1(int32&, Foo&)` and pass the variables addresses into the method **by refence**.    
+
+#### String.Format Boxes Value Types
+`String.Format()` boxes [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), whereas calling `.ToString()` on the value type doesn't. Below we look at writing the value of an integer to three strings using `String.Format`, calling the  
+
+```C#
+  // C# code
+  int localInt = 5;
+
+  string string1 = string.Format("{0}", localInt);
+  string string2 = localInt.ToString();
+  string string3 = $"{localInt}";
+
+  // Compiled into CIL 
+  .locals init (int32 V_0,
+           string V_1,
+           string V_2,
+           string V_3,
+           valuetype [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler V_4)
+  IL_0000:  nop
+  IL_0001:  ldc.i4.5
+  IL_0002:  stloc.0
+  IL_0003:  ldstr      "{0}"
+  IL_0008:  ldloc.0
+  IL_0009:  box        [System.Runtime]System.Int32
+  IL_000e:  call       string [System.Runtime]System.String::Format(string,
+                                                                    object)
+  IL_0013:  stloc.1
+  IL_0014:  ldloca.s   V_0
+  IL_0016:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_001b:  stloc.2
+  IL_001c:  ldloca.s   V_4
+  IL_001e:  ldc.i4.0
+  IL_001f:  ldc.i4.1
+  IL_0020:  call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32,
+                                                                                                                             int32)
+  IL_0025:  ldloca.s   V_4
+  IL_0027:  ldloc.0
+  IL_0028:  call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<int32>(!!0)
+  IL_002d:  nop
+  IL_002e:  ldloca.s   V_4
+  IL_0030:  call       instance string [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::ToStringAndClear()
+  IL_0035:  stloc.3
+  IL_0036:  ret
+```
 
 ## Performance
 
