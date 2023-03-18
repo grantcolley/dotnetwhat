@@ -10,7 +10,7 @@
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
-- [Peeking Under the Hood](#Peeking-under-the-hood)
+- [Peek Under the Hood](#peek-under-the-hood)
   - [Method Parameters](#method-parameters)
   - [String.Format Boxes Value Types](#stringformat-boxes-value-types)
 - [Performance](#performance)
@@ -189,7 +189,7 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
-## Peeking Under the Hood
+## Peek Under the Hood
 
 #### Method Parameters
 Arguments can be passed to [**method parameters**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference. 
@@ -238,8 +238,9 @@ In lines `IL_0011` and `IL_0012` we load a copies of the variables onto the **st
 In lines `IL_001a` and `IL_001c` we load the address of the variables onto the **stack** with the instructions `ldloca.s   V_1` and `ldloca.s   V_2`. In line `IL_001e` we call `MyClass.Method1(int32&, Foo&)` and pass the variables addresses into the method **by refence**.    
 
 #### String.Format Boxes Value Types
-`String.Format()` boxes [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), whereas calling `.ToString()` on the value type doesn't. Below we look at writing the value of an integer to three strings using `String.Format`, calling the  
+`String.Format()` boxes [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), whereas using string interpolation and calling `.ToString()` on the value type doesn't.
 
+Example C# code comparing writing the value of an integer to a string three different ways; using `String.Format`, calling `int32.ToString()` and using string interpolation, and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
 ```C#
   // C# code
   int localInt = 5;
@@ -280,6 +281,7 @@ In lines `IL_001a` and `IL_001c` we load the address of the variables onto the *
   IL_0035:  stloc.3
   IL_0036:  ret
 ```
+In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for boxing `IL_0009: box [System.Runtime]System.Int32` when calling `String.Format`.
 
 ## Performance
 
