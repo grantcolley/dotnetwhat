@@ -12,7 +12,7 @@
   - [OutOfMemoryException](#outofmemoryexception)
 - [Peek Under the Hood](#peek-under-the-hood)
   - [Method Parameters](#method-parameters)
-  - [String.Format Boxes Value Types](#stringformat-boxes-value-types)
+  - [Boxing and Unboxing](#boxing-and-unboxing)
 - [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
@@ -237,24 +237,36 @@ In lines `IL_0011` and `IL_0012` we load a copies of the variables onto the **st
 
 In lines `IL_001a` and `IL_001c` we load the address of the variables onto the **stack** with the instructions `ldloca.s   V_1` and `ldloca.s   V_2`. In line `IL_001e` we call `MyClass.Method1(int32&, Foo&)` and pass the variables addresses into the method **by refence**.    
 
-#### String.Format Boxes Value Types
-`String.Format()` boxes [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), whereas using string interpolation and calling `.ToString()` on the value type doesn't.
+#### Boxing and Unboxing
+In **C#** the [Type System](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system) specifies the value of any type can be treated as an `object`, which all types derive from.
 
-Example C# code comparing writing the value of an integer to a string three different ways; using `String.Format`, calling `int32.ToString()` and using string interpolation, and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
+[**Boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) is the process of converting a [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) to an `object`, or an interface implemented by the [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types). It does this by wrapping the value in a [**System.Object**](https://learn.microsoft.com/en-us/dotnet/api/system.object) instance and stores it on the [**heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). 
+
+[**Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) is the explicit conversion of the value of the `object`, or interface type, to a value type.
+
+[**Boxing and Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) can be expensive. [**Boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) involves creating and allocating a new object on the heap, and casting when setting it's value. [**Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) involves first checking the value of the `object` is a boxed value of the [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), then copying the value from the instance into the [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types).
+
+Examples of unintentional [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) can occur when working with `strings` e.g. when using `String.Format()` and `String.Concat()` etc. Ways around this is to use string interpolation instead, or always call `.ToString()` of the value type.
+
+Example C# code comparing writing the value of an integer to a string, both with and without calling `Int32.ToString()` and using string interpolation, and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
 ```C#
   // C# code
   int localInt = 5;
 
   string string1 = string.Format("{0}", localInt);
-  string string2 = localInt.ToString();
-  string string3 = $"{localInt}";
-
+  string string2 = string.Format("{0}", localInt.ToString());
+  string string3 = string.Concat("Foo", localInt);
+  string string4 = string.Concat("Foo", localInt.ToString());
+  string string5 = $"{localInt}";
+  
   // Compiled into CIL 
   .locals init (int32 V_0,
            string V_1,
            string V_2,
            string V_3,
-           valuetype [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler V_4)
+           string V_4,
+           string V_5,
+           valuetype [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler V_6)
   IL_0000:  nop
   IL_0001:  ldc.i4.5
   IL_0002:  stloc.0
@@ -264,24 +276,40 @@ Example C# code comparing writing the value of an integer to a string three diff
   IL_000e:  call       string [System.Runtime]System.String::Format(string,
                                                                     object)
   IL_0013:  stloc.1
-  IL_0014:  ldloca.s   V_0
-  IL_0016:  call       instance string [System.Runtime]System.Int32::ToString()
-  IL_001b:  stloc.2
-  IL_001c:  ldloca.s   V_4
-  IL_001e:  ldc.i4.0
-  IL_001f:  ldc.i4.1
-  IL_0020:  call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32,
+  IL_0014:  ldstr      "{0}"
+  IL_0019:  ldloca.s   V_0
+  IL_001b:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_0020:  call       string [System.Runtime]System.String::Format(string,
+                                                                    object)
+  IL_0025:  stloc.2
+  IL_0026:  ldstr      "Foo"
+  IL_002b:  ldloc.0
+  IL_002c:  box        [System.Runtime]System.Int32
+  IL_0031:  call       string [System.Runtime]System.String::Concat(object,
+                                                                    object)
+  IL_0036:  stloc.3
+  IL_0037:  ldstr      "Foo"
+  IL_003c:  ldloca.s   V_0
+  IL_003e:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_0043:  call       string [System.Runtime]System.String::Concat(string,
+                                                                    string)
+  IL_0048:  stloc.s    V_4
+  IL_004a:  ldloca.s   V_6
+  IL_004c:  ldc.i4.0
+  IL_004d:  ldc.i4.1
+  IL_004e:  call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::.ctor(int32,
                                                                                                                              int32)
-  IL_0025:  ldloca.s   V_4
-  IL_0027:  ldloc.0
-  IL_0028:  call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<int32>(!!0)
-  IL_002d:  nop
-  IL_002e:  ldloca.s   V_4
-  IL_0030:  call       instance string [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::ToStringAndClear()
-  IL_0035:  stloc.3
-  IL_0036:  ret
+  IL_0053:  ldloca.s   V_6
+  IL_0055:  ldloc.0
+  IL_0056:  call       instance void [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::AppendFormatted<int32>(!!0)
+  IL_005b:  nop
+  IL_005c:  ldloca.s   V_6
+  IL_005e:  call       instance string [System.Runtime]System.Runtime.CompilerServices.DefaultInterpolatedStringHandler::ToStringAndClear()
+  IL_0063:  stloc.s    V_5
+  IL_0065:  ret
 ```
-In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for boxing `IL_0009: box [System.Runtime]System.Int32` when calling `String.Format`.
+In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) in line `IL_0009` for `String.Format()`, and line `IL_002c` for `String.Concat()`. We can see no [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) occurs when using `Int32.ToString()` in lines `IL_001b` and `IL_003e`. We can also see in line `IL_0056` no boxing occurs when using string interpolation.
+
 
 ## Performance
 
