@@ -10,7 +10,7 @@
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
-- [Peek Under the Hood](#peek-under-the-hood)
+- [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
 - [Performance](#performance)
@@ -189,7 +189,7 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
-## Peek Under the Hood
+## What's in the CIL
 
 #### Method Parameters
 Arguments can be passed to [**method parameters**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference. 
@@ -316,6 +316,7 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
+* **Boxing** *- the process of converting value types to objects or an interface implemented by the value type*
 * **Common Intermediate Language (CIL)** *- instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc*
 * **Common Language Runtime (CLR)** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
 * **Common Language Specification (CLS)** *- subset of CTS that defines a set of common features needed by applications*
@@ -332,6 +333,8 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Safe Handle** *- represents a wrapper class for operating system handles*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
+* **System.Object** *- the base class of all .NET classes*
+* **Unboxing** *- the process of explicitly converting an objects value, or interface type, to a value type*
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
 * **Value types** *- objects represented by the value of the object*
 * **Variables** *- represent storage locations*
@@ -344,6 +347,7 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
 
 * **Microsoft**
   * [Background GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/background-gc)
+  * [**Boxing and Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing)
   * [BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries)
   * [CIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
@@ -364,6 +368,7 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
   * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
+  * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
   * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
   * [Variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables)
