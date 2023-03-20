@@ -13,6 +13,7 @@
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
+  - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)
 - [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
@@ -309,6 +310,15 @@ Example C# code comparing writing the value of an integer to a string, both with
   IL_0065:  ret
 ```
 In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) in line `IL_0009` for `String.Format()`, and line `IL_002c` for `String.Concat()`. We can see no [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) occurs when using `Int32.ToString()` in lines `IL_001b` and `IL_003e`. We can also see in line `IL_0056` no boxing occurs when using string interpolation.
+
+#### Accessing Memory underlying a Variable 
+
+>  **Note**
+> 
+>  In order to use the `unsafe` block you must set [AllowUnsafeBlocks](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/language#allowunsafeblocks) in the project file to `true`.
+>  ```XML
+>  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+>  ```
 
 
 ## Performance
