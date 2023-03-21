@@ -202,7 +202,37 @@ C# code is called "verifiably safe code" because .NET tools can verify that the 
 >  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 >  ```
 
+The following example shows how an immutable string, can actually be mutated by directly accessing it in memory. The `unsafe` keyword allows us to create a pointer `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
+>  **Warning** this example works because the number of characters in `source` and `target` are equal.
+```C#
+        [TestMethod]
+        public void Unsafe()
+        {
+            // Arrange
+            string source = "Hello";
+            string target = "World";
 
+            // Act
+            Mutate(source, target);
+
+            // Assert
+            Assert.AreEqual(target, source);
+        }
+
+        public static void Mutate(string source, string target)
+        {
+            unsafe
+            {
+                fixed(char* ptr = source)
+                {
+                    for (int i = 0; i < source.Length; i++) 
+                    {
+                        ptr[i] = target[i];
+                    }
+                }
+            }
+        }
+```
 
 ## What's in the CIL
 
