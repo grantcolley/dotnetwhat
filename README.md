@@ -10,10 +10,10 @@
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
+  - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
-  - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)
 - [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
@@ -190,6 +190,20 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
+#### Accessing Memory underlying a Variable 
+C# code is called "verifiably safe code" because .NET tools can verify that the code is safe. Safe code creates managed objects and doesn't allow you to access memory directly using pointers. C# does, however, allow for [unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code to be written using the `unsafe` keyword, where you can directly access memory using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). A [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) is simply a variable that holds the memory address of another type or variable. The variable also needs to be [fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed) or "pinned", so the garbage collector can't move it while compacting the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). 
+
+>  **Note**
+> 
+>  In order to use the `unsafe` block you must set [AllowUnsafeBlocks](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/language#allowunsafeblocks) in the project file to `true`.
+>  ```XML
+>  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+>  ```
+
+[Unsafe code](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) isn't necessarily dangerous; it's just code whose safety cannot be verified.
+
+
+
 ## What's in the CIL
 
 #### Method Parameters
@@ -311,14 +325,6 @@ Example C# code comparing writing the value of an integer to a string, both with
 ```
 In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) in line `IL_0009` for `String.Format()`, and line `IL_002c` for `String.Concat()`. We can see no [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) occurs when using `Int32.ToString()` in lines `IL_001b` and `IL_003e`. We can also see in line `IL_0056` no boxing occurs when using string interpolation.
 
-#### Accessing Memory underlying a Variable 
-
->  **Note**
-> 
->  In order to use the `unsafe` block you must set [AllowUnsafeBlocks](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/language#allowunsafeblocks) in the project file to `true`.
->  ```XML
->  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
->  ```
 
 
 ## Performance
@@ -331,6 +337,7 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
 * **Common Language Runtime (CLR)** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
 * **Common Language Specification (CLS)** *- subset of CTS that defines a set of common features needed by applications*
 * **Common Type System (CTS)** *- defines rules all languages must follow when it comes to working with types*
+* **Fixed** *- declares a pointer to a variable and fixes or "pins" it, so the garbage collection can't relocate it*
 * **Garbage Collection** *- the process of releasing and compacting heap memory*
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Large Object Heap (LOH)** *- contains objects that are 85,000 bytes and larger, which are usually arrays*
@@ -340,12 +347,14 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
 * **Method Parameters** *- arguments passed my value or by reference. Default is by value.*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **OutOfMemoryException** *- is thrown when there is not enough memory to continue the execution of a program*
+* **Pointers** *- a variable that holds the memory address of another type or variable, allowing direct access to it in memory.*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Safe Handle** *- represents a wrapper class for operating system handles*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
 * **System.Object** *- the base class of all .NET classes*
 * **Unboxing** *- the process of explicitly converting an objects value, or interface type, to a value type*
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
+* **Unsafe code** *- allows direct access to memory using pointers*
 * **Value types** *- objects represented by the value of the object*
 * **Variables** *- represent storage locations*
 
@@ -363,6 +372,7 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
   * [CTS & CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)
   * [Dispose Pattern](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose)
+  * [Fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed)
   * [Garbage Collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
   * [LOH](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap)
@@ -374,12 +384,14 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
   * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
   * [OutOfMemoryException](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception)
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
+  * [Pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
   * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
+  * [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code)
   * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
   * [Variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables)
   * [Workstation GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc)
