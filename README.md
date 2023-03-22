@@ -14,6 +14,7 @@
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
+  - [Ref Local](#ref-local)
 - [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
@@ -355,7 +356,34 @@ Example C# code comparing writing the value of an integer to a string, both with
 ```
 In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) in line `IL_0009` for `String.Format()`, and line `IL_002c` for `String.Concat()`. We can see no [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) occurs when using `Int32.ToString()` in lines `IL_001b` and `IL_003e`. We can also see in line `IL_0056` no boxing occurs when using string interpolation.
 
+#### Ref Local
+A [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) is a variable that refers to other storage.
 
+In this code listing variable `b` holds a copy of `a`. Variable `c`, however, refers to the same storage location as `c`. When we set `c` to 7 then `a` is now also 7 because they are both refering to the same storage location. `b` on the other hand is still 5 because it has its own copy. We can see the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) below.
+```C#
+  // C# code
+  int a = 5;
+
+  int b = a;
+  ref int c = ref a;
+  c = 7;
+            
+  // Compiled into CIL 
+  .locals init (int32 V_0,     // local variable `a`
+           int32 V_1,          // local variable `b`           
+           int32& V_2)         // local variable `c`
+  IL_0000:  nop
+  IL_0001:  ldc.i4.5           // pushes 5 onto the stack
+  IL_0002:  stloc.0            // pops 5 off the stack into local variable `a`
+  IL_0003:  ldloc.0            // pushes the value of `a` onto the stack
+  IL_0004:  stloc.1            // pops the value from stack into local variable `b`
+  IL_0005:  ldloca.s   V_0     // pushes the address of `a` onto the stack
+  IL_0007:  stloc.2            // pops the address of `a` from stack into local variable `c`
+  IL_0008:  ldloc.2            // pushes the value of `c` onto the stack
+  IL_0009:  ldc.i4.7           // pushes 7 onto the stack
+  IL_000a:  stind.i4           // pops the value 7 from the stack into the address of `c`
+  IL_000b:  ret
+```
 
 ## Performance
 
