@@ -14,7 +14,7 @@
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
-  - [Ref Local](#ref-local)
+  - [Ref Locals](#ref-locals)
 - [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
@@ -356,7 +356,7 @@ Example C# code comparing writing the value of an integer to a string, both with
 ```
 In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) in line `IL_0009` for `String.Format()`, and line `IL_002c` for `String.Concat()`. We can see no [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) occurs when using `Int32.ToString()` in lines `IL_001b` and `IL_003e`. We can also see in line `IL_0056` no boxing occurs when using string interpolation.
 
-#### Ref Local
+#### Ref Locals
 A [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) is a variable that refers to other storage.
 
 In this code listing variable `b` holds a copy of `a`. Variable `c`, however, refers to the same storage location as `c`. When we set `c` to 7 then `a` is now also 7 because they are both refering to the same storage location. `b` on the other hand is still 5 because it has its own copy. We can see the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) below.
@@ -407,6 +407,7 @@ In this code listing variable `b` holds a copy of `a`. Variable `c`, however, re
 * **OutOfMemoryException** *- is thrown when there is not enough memory to continue the execution of a program*
 * **Pointers** *- a variable that holds the memory address of another type or variable, allowing direct access to it in memory.*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
+* **Ref Locals** *- variables that refers to other storage i.e. reference another variables storage*
 * **Safe Handle** *- represents a wrapper class for operating system handles*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
 * **System.Object** *- the base class of all .NET classes*
@@ -444,6 +445,7 @@ In this code listing variable `b` holds a copy of `a`. Variable `c`, however, re
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
   * [Pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
+  * [Ref Locals](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals)
   * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
