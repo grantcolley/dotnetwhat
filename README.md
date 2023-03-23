@@ -15,6 +15,7 @@
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
   - [Ref Locals](#ref-locals)
+  - [Ref Returns](#ref-returns)
 - [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
@@ -385,6 +386,58 @@ In this code listing variable `b` holds a copy of `a`. Variable `c`, however, re
   IL_000b:  ret
 ```
 
+### Ref Returns
+[Ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values) values are returned by a method by reference i.e. the address of the value is returned rather than the value itself. If the returned value is stored in a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) it can be modifed and the change is reflected in the called method. If a [ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values) value returned by a method isn't stored in a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) then it stores a copy of the value stored at the address in the [ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values).
+
+In the code listing below `decimal a = myClass.GetCurrentPrice()` returns the current price by value i.e. `a` is only a copy of the current price returned by `myClass.GetCurrentPrice()`. Changes to `a` will only be applied to itself.
+
+On the other hand `ref decimal b = ref myClass.GetCurrentPriceByRef()` returns the address of the current price i.e. `b` is now pointing to the same current price as the one returned by `myClass.GetCurrentPriceByRef()`. Changes to variable `b` will be reflected in the current price retunred by `myClass.GetCurrentPriceByRef()` because they are both pointing to a value at the same address.
+
+Finally `a = myClass.GetCurrentPriceByRef();` returns the address of the current price, however, because variable `a` is not a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) it only stores a copy of the value in the address of current price.   
+
+We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) below line `IL_0008:  callvirt` calls `MyClass::GetCurrentPrice()` which returns a `System.Decimal` by value i.e. a copy of the current price. Line `IL_000f:  callvirt` calls `MyClass::GetCurrentPriceByRef()` which returns `System.Decimal&` by ref i.e. the address of the current price. Finally we see in line `IL_002f:  ldobj` a copy of the value in the address is stored.
+
+```C#
+  // C# code
+  MyClass myClass = new MyClass();
+
+  decimal a = myClass.GetCurrentPrice();
+  ref decimal b = ref myClass.GetCurrentPriceByRef();
+  b = 567.89m;
+  a = myClass.GetCurrentPriceByRef();
+  
+  // Compiled into CIL 
+  .locals init (class [dotnetwhat.library]dotnetwhat.library.MyClass V_0,
+           valuetype [System.Runtime]System.Decimal V_1,
+           valuetype [System.Runtime]System.Decimal& V_2)
+  IL_0000:  nop
+  IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.MyClass::.ctor()
+  IL_0006:  stloc.0
+  IL_0007:  ldloc.0
+  IL_0008:  callvirt   instance valuetype [System.Runtime]System.Decimal [dotnetwhat.library]dotnetwhat.library.MyClass::GetCurrentPrice()
+  IL_000d:  stloc.1
+  IL_000e:  ldloc.0
+  IL_000f:  callvirt   instance valuetype [System.Runtime]System.Decimal& [dotnetwhat.library]dotnetwhat.library.MyClass::GetCurrentPriceByRef()
+  IL_0014:  stloc.2
+  IL_0015:  ldloc.2
+  IL_0016:  ldc.i4     0xddd5
+  IL_001b:  ldc.i4.0
+  IL_001c:  ldc.i4.0
+  IL_001d:  ldc.i4.0
+  IL_001e:  ldc.i4.2
+  IL_001f:  newobj     instance void [System.Runtime]System.Decimal::.ctor(int32,
+                                                                           int32,
+                                                                           int32,
+                                                                           bool,
+                                                                           uint8)
+  IL_0024:  stobj      [System.Runtime]System.Decimal
+  IL_0029:  ldloc.0
+  IL_002a:  callvirt   instance valuetype [System.Runtime]System.Decimal& [dotnetwhat.library]dotnetwhat.library.MyClass::GetCurrentPriceByRef()
+  IL_002f:  ldobj      [System.Runtime]System.Decimal
+  IL_0034:  stloc.1
+  IL_0035:  ret
+```
+
 ## Performance
 
 ## Glossary
@@ -408,6 +461,7 @@ In this code listing variable `b` holds a copy of `a`. Variable `c`, however, re
 * **Pointers** *- a variable that holds the memory address of another type or variable, allowing direct access to it in memory.*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Ref Locals** *- variables that refers to other storage i.e. reference another variables storage*
+* **Ref Returns** *- values returned by a method by reference i.e. modifying it will change the value in the called code*
 * **Safe Handle** *- represents a wrapper class for operating system handles*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
 * **System.Object** *- the base class of all .NET classes*
@@ -446,6 +500,7 @@ In this code listing variable `b` holds a copy of `a`. Variable `c`, however, re
   * [Pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
   * [Ref Locals](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals)
+  * [Ref returns](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values)
   * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
