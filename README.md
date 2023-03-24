@@ -239,8 +239,16 @@ The following example shows how an immutable string, can actually be mutated by 
 ## What's in the CIL
 
 #### Method Parameters
-Arguments can be passed to [**method parameters**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference. 
-**Passing by value** means passing a copy of the variable to the method. **Passing by reference** means passing access to the variable to the method by passing in the address of the variable. By default arguments are passed by value for both [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types).
+Arguments can be passed to [**method parameters**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference.
+**Passing by value**, which is the default for both [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), means the argument passes a copy of the variable into the method. **Passing by reference**, using the [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref) keyword, means the argument passes the address of the variable into the method.
+
+>  **Note**
+>
+> Parameters can also be passed using the [**out**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/out-parameter-modifier) keyword and the [**in**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier) keyword. Both pass by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref), however each has slightly different behavior.  
+>
+> With the [**out**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/out-parameter-modifier) keyword an argument is passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref) and it must be assigned a value inside the called method.
+>
+> With the [**in**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier) keyword an argument is passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref) but it cannot be modified inside the called method.
 
 Example C# code passing arguments to method parameters **by value** and **by reference** and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
 ``` C#
@@ -450,6 +458,7 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 * **Common Type System (CTS)** *- defines rules all languages must follow when it comes to working with types*
 * **Fixed** *- declares a pointer to a variable and fixes or "pins" it, so the garbage collection can't relocate it*
 * **Garbage Collection** *- the process of releasing and compacting heap memory*
+* **in Keyword** *- an argument is passed by reference, however it cannot be modified in the called method*
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Large Object Heap (LOH)** *- contains objects that are 85,000 bytes and larger, which are usually arrays*
 * **Managed Code** *- code whose execution is managed by a runtime*
@@ -457,8 +466,10 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 * **Message Loop** *- responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks*
 * **Method Parameters** *- arguments passed my value or by reference. Default is by value.*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
+* **out Keyword** *- an argument is passed by reference, however a value must be assigned to it in the called method*
 * **OutOfMemoryException** *- is thrown when there is not enough memory to continue the execution of a program*
 * **Pointers** *- a variable that holds the memory address of another type or variable, allowing direct access to it in memory.*
+* **ref Keyword** *- an argument passes a variables address into a method, rather than a copy of the variable*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Ref Locals** *- variables that refers to other storage i.e. reference another variables storage*
 * **Ref Returns** *- values returned by a method by reference i.e. modifying it will change the value in the called code*
@@ -487,6 +498,7 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
   * [Dispose Pattern](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose)
   * [Fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed)
   * [Garbage Collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
+  * [in Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
   * [LOH](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap)
   * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
@@ -494,10 +506,12 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
   * [Managed Heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap)
   * [Memory Management](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management)
   * [Method Parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters)
+  * [out Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/out-parameter-modifier)
   * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
   * [OutOfMemoryException](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception)
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
   * [Pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types)
+  * [ref Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
   * [Ref Locals](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals)
   * [Ref returns](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values)
