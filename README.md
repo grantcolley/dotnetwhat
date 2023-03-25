@@ -244,7 +244,7 @@ When working with pointer types `stackalloc` must use the `unsafe` context, howe
 
 >  **Warning** 
 >
->  Allocating too much memory on the stack can result in a [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception) being thrown.
+>  Allocating too much memory on the stack can result in a [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception) being thrown when the execution stack exceeds the stack size.
 
 
 ## What's in the CIL
@@ -486,6 +486,8 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 * **Ref Returns** *- values returned by a method by reference i.e. modifying it will change the value in the called code*
 * **Safe Handle** *- represents a wrapper class for operating system handles*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
+* **stackalloc** *- allocates a block of memory on the stack*
+* **StackOverflowException** *- thrown when the execution stack exceeds the stack size*
 * **System.Object** *- the base class of all .NET classes*
 * **Unboxing** *- the process of explicitly converting an objects value, or interface type, to a value type*
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
@@ -529,6 +531,8 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
   * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
+  * [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc)
+  * [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
   * [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code)
