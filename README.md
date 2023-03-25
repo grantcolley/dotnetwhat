@@ -240,12 +240,32 @@ The following example shows how an immutable string, can actually be mutated by 
 #### Allocating Memory on the Stack
 [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc) allocates a block of memory on the stack. Because the memory is allocated on the stack it is not [garbage collected](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/) so it doesn't have to be pinned with the `fixed` statement and is automatically discarded when the method returns.
 
-When working with [pointer types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `stackalloc` must use the `unsafe` context, however, this is not necessary if you assign a stack allocated memory block to a [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span).
-
 >  **Warning** 
 >
 >  Allocating too much memory on the stack can result in a [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception) being thrown when the execution stack exceeds the stack size.
 
+When working with [pointer types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `stackalloc` must use the `unsafe` context. 
+```C#
+            int length = 3;
+            unsafe
+            {
+                int* numbers = stackalloc int[length];
+                for (var i = 0; i < length; i++)
+                {
+                    numbers[i] = i;
+                }
+            }
+```
+
+The preferred approach is to assign a stack allocated memory block to a [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span) which doesn't require the `unsafe` keyword.
+```C#
+            int length = 3;
+            Span<int> numbers = stackalloc int[length];
+            for (var i = 0; i < length; i++)
+            {
+                numbers[i] = i;
+            }
+```
 
 ## What's in the CIL
 
