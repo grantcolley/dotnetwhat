@@ -242,6 +242,11 @@ The following example shows how an immutable string, can actually be mutated by 
 
 When working with pointer types `stackalloc` must use the `unsafe` context, however, this is not necessary if you assign a stack allocated memory block to a [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span).
 
+>  **Warning** 
+>
+>  Allocating too much memory on the stack can result in a [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception) being thrown.
+
+
 ## What's in the CIL
 
 #### Method Parameters
