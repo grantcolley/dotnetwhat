@@ -5,14 +5,18 @@
 ### Table of Contents
 - [Overview](#overview)
 - [Value Types, Reference Types and Variables](#value-types-reference-types-and-variables)
-- [Memory Management](#memory-management)
+- [Memory](#memory)
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
+  - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
+  - [Allocating Memory on the Stack](#allocating-memory-on-the-stack)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
+  - [Ref Locals](#ref-locals)
+  - [Ref Returns](#ref-returns)
 - [Performance](#performance)
 - [Glossary](#glossary)
 - [References](#references)
@@ -74,7 +78,7 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 > You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). If the garbage collector came along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to make space for a new object e.g. an array of flats.
 <br>
 
-## Memory Management
+## Memory
 
 #### Memory Allocation
 When code execution enters a method, parameters passed into the method and local variables are allocated on the threads **stack** memory. For [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables the value of the type is stored on the **stack**. For [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) variables the reference to the object is stored on the **stack**, while the object is stored on the [**heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
@@ -189,11 +193,73 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
+#### Accessing Memory underlying a Variable 
+C# code is called "verifiably safe code" because .NET tools can verify that the code is safe. Safe code creates managed objects and doesn't allow you to access memory directly using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). C# does, however, allow for [unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code to be written using the `unsafe` keyword, where you can directly access memory using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). A [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) is simply a variable that holds the memory address of another type or variable. The variable also needs to be [fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed) or "pinned", so the garbage collector can't move it while compacting the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). 
+
+[Unsafe code](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) isn't necessarily dangerous; it's just code whose safety cannot be verified.
+
+>  **Note**
+> 
+>  In order to use the `unsafe` block you must set [AllowUnsafeBlocks](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/language#allowunsafeblocks) in the project file to `true`.
+>  ```XML
+>  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+>  ```
+
+The following example shows how an immutable string, can actually be mutated by directly accessing it in memory. The `unsafe` keyword allows us to create a [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
+>  **Warning** this example works because the number of characters in `source` and `target` are equal.
+```C#
+        [TestMethod]
+        public void Unsafe()
+        {
+            // Arrange
+            string source = "Hello";
+            string target = "World";
+
+            // Act
+            Mutate(source, target);
+
+            // Assert
+            Assert.AreEqual(target, source);
+        }
+
+        public static void Mutate(string source, string target)
+        {
+            unsafe
+            {
+                fixed(char* ptr = source)
+                {
+                    for (int i = 0; i < source.Length; i++) 
+                    {
+                        ptr[i] = target[i];
+                    }
+                }
+            }
+        }
+```
+
+#### Allocating Memory on the Stack
+[stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc) allocates a block of memory on the stack. Because the memory is allocated on the stack it is not [garbage collected](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/) so it doesn't have to be pinned with the `fixed` statement and is automatically discarded when the method returns.
+
+When working with [pointer types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `stackalloc` must use the `unsafe` context, however, this is not necessary if you assign a stack allocated memory block to a [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span).
+
+>  **Warning** 
+>
+>  Allocating too much memory on the stack can result in a [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception) being thrown when the execution stack exceeds the stack size.
+
+
 ## What's in the CIL
 
 #### Method Parameters
-Arguments can be passed to [**method parameters**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference. 
-**Passing by value** means passing a copy of the variable to the method. **Passing by reference** means passing access to the variable to the method by passing in the address of the variable. By default arguments are passed by value for both [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types).
+Arguments can be passed to [**method parameters**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference.
+**Passing by value**, which is the default for both [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), means the argument passes a copy of the variable into the method. **Passing by reference**, using the [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref) keyword, means the argument passes the address of the variable into the method.
+
+>  **Note**
+>
+> Parameters can also be passed using the [**out**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/out-parameter-modifier) keyword and the [**in**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier) keyword. Both pass by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref), however each has slightly different behavior.  
+>
+> With the [**out**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/out-parameter-modifier) keyword an argument is passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref) and it must be assigned a value inside the called method.
+>
+> With the [**in**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier) keyword an argument is passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref) but it cannot be modified inside the called method.
 
 Example C# code passing arguments to method parameters **by value** and **by reference** and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
 ``` C#
@@ -310,6 +376,86 @@ Example C# code comparing writing the value of an integer to a string, both with
 ```
 In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) in line `IL_0009` for `String.Format()`, and line `IL_002c` for `String.Concat()`. We can see no [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) occurs when using `Int32.ToString()` in lines `IL_001b` and `IL_003e`. We can also see in line `IL_0056` no boxing occurs when using string interpolation.
 
+#### Ref Locals
+A [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) is a variable that refers to other storage.
+
+In this code listing variable `b` holds a copy of `a`. Variable `c`, however, refers to the same storage location as `c`. When we set `c` to 7 then `a` is now also 7 because they are both refering to the same storage location. `b` on the other hand is still 5 because it has its own copy. We can see the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) below.
+```C#
+  // C# code
+  int a = 5;
+
+  int b = a;
+  ref int c = ref a;
+  c = 7;
+            
+  // Compiled into CIL 
+  .locals init (int32 V_0,     // local variable `a`
+           int32 V_1,          // local variable `b`           
+           int32& V_2)         // local variable `c`
+  IL_0000:  nop
+  IL_0001:  ldc.i4.5           // pushes 5 onto the stack
+  IL_0002:  stloc.0            // pops 5 off the stack into local variable `a`
+  IL_0003:  ldloc.0            // pushes the value of `a` onto the stack
+  IL_0004:  stloc.1            // pops the value from stack into local variable `b`
+  IL_0005:  ldloca.s   V_0     // pushes the address of `a` onto the stack
+  IL_0007:  stloc.2            // pops the address of `a` from stack into local variable `c`
+  IL_0008:  ldloc.2            // pushes the value of `c` onto the stack
+  IL_0009:  ldc.i4.7           // pushes 7 onto the stack
+  IL_000a:  stind.i4           // pops the value 7 from the stack into the address of `c`
+  IL_000b:  ret
+```
+
+### Ref Returns
+[Ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values) values are returned by a method by reference i.e. the address of the value is returned rather than the value itself. If the returned value is stored in a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) it can be modifed and the change is reflected in the called method. If a [ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values) value returned by a method isn't stored in a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) then it stores a copy of the value stored at the address in the [ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values).
+
+In the code listing below `decimal a = myClass.GetCurrentPrice()` returns the current price by value i.e. `a` is only a copy of the current price returned by `myClass.GetCurrentPrice()`. Changes to `a` will only be applied to itself.
+
+On the other hand `ref decimal b = ref myClass.GetCurrentPriceByRef()` returns the address of the current price i.e. `b` is now pointing to the same current price as the one returned by `myClass.GetCurrentPriceByRef()`. Changes to variable `b` will be reflected in the current price retunred by `myClass.GetCurrentPriceByRef()` because they are both pointing to a value at the same address.
+
+Finally `a = myClass.GetCurrentPriceByRef();` returns the address of the current price, however, because variable `a` is not a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) it only stores a copy of the value in the address of current price.   
+
+We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) below line `IL_0008:  callvirt` calls `MyClass::GetCurrentPrice()` which returns a `System.Decimal` by value i.e. a copy of the current price. Line `IL_000f:  callvirt` calls `MyClass::GetCurrentPriceByRef()` which returns `System.Decimal&` by ref i.e. the address of the current price. Finally we see in line `IL_002f:  ldobj` a copy of the value in the address is stored.
+
+```C#
+  // C# code
+  MyClass myClass = new MyClass();
+
+  decimal a = myClass.GetCurrentPrice();
+  ref decimal b = ref myClass.GetCurrentPriceByRef();
+  b = 567.89m;
+  a = myClass.GetCurrentPriceByRef();
+  
+  // Compiled into CIL 
+  .locals init (class [dotnetwhat.library]dotnetwhat.library.MyClass V_0,
+           valuetype [System.Runtime]System.Decimal V_1,
+           valuetype [System.Runtime]System.Decimal& V_2)
+  IL_0000:  nop
+  IL_0001:  newobj     instance void [dotnetwhat.library]dotnetwhat.library.MyClass::.ctor()
+  IL_0006:  stloc.0
+  IL_0007:  ldloc.0
+  IL_0008:  callvirt   instance valuetype [System.Runtime]System.Decimal [dotnetwhat.library]dotnetwhat.library.MyClass::GetCurrentPrice()
+  IL_000d:  stloc.1
+  IL_000e:  ldloc.0
+  IL_000f:  callvirt   instance valuetype [System.Runtime]System.Decimal& [dotnetwhat.library]dotnetwhat.library.MyClass::GetCurrentPriceByRef()
+  IL_0014:  stloc.2
+  IL_0015:  ldloc.2
+  IL_0016:  ldc.i4     0xddd5
+  IL_001b:  ldc.i4.0
+  IL_001c:  ldc.i4.0
+  IL_001d:  ldc.i4.0
+  IL_001e:  ldc.i4.2
+  IL_001f:  newobj     instance void [System.Runtime]System.Decimal::.ctor(int32,
+                                                                           int32,
+                                                                           int32,
+                                                                           bool,
+                                                                           uint8)
+  IL_0024:  stobj      [System.Runtime]System.Decimal
+  IL_0029:  ldloc.0
+  IL_002a:  callvirt   instance valuetype [System.Runtime]System.Decimal& [dotnetwhat.library]dotnetwhat.library.MyClass::GetCurrentPriceByRef()
+  IL_002f:  ldobj      [System.Runtime]System.Decimal
+  IL_0034:  stloc.1
+  IL_0035:  ret
+```
 
 ## Performance
 
@@ -321,7 +467,9 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
 * **Common Language Runtime (CLR)** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
 * **Common Language Specification (CLS)** *- subset of CTS that defines a set of common features needed by applications*
 * **Common Type System (CTS)** *- defines rules all languages must follow when it comes to working with types*
+* **Fixed** *- declares a pointer to a variable and fixes or "pins" it, so the garbage collection can't relocate it*
 * **Garbage Collection** *- the process of releasing and compacting heap memory*
+* **in Keyword** *- an argument is passed by reference, however it cannot be modified in the called method*
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Large Object Heap (LOH)** *- contains objects that are 85,000 bytes and larger, which are usually arrays*
 * **Managed Code** *- code whose execution is managed by a runtime*
@@ -329,13 +477,21 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
 * **Message Loop** *- responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks*
 * **Method Parameters** *- arguments passed my value or by reference. Default is by value.*
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
+* **out Keyword** *- an argument is passed by reference, however a value must be assigned to it in the called method*
 * **OutOfMemoryException** *- is thrown when there is not enough memory to continue the execution of a program*
+* **Pointers** *- a variable that holds the memory address of another type or variable, allowing direct access to it in memory.*
+* **ref Keyword** *- an argument passes a variables address into a method, rather than a copy of the variable*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
+* **Ref Locals** *- variables that refers to other storage i.e. reference another variables storage*
+* **Ref Returns** *- values returned by a method by reference i.e. modifying it will change the value in the called code*
 * **Safe Handle** *- represents a wrapper class for operating system handles*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
+* **stackalloc** *- allocates a block of memory on the stack*
+* **StackOverflowException** *- thrown when the execution stack exceeds the stack size*
 * **System.Object** *- the base class of all .NET classes*
 * **Unboxing** *- the process of explicitly converting an objects value, or interface type, to a value type*
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
+* **Unsafe code** *- allows direct access to memory using pointers*
 * **Value types** *- objects represented by the value of the object*
 * **Variables** *- represent storage locations*
 
@@ -353,7 +509,9 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
   * [CTS & CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)
   * [Dispose Pattern](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose)
+  * [Fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed)
   * [Garbage Collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
+  * [in Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
   * [LOH](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap)
   * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
@@ -361,15 +519,23 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
   * [Managed Heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap)
   * [Memory Management](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management)
   * [Method Parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters)
+  * [out Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/out-parameter-modifier)
   * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
   * [OutOfMemoryException](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception)
   * [Performance](https://learn.microsoft.com/en-us/dotnet/csharp/advanced-topics/performance)
+  * [Pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types)
+  * [ref Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref)
   * [Reference Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types)
+  * [Ref Locals](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals)
+  * [Ref returns](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values)
   * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
+  * [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc)
+  * [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
+  * [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code)
   * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
   * [Variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables)
   * [Workstation GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc)
