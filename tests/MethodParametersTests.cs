@@ -90,5 +90,46 @@ namespace dotnetwhat.tests
             Assert.AreEqual(567.89m, a);
             Assert.AreEqual(567.89m, myClass.GetCurrentPrice());
         }
+
+        [TestMethod]
+        public void Stackalloc_Unsafe()
+        {
+            // Arrange
+            int length = 3;
+
+            // Act
+            unsafe
+            {
+                int* numbers = stackalloc int[length];
+                for (var i = 0; i < length; i++)
+                {
+                    numbers[i] = i;
+                }
+
+                // Assert
+                Assert.AreEqual(0, numbers[0]);
+                Assert.AreEqual(1, numbers[1]);
+                Assert.AreEqual(2, numbers[2]);
+            }
+        }
+
+        [TestMethod]
+        public void Stackalloc_Safe()
+        {
+            // Arrange
+            int length = 3;
+
+            // Act
+            Span<int> numbers = stackalloc int[length];
+            for (var i = 0; i < length; i++)
+            {
+                numbers[i] = i;
+            }
+
+            // Assert
+            Assert.AreEqual(0, numbers[0]);
+            Assert.AreEqual(1, numbers[1]);
+            Assert.AreEqual(2, numbers[2]);
+        }
     }
 }
