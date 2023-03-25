@@ -2,6 +2,18 @@
 {
     public class MyClass
     {
+        private decimal currentPrice = 123.45m;
+
+        public decimal GetCurrentPrice()
+        {
+            return currentPrice;
+        }
+
+        public ref decimal GetCurrentPriceByRef()
+        {
+            return ref currentPrice; 
+        }
+
         public void Method1(int value, Foo foo)
         {
             value++;
