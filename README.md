@@ -458,6 +458,10 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 ```
 
 ## Performance
+<!--
+        https://blog.marcgravell.com/2017/04/spans-and-ref-part-1-ref.html
+        // https://blog.marcgravell.com/2022/05/unusual-optimizations-ref-foreach-and.html
+-->
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
