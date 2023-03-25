@@ -5,7 +5,7 @@
 ### Table of Contents
 - [Overview](#overview)
 - [Value Types, Reference Types and Variables](#value-types-reference-types-and-variables)
-- [Memory Management](#memory-management)
+- [Memory](#memory)
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
@@ -77,7 +77,7 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 > You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). If the garbage collector came along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to make space for a new object e.g. an array of flats.
 <br>
 
-## Memory Management
+## Memory
 
 #### Memory Allocation
 When code execution enters a method, parameters passed into the method and local variables are allocated on the threads **stack** memory. For [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables the value of the type is stored on the **stack**. For [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) variables the reference to the object is stored on the **stack**, while the object is stored on the [**heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
