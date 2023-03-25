@@ -41,5 +41,54 @@ namespace dotnetwhat.tests
             Assert.AreEqual("Foo5", string4);
             Assert.AreEqual("5", string5);
         }
+
+        [TestMethod]
+        public void Direct_Memory_Unsafe_Code()
+        {
+            // Arrange
+            string source = "Hello";
+            string target = "World";
+
+            // Act
+            MutateString.Mutate(source, target);
+
+            // Assert
+            Assert.AreEqual(target, source);
+        }
+
+        [TestMethod]
+        public void Ref_Local()
+        {
+            // Arrange
+            int a = 5;
+
+            // Act
+            int b = a;
+            ref int c = ref a;
+
+            c = 7;
+
+            // Assert
+            Assert.AreEqual(7, a);
+            Assert.AreEqual(5, b);
+        }
+
+        [TestMethod]
+        public void Ref_Return()
+        {
+            // Arrange
+            MyClass myClass = new MyClass();
+
+            // Act
+            decimal a = myClass.GetCurrentPrice();
+            ref decimal b = ref myClass.GetCurrentPriceByRef();
+            b = 567.89m;
+
+            a = myClass.GetCurrentPriceByRef();
+
+            // Assert
+            Assert.AreEqual(567.89m, a);
+            Assert.AreEqual(567.89m, myClass.GetCurrentPrice());
+        }
     }
 }
