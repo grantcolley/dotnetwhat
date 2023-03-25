@@ -11,7 +11,7 @@
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
-  - [Allocating Memory on the Stack](#allocating-memory-on-the-stack)
+  - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -237,7 +237,7 @@ The following example shows how an immutable string, can actually be mutated by 
         }
 ```
 
-#### Allocating Memory on the Stack
+#### Manually Allocating Memory on the Stack
 [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc) allocates a block of memory on the stack. Because the memory is allocated on the stack it is not [garbage collected](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/) so it doesn't have to be pinned with the `fixed` statement and is automatically discarded when the method returns.
 
 >  **Warning** 
