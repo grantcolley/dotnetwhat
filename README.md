@@ -11,6 +11,7 @@
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
+  - [Allocating Memory on the Stack](#allocating-memory-on-the-stack)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -235,6 +236,11 @@ The following example shows how an immutable string, can actually be mutated by 
             }
         }
 ```
+
+#### Allocating Memory on the Stack
+[stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc) allocates a block of memory on the stack. Because the memory is allocated on the stack it is not [garbage collected](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/) so it doesn't have to be pinned with the `fixed` statement and is automatically discarded when the method returns.
+
+When working with pointer types `stackalloc` must use the `unsafe` context, however, this is not necessary if you assign a stack allocated memory block to a [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span).
 
 ## What's in the CIL
 
