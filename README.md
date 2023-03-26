@@ -518,8 +518,9 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Ref Locals** *- variables that refers to other storage i.e. reference another variables storage*
 * **Ref Returns** *- values returned by a method by reference i.e. modifying it will change the value in the called code*
-* **Ref Structs** *- provides a type-safe representation of a contiguous region of memory including heap, stack and unmanaged memory*
+* **Ref Structs** *- struct declared using the ref modifier and can only be allocated on the stack and not the managed heap*
 * **Safe Handle** *- represents a wrapper class for operating system handles*
+* **Span\<T>** *- provides a type-safe representation of a contiguous region of memory including heap, stack and unmanaged memory*
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
 * **stackalloc** *- allocates a block of memory on the stack*
 * **StackOverflowException** *- thrown when the execution stack exceeds the stack size*
@@ -568,6 +569,7 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
   * [Safe Handle](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.safehandle)
   * [SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)
   * [Server GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc)
+  * [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1)
   * [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc)
   * [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
