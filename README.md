@@ -533,7 +533,7 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 
 ## References
 * **.NET Blogs**
-  * [All About Span](https://learn.microsoft.com/en-us/archive/msdn-magazine/2018/january/csharp-all-about-span-exploring-a-new-net-mainstay)
+  * [All About Span: Exploring a New .NET Mainstay](https://learn.microsoft.com/en-us/archive/msdn-magazine/2018/january/csharp-all-about-span-exploring-a-new-net-mainstay)
   * [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
   * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
   * [What is .NET, and why should you choose it?](https://devblogs.microsoft.com/dotnet/why-dotnet/)
