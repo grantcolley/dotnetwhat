@@ -18,6 +18,7 @@
   - [Ref Locals](#ref-locals)
   - [Ref Returns](#ref-returns)
 - [Performance](#performance)
+  - [Span\<T>](#spant)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -482,6 +483,15 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
         https://blog.marcgravell.com/2017/04/spans-and-ref-part-1-ref.html
         // https://blog.marcgravell.com/2022/05/unusual-optimizations-ref-foreach-and.html
 -->
+
+#### Span\<T>
+[Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) is a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) that provides a type-safe access to a contiguous region of memory. [Ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can only be allocated on the stack and not the heap. [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) can, however, point to heap memory, stack memory and unmanaged memory. 
+
+>  **Note**
+>
+>[Ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can't be a field of a class, implement an interface or be boxed. [Ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) variables also can't be captured by a [lambda expression](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions), [local function](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/local-functions) or [async methods](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/async) or be used in [iterators](https://learn.microsoft.com/en-us/dotnet/csharp/iterators). 
+
+
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
