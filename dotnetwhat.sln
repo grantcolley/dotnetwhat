@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetwhat.tests", "tests\d
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetwhat.library", "src\dotnetwhat.library.csproj", "{1A076929-037E-4254-9F71-1DAA806A298D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnetwhat.benchmarks", "benchmarks\dotnetwhat.benchmarks.csproj", "{C9B7D997-6878-4403-995B-A8AFC49DB30D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1A076929-037E-4254-9F71-1DAA806A298D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A076929-037E-4254-9F71-1DAA806A298D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A076929-037E-4254-9F71-1DAA806A298D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9B7D997-6878-4403-995B-A8AFC49DB30D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9B7D997-6878-4403-995B-A8AFC49DB30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9B7D997-6878-4403-995B-A8AFC49DB30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9B7D997-6878-4403-995B-A8AFC49DB30D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
