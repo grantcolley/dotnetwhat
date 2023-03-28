@@ -9,3 +9,5 @@ using dotnetwhat.benchmarks;
 // https://learn.microsoft.com/en-us/dotnet/api/system.span-1?view=net-7.0
 
 var TextParserBenchmarkSummary = BenchmarkRunner.Run(typeof(TextParserBenchmarks));
+
+Console.ReadLine();
