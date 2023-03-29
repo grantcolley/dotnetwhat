@@ -491,8 +491,47 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 >
 >Because [ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can only be allocated on the stack and not the heap they can't do anything that may cause them to be allocated on the heap. For example, [ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can't be a field of a class, implement an interface or be boxed. [Ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) variables also can't be captured by a [lambda expression](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions), [local function](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/local-functions) or [async methods](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/async) or be used in [iterators](https://learn.microsoft.com/en-us/dotnet/csharp/iterators). 
 
+In the following [C# code]() we [benchmark]() parsing text to return the last word in a sentence using `LastOrDefault`, `Substring` and `ReadOnlySpan<char>`. The results cleary show `ReadOnlySpan<char>` outperforms LINQ's `LastOrDefault` and `Substring`.
 
-![Alt text](/README-images/tradeview.PNG?raw=true "Trade View")
+```C#
+    public class TextParser
+    {
+        public string Get_Last_Word_Using_LastOrDefault(string paragraph)
+        {
+            var words = paragraph.Split(" ");
+
+            var lastWord = words.LastOrDefault();
+
+            return lastWord?.Substring(0, lastWord.Length - 1) ?? string.Empty;
+        }
+
+        public string Get_Last_Word_Using_Substring(string paragraph)
+        {
+            var lastSpaceIndex = paragraph.LastIndexOf(" ", StringComparison.Ordinal);
+
+            var position = lastSpaceIndex + 1;
+            var wordLength = paragraph.Length - position - 1;
+
+            return lastSpaceIndex == -1
+                ? string.Empty
+                : paragraph.Substring(position, wordLength);
+        }
+
+        public ReadOnlySpan<char> Get_Last_Word_Using_Span(ReadOnlySpan<char> paragraph)
+        {
+            var lastSpaceIndex = paragraph.LastIndexOf(' ');
+
+            var position = lastSpaceIndex + 1;
+            var wordLength = paragraph.Length - position - 1;
+
+            return lastSpaceIndex == -1
+                ? ReadOnlySpan<char>.Empty
+                : paragraph.Slice(position, wordLength);
+        }
+    }
+``` 
+
+![Benchmark ReadOnlySpan\<char>](/readme-images/TextParser.png?raw=true "Benchmark Span<T>")
 
 
 ## Glossary
