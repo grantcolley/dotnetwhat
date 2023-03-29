@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace dotnetwhat.library
+﻿namespace dotnetwhat.library
 {
     public class TextParser
     {
@@ -36,17 +33,6 @@ namespace dotnetwhat.library
             return lastSpaceIndex == -1
                 ? ReadOnlySpan<char>.Empty
                 : paragraph.Slice(position, wordLength);
-        }
-
-        public ArraySegment<char> Get_Last_Word_Using_Array(string paragraph)
-        {
-            var arrayParagraph = paragraph.ToCharArray();
-            var lastSpaceIndex = Array.LastIndexOf(arrayParagraph, ' ');
-
-            var position = lastSpaceIndex + 1;
-            var wordLength = paragraph.Length - position - 1;
-
-            return new ArraySegment<char>(arrayParagraph).Slice(position, wordLength);
         }
     }
 }
