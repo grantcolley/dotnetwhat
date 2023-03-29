@@ -426,7 +426,7 @@ In this [C# code](https://github.com/grantcolley/dotnetwhat/blob/9e6a14dd3f14f7c
   IL_000b:  ret
 ```
 
-### Ref Returns
+#### Ref Returns
 [Ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values) values are returned by a method by reference i.e. the address of the value is returned rather than the value itself. If the returned value is stored in a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) it can be modifed and the change is reflected in the called method. If a [ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values) value returned by a method isn't stored in a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) then it stores a copy of the value stored at the address in the [ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values).
 
 In the [C# code](https://github.com/grantcolley/dotnetwhat/blob/9e6a14dd3f14f7c9570c8873e47d039baee33ab5/tests/MethodParametersTests.cs#L77) below `decimal a = myClass.GetCurrentPrice()` returns the current price by value i.e. `a` is only a copy of the current price returned by `myClass.GetCurrentPrice()`. Changes to `a` will only be applied to itself.
