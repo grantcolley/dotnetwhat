@@ -37,5 +37,11 @@ namespace dotnetwhat.benchmarks
         {
             textParser.Get_Last_Word_Using_Span(paragraph);
         }
+
+        [Benchmark]
+        public void Get_Last_Word_Using_Array()
+        {
+            textParser.Get_Last_Word_Using_Array(paragraph);
+        }
     }
 }
