@@ -282,7 +282,7 @@ Arguments can be passed to [**method parameters**](https://learn.microsoft.com/e
 >
 > With the [**in**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier) keyword an argument is passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref) but it cannot be modified inside the called method.
 
-Example C# code passing arguments to method parameters **by value** and **by reference** and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
+Example [C# code](https://github.com/grantcolley/dotnetwhat/blob/9e6a14dd3f14f7c9570c8873e47d039baee33ab5/tests/MethodParametersTests.cs#L7) passing arguments to method parameters **by value** and **by reference** and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
 ``` C#
   // C# code
   MyClass myClass = new MyClass();
@@ -335,7 +335,7 @@ In **C#** the [Type System](https://learn.microsoft.com/en-us/dotnet/standard/co
 
 Examples of unintentional [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) can occur when working with `strings` e.g. when using `String.Format()` and `String.Concat()` etc. Ways around this is to use string interpolation instead, or always call `.ToString()` of the value type.
 
-Example C# code comparing writing the value of an integer to a string, both with and without calling `Int32.ToString()` and using string interpolation, and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
+Example [C# code](https://github.com/grantcolley/dotnetwhat/blob/9e6a14dd3f14f7c9570c8873e47d039baee33ab5/tests/MethodParametersTests.cs#L25) comparing writing the value of an integer to a string, both with and without calling `Int32.ToString()` and using string interpolation, and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
 ```C#
   // C# code
   int localInt = 5;
@@ -400,7 +400,7 @@ In the code listing above we see the [**CIL instruction**](https://en.wikipedia.
 #### Ref Locals
 A [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) is a variable that refers to other storage.
 
-In this code listing variable `b` holds a copy of `a`. Variable `c`, however, refers to the same storage location as `c`. When we set `c` to 7 then `a` is now also 7 because they are both refering to the same storage location. `b` on the other hand is still 5 because it has its own copy. We can see the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) below.
+In this [C# code](https://github.com/grantcolley/dotnetwhat/blob/9e6a14dd3f14f7c9570c8873e47d039baee33ab5/tests/MethodParametersTests.cs#L60) variable `b` holds a copy of `a`. Variable `c`, however, refers to the same storage location as `c`. When we set `c` to 7 then `a` is now also 7 because they are both refering to the same storage location. `b` on the other hand is still 5 because it has its own copy. We can see the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) below.
 ```C#
   // C# code
   int a = 5;
@@ -429,7 +429,7 @@ In this code listing variable `b` holds a copy of `a`. Variable `c`, however, re
 ### Ref Returns
 [Ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values) values are returned by a method by reference i.e. the address of the value is returned rather than the value itself. If the returned value is stored in a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) it can be modifed and the change is reflected in the called method. If a [ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values) value returned by a method isn't stored in a [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) then it stores a copy of the value stored at the address in the [ref return](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref#reference-return-values).
 
-In the code listing below `decimal a = myClass.GetCurrentPrice()` returns the current price by value i.e. `a` is only a copy of the current price returned by `myClass.GetCurrentPrice()`. Changes to `a` will only be applied to itself.
+In the [C# code](https://github.com/grantcolley/dotnetwhat/blob/9e6a14dd3f14f7c9570c8873e47d039baee33ab5/tests/MethodParametersTests.cs#L77) below `decimal a = myClass.GetCurrentPrice()` returns the current price by value i.e. `a` is only a copy of the current price returned by `myClass.GetCurrentPrice()`. Changes to `a` will only be applied to itself.
 
 On the other hand `ref decimal b = ref myClass.GetCurrentPriceByRef()` returns the address of the current price i.e. `b` is now pointing to the same current price as the one returned by `myClass.GetCurrentPriceByRef()`. Changes to variable `b` will be reflected in the current price retunred by `myClass.GetCurrentPriceByRef()` because they are both pointing to a value at the same address.
 
