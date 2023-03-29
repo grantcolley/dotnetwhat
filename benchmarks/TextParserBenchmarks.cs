@@ -16,7 +16,7 @@ namespace dotnetwhat.benchmarks
         public void GlobalSetup()
         {
             textParser = new TextParser();
-            paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+            paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
         }
 
         [Benchmark(Baseline = true)]
@@ -36,12 +36,6 @@ namespace dotnetwhat.benchmarks
         public void Get_Last_Word_Using_Span() 
         {
             textParser.Get_Last_Word_Using_Span(paragraph);
-        }
-
-        [Benchmark]
-        public void Get_Last_Word_Using_Array()
-        {
-            textParser.Get_Last_Word_Using_Array(paragraph);
         }
     }
 }
