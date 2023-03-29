@@ -206,7 +206,7 @@ C# code is called "verifiably safe code" because .NET tools can verify that the 
 >  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 >  ```
 
-The following example shows how an immutable string, can actually be mutated by directly accessing it in memory. The `unsafe` keyword allows us to create a [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
+The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0b6be1165e020263b90f69151c42ab4b559b38f4/tests/MethodParametersTests.cs#L46) shows how an immutable string, can actually be mutated by directly accessing it in memory. The `unsafe` keyword allows us to create a [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
 >  **Warning** this example works because the number of characters in `source` and `target` are equal.
 ```C#
         [TestMethod]
@@ -245,7 +245,7 @@ The following example shows how an immutable string, can actually be mutated by 
 >
 >  Allocating too much memory on the stack can result in a [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception) being thrown when the execution stack exceeds the stack size.
 
-When working with [pointer types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `stackalloc` must use the `unsafe` context. 
+When working with [pointer types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `stackalloc` must use the `unsafe` context, as can been seen in this [example](https://github.com/grantcolley/dotnetwhat/blob/0b6be1165e020263b90f69151c42ab4b559b38f4/tests/MethodParametersTests.cs#L95). 
 ```C#
             int length = 3;
             unsafe
@@ -258,7 +258,7 @@ When working with [pointer types](https://learn.microsoft.com/en-us/dotnet/cshar
             }
 ```
 
-The preferred approach is to assign a stack allocated memory block to a [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span) which doesn't require the `unsafe` keyword.
+The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/0b6be1165e020263b90f69151c42ab4b559b38f4/tests/MethodParametersTests.cs#L117) is to assign a stack allocated memory block to a [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span) which doesn't require the `unsafe` keyword.
 ```C#
             int length = 3;
             Span<int> numbers = stackalloc int[length];
