@@ -11,6 +11,8 @@
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
+      - [Fixed](#fixed)
+      - [MemoryMarshal](#memorymarshal)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
@@ -195,6 +197,7 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
 #### Accessing Memory underlying a Variable 
+##### Fixed
 C# code is called "verifiably safe code" because .NET tools can verify that the code is safe. Safe code creates managed objects and doesn't allow you to access memory directly using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). C# does, however, allow for [unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code to be written using the `unsafe` keyword, where you can directly access memory using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). A [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) is simply a variable that holds the memory address of another type or variable. The variable also needs to be [fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed) or "pinned", so the garbage collector can't move it while compacting the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). 
 
 [Unsafe code](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) isn't necessarily dangerous; it's just code whose safety cannot be verified.
@@ -217,13 +220,13 @@ The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/810ce3517
             string target = "World";
 
             // Act
-            Mutate(source, target);
+            Mutate_Using_Fixed(source, target);
 
             // Assert
             Assert.AreEqual(target, source);
         }
 
-        public static void Mutate(string source, string target)
+        public static void Mutate_Using_Fixed(string source, string target)
         {
             unsafe
             {
@@ -234,6 +237,33 @@ The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/810ce3517
                         ptr[i] = target[i];
                     }
                 }
+            }
+        }
+```
+##### MemoryMarshal
+```C#
+        [TestMethod]
+        public void Direct_Memory_Span()
+        {
+            // Arrange
+            string source = "Hello";
+            string target = "World";
+
+            // Act
+            MutateString.Mutate_Using_Memory_Span(source, target);
+
+            // Assert
+            Assert.AreEqual(target, source);
+        }
+
+        public static void Mutate_Using_Memory_Span(string source, string target)
+        {
+            var memory = MemoryMarshal.AsMemory(source.AsMemory());
+
+            for (int i = 0; i < source.Length; i++)
+            {
+                ref char c = ref memory.Span[i];
+                c = target[i];
             }
         }
 ```
@@ -491,7 +521,7 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 >
 >Because [ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can only be allocated on the stack and not the heap they can't do anything that may cause them to be allocated on the heap. For example, [ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can't be a field of a class, implement an interface or be boxed. [Ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) variables also can't be captured by a [lambda expression](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions), [local function](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/local-functions) or [async methods](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/async) or be used in [iterators](https://learn.microsoft.com/en-us/dotnet/csharp/iterators). 
 
-In the following [C# code]() we [benchmark]() parsing text to return the last word in a sentence using `LastOrDefault`, `Substring` and `ReadOnlySpan<char>`. The results cleary show `ReadOnlySpan<char>` outperforms LINQ's `LastOrDefault` and `Substring`.
+In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44e57e78ce2c8bc8e8546a677b23501d1643/src/TextParser.cs) we [benchmark](https://github.com/grantcolley/dotnetwhat/blob/main/benchmarks/TextParserBenchmarks.cs) parsing text to return the last word in a sentence using `LastOrDefault`, `Substring` and `ReadOnlySpan<char>`. The results cleary show `ReadOnlySpan<char>` outperforms LINQ's `LastOrDefault` and `Substring`.
 
 ```C#
     public class TextParser
