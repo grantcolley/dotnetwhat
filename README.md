@@ -209,7 +209,7 @@ C# code is called "verifiably safe code" because .NET tools can verify that the 
 >  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 >  ```
 
-The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/810ce35178fffb9ec70ad3e29a93e76c8c7754c8/tests/TestCases.cs#L46) shows how an immutable string, can actually be mutated by directly accessing it in memory. The `unsafe` keyword allows us to create a [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
+The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L46) shows how an immutable string, can be mutated by directly accessing it in memory using `unsafe` and `fixed`. The `unsafe` keyword allows us to create a [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
 >  **Warning** this example works because the number of characters in `source` and `target` are equal.
 ```C#
         [TestMethod]
@@ -240,7 +240,9 @@ The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/810ce3517
             }
         }
 ```
+
 ##### MemoryMarshal
+The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L60) shows how an immutable string, can be mutated by directly accessing it in memory using `MemoryMarshal.AsMemory` and `Span`.
 ```C#
         [TestMethod]
         public void Direct_Memory_Span()
