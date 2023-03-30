@@ -43,7 +43,7 @@ namespace dotnetwhat.tests
         }
 
         [TestMethod]
-        public void Direct_Memory_Unsafe_Code()
+        public void Direct_Memory_Unsafe_Fixed()
         {
             // Arrange
             string source = "Hello";
