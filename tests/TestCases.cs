@@ -50,7 +50,21 @@ namespace dotnetwhat.tests
             string target = "World";
 
             // Act
-            MutateString.Mutate(source, target);
+            MutateString.Mutate_Using_Fixed(source, target);
+
+            // Assert
+            Assert.AreEqual(target, source);
+        }
+
+        [TestMethod]
+        public void Direct_Memory_Span()
+        {
+            // Arrange
+            string source = "Hello";
+            string target = "World";
+
+            // Act
+            MutateString.Mutate_Using_Memory_Span(source, target);
 
             // Assert
             Assert.AreEqual(target, source);
