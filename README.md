@@ -12,7 +12,7 @@
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
       - [Fixed](#fixed)
-      - [MemoryMarshal](#memorymarshal)
+      - [Memory\<T> and Span\<T>](#memoryt-and-spant)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
@@ -241,8 +241,11 @@ The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf
         }
 ```
 
-##### MemoryMarshal
-The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L60) shows how an immutable string, can be mutated by directly accessing it in memory using `MemoryMarshal.AsMemory` and `Span`.
+##### Memory\<T> and Span\<T>
+[Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) is a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) that provides a type-safe representation of a contiguous region of memory. [Memory\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.memory-1) is similar to [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) in that it provides a type-safe representation of a contiguous region of memory, however, it is not a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) so can be placed on the managed heap. This means it doesn't share the same restrictions as [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) and can be a field in a class or used across `await` and `yield` boundaries.
+
+The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L60) shows how an immutable string, can be mutated by directly accessing it in memory using `Memory<T>` and `Span<T>`.
+
 ```C#
         [TestMethod]
         public void Direct_Memory_Span()
@@ -579,6 +582,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
 * **in Keyword** *- an argument is passed by reference, however it cannot be modified in the called method*
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Large Object Heap (LOH)** *- contains objects that are 85,000 bytes and larger, which are usually arrays*
+* **Memory\<T>** *- similar to Span\<T> provides a type-safe representation of a contiguous region of memory, but unlike Span\<T> can be placed on the managed heap*
 * **Managed Code** *- code whose execution is managed by a runtime*
 * **Managed Heap** *- a segment of memory for storing and managing objects. All threads share the same heap*
 * **Message Loop** *- responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks*
@@ -628,6 +632,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
   * [Managed Execution Process](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process)
   * [Managed Heap](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap)
   * [Memory Management](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management)
+  * [Memory\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.memory-1)
   * [Method Parameters](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters)
   * [out Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/out-parameter-modifier)
   * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
