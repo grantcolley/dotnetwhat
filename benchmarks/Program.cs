@@ -2,6 +2,9 @@
 using BenchmarkDotNet.Running;
 using dotnetwhat.benchmarks;
 
-var TextParserBenchmarkSummary = BenchmarkRunner.Run(typeof(TextParserBenchmarks));
+
+
+//var TextParserBenchmarkSummary = BenchmarkRunner.Run(typeof(TextParserBenchmarks));
+//var TextBuilderBenchmarkSummary = BenchmarkRunner.Run(typeof(TextBuilderBenchmarks));
 
 Console.ReadLine();
