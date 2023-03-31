@@ -11,7 +11,7 @@
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
-      - [Fixed](#fixed)
+      - [Unsafe and Fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
 - [What's in the CIL](#whats-in-the-cil)
@@ -197,8 +197,12 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
 #### Accessing Memory underlying a Variable 
-##### Fixed
-C# code is called "verifiably safe code" because .NET tools can verify that the code is safe. Safe code creates managed objects and doesn't allow you to access memory directly using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). C# does, however, allow for [unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code to be written using the `unsafe` keyword, where you can directly access memory using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). A [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) is simply a variable that holds the memory address of another type or variable. The variable also needs to be [fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed) or "pinned", so the garbage collector can't move it while compacting the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). 
+C# code is called "verifiably safe code" because .NET tools can verify that the code is safe. Safe code creates managed objects and doesn't allow you to access memory directly. C# does, however, still allow direct memory access. `.NET Core 2.1` introduced `Memory<T>` and `Span<T>` which provide a type safe way to work with a contiguous block of memory. Prior to that, memory could be directly accessed by writing unsafe code using `unsafe` and `fixed`. The examples below show how, despite being [immutable](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#immutability-of-strings), a [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) can be modified by directly accessing the memory storing it. The first example uses [unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code with the `unsafe` and `fixed` keywords. The second example uses `Memory<T>` and `Span<T>`.
+
+A [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) is a reference type with value type semantics. [Strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) store text as a readonly collection of [char](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/char) objects. [Strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) are [immutable](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#immutability-of-strings) i.e. once created they cannot be modified. If a [strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) variable is updated, a new [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) is created and the original is released for disposal by the garabage collector. 
+
+##### Unsafe and Fixed
+[unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code is written with the `unsafe` keyword, where you can directly access memory using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). A [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) is simply a variable that holds the memory address of another type or variable. The variable also needs to be [fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed) or "pinned", so the garbage collector can't move it while compacting the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). 
 
 [Unsafe code](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) isn't necessarily dangerous; it's just code whose safety cannot be verified.
 
@@ -209,7 +213,7 @@ C# code is called "verifiably safe code" because .NET tools can verify that the 
 >  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 >  ```
 
-The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L46) shows how an immutable string, can be mutated by directly accessing it in memory using `unsafe` and `fixed`. The `unsafe` keyword allows us to create a [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
+In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L46) an immutable string is mutated by directly accessing it's values in memory using `unsafe` and `fixed`. The `unsafe` keyword allows us to create a [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
 >  **Warning** this example works because the number of characters in `source` and `target` are equal.
 ```C#
         [TestMethod]
@@ -573,6 +577,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
 * **Boxing** *- the process of converting value types to objects or an interface implemented by the value type*
+* **Char** *- a type representing a Unicode UTF-16 character* 
 * **Common Intermediate Language (CIL)** *- instructions for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc*
 * **Common Language Runtime (CLR)** *- .NET runtime responsible for managing code execution, memory and type safety etc.*
 * **Common Language Specification (CLS)** *- subset of CTS that defines a set of common features needed by applications*
@@ -590,7 +595,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
 * **.NET SDK** *-a set of libraries and tools for developing .NET applications*
 * **out Keyword** *- an argument is passed by reference, however a value must be assigned to it in the called method*
 * **OutOfMemoryException** *- is thrown when there is not enough memory to continue the execution of a program*
-* **Pointers** *- a variable that holds the memory address of another type or variable, allowing direct access to it in memory.*
+* **Pointers** *- a variable that holds the memory address of another type or variable, allowing direct access to it in memory*
 * **ref Keyword** *- an argument passes a variables address into a method, rather than a copy of the variable*
 * **Reference types** *- objects represented by a reference that points to where the object is stored in memory*
 * **Ref Locals** *- variables that refers to other storage i.e. reference another variables storage*
@@ -601,6 +606,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
 * **Stack** *- stores local variables and method parameters. Each thread has it's own stack memory which gives it context* 
 * **stackalloc** *- allocates a block of memory on the stack*
 * **StackOverflowException** *- thrown when the execution stack exceeds the stack size*
+* **String** *- a reference type that stores text in a readonly collection of char objects. Strings are therefore immutable.*
 * **System.Object** *- the base class of all .NET classes*
 * **Unboxing** *- the process of explicitly converting an objects value, or interface type, to a value type*
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
@@ -619,6 +625,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
   * [Background GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/background-gc)
   * [**Boxing and Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing)
   * [BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries)
+  * [Char](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/char)
   * [CIL](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_to_msil)
   * [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)
   * [CTS & CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)
@@ -650,6 +657,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
   * [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1)
   * [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc)
   * [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception)
+  * [String](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
   * [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code)
