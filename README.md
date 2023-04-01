@@ -21,6 +21,7 @@
   - [Ref Returns](#ref-returns)
 - [Performance](#performance)
   - [Span\<T>](#spant)
+  - [StringBuidler](#stringbuidler)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -576,6 +577,9 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
 ``` 
 
 ![Benchmark ReadOnlySpan\<char>](/readme-images/TextParser.png?raw=true "Benchmark Span<T>")
+
+#### StringBuidler
+A [StringBuiler](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) represents a mutable sequence of characters by maintaining a buffer to accommodate expansion. Expansion beyond the buffer involves creating a new, larger buffer and copying the original buffer to it. 
 
 
 ## Glossary
