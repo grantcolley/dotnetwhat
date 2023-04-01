@@ -17,12 +17,12 @@
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
-  - [Ref](#ref)
   - [Ref Locals](#ref-locals)
   - [Ref Returns](#ref-returns)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
+  - [Ref](#ref)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -443,9 +443,6 @@ Example [C# code](https://github.com/grantcolley/dotnetwhat/blob/810ce35178fffb9
 ```
 In the code listing above we see the [**CIL instruction**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) in line `IL_0009` for `String.Format()`, and line `IL_002c` for `String.Concat()`. We can see no [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) occurs when using `Int32.ToString()` in lines `IL_001b` and `IL_003e`. We can also see in line `IL_0056` no boxing occurs when using string interpolation.
 
-#### Ref
-This use of [ref](https://learn.microsoft.com/en-gb/dotnet/csharp/language-reference/keywords/ref) results in copying a pointer to the underlying storage rather than copying the data referenced by that pointer. [**Value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) are “copy by value” by default. [ref](https://learn.microsoft.com/en-gb/dotnet/csharp/language-reference/keywords/ref) provides a “copy by reference” behavior, which can provide significant performance benefits.
-
 #### Ref Locals
 A [ref local](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/declarations#ref-locals) is a variable that refers to other storage.
 
@@ -655,6 +652,9 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ```
 
 ![Benchmark StringBuilder](/readme-images/TextBuilder.png?raw=true "Benchmark StringBuilder")
+
+#### Ref
+The use of [ref](https://learn.microsoft.com/en-gb/dotnet/csharp/language-reference/keywords/ref) results in copying a pointer to the underlying storage rather than copying the data referenced by that pointer. [**Value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) are “copy by value” by default. [ref](https://learn.microsoft.com/en-gb/dotnet/csharp/language-reference/keywords/ref) provides a “copy by reference” behavior, which can provide significant performance benefits.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
