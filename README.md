@@ -583,7 +583,7 @@ A [StringBuiler](https://learn.microsoft.com/en-us/dotnet/api/system.text.string
 
 Generally [StringBuilder](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) performans better than [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/), however, it does depend on the size of the string, the amount of memory to be allocated for the new string, the system on which the code is executing, and the type of operation.
 
-In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/src/TextBuilder.cs) we [benchmark](https://github.com/grantcolley/dotnetwhat/blob/main/benchmarks/TextBuilderBenchmarks.cs) concatenating strings versus using `StringBuilder.Append`. The results clearly show [StringBuilder](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) starts to significantly out perform [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/) as the number of concatenations increase.
+In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/src/TextBuilder.cs) we [benchmark](https://github.com/grantcolley/dotnetwhat/blob/main/benchmarks/TextBuilderBenchmarks.cs) concatenating strings versus using `StringBuilder.Append`. The results clearly show [StringBuilder](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) significantly outperforms [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/) as the number of concatenations increases.
 
 ```C#
     public class TextBuilder
