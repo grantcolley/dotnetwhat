@@ -579,8 +579,11 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/0a0d44
 ![Benchmark ReadOnlySpan\<char>](/readme-images/TextParser.png?raw=true "Benchmark Span<T>")
 
 #### StringBuidler
-A [StringBuiler](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) represents a mutable sequence of characters by maintaining a buffer to accommodate expansion. Expansion beyond the buffer involves creating a new, larger buffer and copying the original buffer to it. 
+A [StringBuiler](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) represents a mutable sequence of characters by maintaining a buffer to accommodate expansion. Expansion beyond the buffer involves creating a new, larger buffer and copying the original buffer to it. The default capacity of a [StringBuiler](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) is 16 characters, and its default maximum capacity is [Int32.MaxValue](https://learn.microsoft.com/en-us/dotnet/api/system.int32.maxvalue). Each time the number of characters required exceeds the capacity, the capacity doubles in size e.g. capacity starts at 16, then doubles to 32, then to 64, then 128 etc. until eventually the maximum capacity of 2,147,483,647 is reached an an either a [ArgumentOutOfRangeException](https://learn.microsoft.com/en-us/dotnet/api/system.argumentoutofrangeexception) or an [OutOfMemoryException](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) exception is thrown.
 
+Generally [StringBuilder](https://learn.microsoft.com/en-us/dotnet/api/system.text.stringbuilder) performans better than [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/), however, it does depend on the size of the string, the amount of memory to be allocated for the new string, the system on which the code is executing, and the type of operation.
+
+![Benchmark StringBuilder](/readme-images/TextBuilder.png?raw=true "Benchmark StringBuilder")
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
