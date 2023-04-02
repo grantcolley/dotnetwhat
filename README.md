@@ -20,6 +20,7 @@
   - [Ref](#ref)
   - [Ref Locals](#ref-locals)
   - [Ref Returns](#ref-returns)
+  - [Lambda](#lambda)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -525,6 +526,70 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
   IL_002f:  ldobj      [System.Runtime]System.Decimal
   IL_0034:  stloc.1
   IL_0035:  ret
+```
+
+#### Lambda
+A [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression is used to create an anonymous function.
+
+```C#
+    public class Multiplier
+    {
+        public int Multiply(int value1, int value2)
+        {
+            Func<int, int, int> local = (v1, v2) => v1 * v2;
+
+            return local(value1, value2);
+        }
+    }
+```
+
+![CIL For Lambda Multiply Routine](/readme-images/Lambda_multiply.png?raw=true "CIL For Lambda Multiply Routine")
+
+```C#
+.method assembly hidebysig instance int32 
+        '<Multiply>b__0_0'(int32 v1,
+                           int32 v2) cil managed
+{
+  // Code size       4 (0x4)
+  .maxstack  8
+  IL_0000:  ldarg.1
+  IL_0001:  ldarg.2
+  IL_0002:  mul
+  IL_0003:  ret
+} // end of method '<>c'::'<Multiply>b__0_0'
+```
+
+```C#
+.method public hidebysig instance int32  Multiply(int32 value1,
+                                                  int32 value2) cil managed
+{
+  // Code size       46 (0x2e)
+  .maxstack  3
+  .locals init (class [System.Runtime]System.Func`3<int32,int32,int32> V_0,
+           int32 V_1)
+  IL_0000:  nop
+  IL_0001:  ldsfld     class [System.Runtime]System.Func`3<int32,int32,int32> dotnetwhat.library.Multiplier/'<>c'::'<>9__0_0'
+  IL_0006:  dup
+  IL_0007:  brtrue.s   IL_0020
+  IL_0009:  pop
+  IL_000a:  ldsfld     class dotnetwhat.library.Multiplier/'<>c' dotnetwhat.library.Multiplier/'<>c'::'<>9'
+  IL_000f:  ldftn      instance int32 dotnetwhat.library.Multiplier/'<>c'::'<Multiply>b__0_0'(int32,
+                                                                                              int32)
+  IL_0015:  newobj     instance void class [System.Runtime]System.Func`3<int32,int32,int32>::.ctor(object,
+                                                                                                   native int)
+  IL_001a:  dup
+  IL_001b:  stsfld     class [System.Runtime]System.Func`3<int32,int32,int32> dotnetwhat.library.Multiplier/'<>c'::'<>9__0_0'
+  IL_0020:  stloc.0
+  IL_0021:  ldloc.0
+  IL_0022:  ldarg.1
+  IL_0023:  ldarg.2
+  IL_0024:  callvirt   instance !2 class [System.Runtime]System.Func`3<int32,int32,int32>::Invoke(!0,
+                                                                                                  !1)
+  IL_0029:  stloc.1
+  IL_002a:  br.s       IL_002c
+  IL_002c:  ldloc.1
+  IL_002d:  ret
+} // end of method Multiplier::Multiply
 ```
 
 ## Performance
