@@ -747,6 +747,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Lambda** *- lambda expression used to create anonymous functions*
 * **Large Object Heap (LOH)** *- contains objects that are 85,000 bytes and larger, which are usually arrays*
+* **LINQ** *- the name for a set of technologies based on the integration of query capabilities directly into the C# language*
 * **Memory\<T>** *- similar to Span\<T> provides a type-safe representation of a contiguous region of memory, but unlike Span\<T> can be placed on the managed heap*
 * **Managed Code** *- code whose execution is managed by a runtime*
 * **Managed Heap** *- a segment of memory for storing and managing objects. All threads share the same heap*
@@ -795,6 +796,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
   * [in Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
   * [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
+  * [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/)
   * [LOH](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap)
   * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
   * [Managed Execution Process](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process)
