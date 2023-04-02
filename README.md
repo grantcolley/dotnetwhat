@@ -531,6 +531,10 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 #### Lambda
 A [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression is used to create an anonymous function. Input parameters go to the left of the [lambda operator](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-operator) `=>` while the lambda expression or statement block goes on the right.
 
+An [expression lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#expression-lambdas) returns the result of the expression. A [statement lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#statement-lambdas) resembles an expression lambda except that its statements are enclosed in braces.
+
+Lambda expressions can be used in any code that requires instances of delegate types or expression trees, for example as an argument to the [Task.Run(Action)](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run?view=net-7.0#system-threading-tasks-task-run(system-action)) or when you write [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/).
+
 ```C#
  (input parameters) => expression / { /* statement block */ }
 ```
@@ -741,6 +745,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 * **Garbage Collection** *- the process of releasing and compacting heap memory*
 * **in Keyword** *- an argument is passed by reference, however it cannot be modified in the called method*
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
+* **Lambda** *- lambda expression used to create anonymous functions*
 * **Large Object Heap (LOH)** *- contains objects that are 85,000 bytes and larger, which are usually arrays*
 * **Memory\<T>** *- similar to Span\<T> provides a type-safe representation of a contiguous region of memory, but unlike Span\<T> can be placed on the managed heap*
 * **Managed Code** *- code whose execution is managed by a runtime*
@@ -789,6 +794,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
   * [Garbage Collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
   * [in Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
+  * [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
   * [LOH](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap)
   * [Managed Code](https://learn.microsoft.com/en-us/dotnet/standard/managed-code)
   * [Managed Execution Process](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process)
