@@ -145,5 +145,18 @@ namespace dotnetwhat.tests
             Assert.AreEqual(1, numbers[1]);
             Assert.AreEqual(2, numbers[2]);
         }
+
+        [TestMethod]
+        public void Multiplier()
+        {
+            // Arrange
+            Multiplier multiplier = new Multiplier();
+
+            // Act
+            var result = multiplier.Multiply(2, 2);
+
+            // Assert
+            Assert.AreEqual(4, result);
+        }
     }
 }
