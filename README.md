@@ -535,6 +535,7 @@ A [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/op
  (input parameters) => expression / { /* statement block */ }
 ```
 
+In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/src/Multiplier.cs) we use lambda to multiply two parameters and return the result. We can see in [IL Disassembler](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler) the compiler converts the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression into a private nested container class (inside the red box), with a ``System.Func`3<int32,int32,int32>`` [delegate](https://learn.microsoft.com/en-us/dotnet/api/system.func-3), and a method `<Multiply>b__0_0 : int32(int32,int32)` for the multiplication routine. The final listing shows the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) output for the original `Multiply(int32 value1, int32 value2)` that consumes the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression.
 
 ```C#
     public class Multiplier
