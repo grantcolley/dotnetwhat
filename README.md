@@ -529,7 +529,12 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 ```
 
 #### Lambda
-A [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression is used to create an anonymous function.
+A [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression is used to create an anonymous function. Input parameters go to the left of the [lambda operator](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-operator) `=>` while the lambda expression or statement block goes on the right.
+
+```C#
+ (input parameters) => expression / { /* statement block */ }
+```
+
 
 ```C#
     public class Multiplier
