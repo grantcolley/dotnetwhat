@@ -604,6 +604,9 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ```
 
 #### Captured Variable
+Outer variables are local variables within the method that contains the lambda expression. 
+
+In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/src/CapturedVariable.cs) a lambda expression increments a captured variable and return the result. We can see in [IL Disassembler](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler) the compiler converts the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression into a private nested container class (inside the red box), with a 
 
 ```C#
     public class CapturedVariable
