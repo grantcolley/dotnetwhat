@@ -21,6 +21,7 @@
   - [Ref Locals](#ref-locals)
   - [Ref Returns](#ref-returns)
   - [Lambda](#lambda)
+  - [Captured Variable](#captured-variable)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -553,7 +554,7 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
     }
 ```
 
-![CIL For Lambda Multiply Routine](/readme-images/Lambda_multiply.png?raw=true "CIL For Lambda Multiply Routine")
+![CIL for Lambda Multiply Routine](/readme-images/Lambda_multiply.png?raw=true "CIL for Lambda Multiply Routine")
 
 ```C#
 .method assembly hidebysig instance int32 
@@ -601,6 +602,28 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
   IL_002d:  ret
 } // end of method Multiplier::Multiply
 ```
+
+#### Captured Variable
+
+```C#
+    public class CapturedVariable
+    {
+        public int IncrementLocalVariable()
+        {
+            int myLocalValue = 0;
+
+            Func<int> increment = () => myLocalValue++;
+
+            increment();
+
+            return myLocalValue;
+        }
+    }
+```
+
+![CIL for incrementing a Captured Variable](/readme-images/Captured_variable.png?raw=true "CIL for incrementing a Captured Variable")
+
+
 
 ## Performance
 <!--
