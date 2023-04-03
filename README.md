@@ -604,7 +604,9 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ```
 
 #### Captured Variable
-Outer variables are local variables within the method that contains the lambda expression. 
+Lambdas can refer to outer variables. Outer variables are local variables within the method that contains the lambda expression. Outer variables consumed by a lambda expression are called captured variables. Captured variables won't be garbage-collected until the delegate that references it becomes eligible for garbage collection. 
+
+>  **Note** A lambda expression can't directly capturea parameter that has been passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref).
 
 In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/src/CapturedVariable.cs) a lambda expression increments a captured variable and return the result. We can see in [IL Disassembler](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler) the compiler converts the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression into a private nested container class (inside the red box), with a 
 
