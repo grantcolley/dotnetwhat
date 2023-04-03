@@ -22,6 +22,7 @@
   - [Ref Returns](#ref-returns)
   - [Lambda](#lambda)
   - [Captured Variable](#captured-variable)
+  - [Closing Over a Loop Variable](#closing-over-a-loop-variable)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -604,7 +605,7 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ```
 
 #### Captured Variable
-Lambdas can refer to outer variables. Outer variables are local variables within the method that contains the lambda expression. Outer variables consumed by a lambda expression are called captured variables. Captured variables won't be garbage-collected until the delegate that references it becomes eligible for garbage collection. 
+[Lambdas](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) can refer to outer variables. Outer variables are local variables within the method that contains the lambda expression. Outer variables consumed by a lambda expression are called captured variables. [Captured variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) won't be garbage-collected until the delegate that references it becomes eligible for garbage collection. 
 
 >  **Note** A lambda expression can't directly capturea parameter that has been passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref).
 
@@ -628,7 +629,11 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 
 ![CIL for incrementing a Captured Variable](/readme-images/Captured_variable.png?raw=true "CIL for incrementing a Captured Variable")
 
-
+#### Closing Over a Loop Variable
+<!-- 
+https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/#more-1441
+https://csharpindepth.com/articles/Closures
+-->
 
 ## Performance
 <!--
