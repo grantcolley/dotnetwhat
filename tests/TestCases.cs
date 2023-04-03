@@ -158,5 +158,18 @@ namespace dotnetwhat.tests
             // Assert
             Assert.AreEqual(4, result);
         }
+
+        [TestMethod]
+        public void CapturedVariable()
+        {
+            // Arrange
+            CapturedVariable capturedVariable = new CapturedVariable();
+
+            // Act
+            var result = capturedVariable.IncrementLocalVariable();
+
+            // Assert
+            Assert.AreEqual(1, result);
+        }
     }
 }
