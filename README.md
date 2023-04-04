@@ -635,6 +635,10 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 <!-- 
 https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/#more-1441
 https://csharpindepth.com/articles/Closures
+
+In C# 5, the loop variable of a foreach will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time. The for loop will not be changed. 
+
+Closures close over variables, not over values.
 -->
 ##### for
 ```C#
