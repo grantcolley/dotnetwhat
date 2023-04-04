@@ -637,8 +637,212 @@ https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-har
 https://csharpindepth.com/articles/Closures
 -->
 ##### for
+```C#
+        public string For()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var funcs = new List<Func<int>>(2);
+
+            for(int i = 0; i < 2; i++)
+            {
+                funcs.Add(() => i);
+            }
+
+            sb.Append(funcs[0]().ToString());
+            sb.Append(funcs[1]().ToString());
+
+            return sb.ToString();
+        }
+````
+```C#
+.method public hidebysig instance string 
+        For() cil managed
+{
+  // Code size       148 (0x94)
+  .maxstack  3
+  .locals init (class [System.Runtime]System.Text.StringBuilder V_0,
+           class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>> V_1,
+           class dotnetwhat.library.Looping/'<>c__DisplayClass1_0' V_2,
+           int32 V_3,
+           bool V_4,
+           string V_5)
+  IL_0000:  nop
+  IL_0001:  newobj     instance void [System.Runtime]System.Text.StringBuilder::.ctor()
+  IL_0006:  stloc.0
+  IL_0007:  ldc.i4.2
+  IL_0008:  newobj     instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::.ctor(int32)
+  IL_000d:  stloc.1
+  IL_000e:  newobj     instance void dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::.ctor()
+  IL_0013:  stloc.2
+  IL_0014:  ldloc.2
+  IL_0015:  ldc.i4.0
+  IL_0016:  stfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::i
+  IL_001b:  br.s       IL_0042
+  IL_001d:  nop
+  IL_001e:  ldloc.1
+  IL_001f:  ldloc.2
+  IL_0020:  ldftn      instance int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::'<For>b__0'()
+  IL_0026:  newobj     instance void class [System.Runtime]System.Func`1<int32>::.ctor(object,
+                                                                                       native int)
+  IL_002b:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::Add(!0)
+  IL_0030:  nop
+  IL_0031:  nop
+  IL_0032:  ldloc.2
+  IL_0033:  ldfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::i
+  IL_0038:  stloc.3
+  IL_0039:  ldloc.2
+  IL_003a:  ldloc.3
+  IL_003b:  ldc.i4.1
+  IL_003c:  add
+  IL_003d:  stfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::i
+  IL_0042:  ldloc.2
+  IL_0043:  ldfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::i
+  IL_0048:  ldc.i4.2
+  IL_0049:  clt
+  IL_004b:  stloc.s    V_4
+  IL_004d:  ldloc.s    V_4
+  IL_004f:  brtrue.s   IL_001d
+  IL_0051:  ldloc.0
+  IL_0052:  ldloc.1
+  IL_0053:  ldc.i4.0
+  IL_0054:  callvirt   instance !0 class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::get_Item(int32)
+  IL_0059:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_005e:  stloc.3
+  IL_005f:  ldloca.s   V_3
+  IL_0061:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_0066:  callvirt   instance class [System.Runtime]System.Text.StringBuilder [System.Runtime]System.Text.StringBuilder::Append(string)
+  IL_006b:  pop
+  IL_006c:  ldloc.0
+  IL_006d:  ldloc.1
+  IL_006e:  ldc.i4.1
+  IL_006f:  callvirt   instance !0 class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::get_Item(int32)
+  IL_0074:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_0079:  stloc.3
+  IL_007a:  ldloca.s   V_3
+  IL_007c:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_0081:  callvirt   instance class [System.Runtime]System.Text.StringBuilder [System.Runtime]System.Text.StringBuilder::Append(string)
+  IL_0086:  pop
+  IL_0087:  ldloc.0
+  IL_0088:  callvirt   instance string [System.Runtime]System.Object::ToString()
+  IL_008d:  stloc.s    V_5
+  IL_008f:  br.s       IL_0091
+  IL_0091:  ldloc.s    V_5
+  IL_0093:  ret
+} // end of method Looping::For
+```
 
 ##### foreach
+```C#
+        public string ForEach()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var vals = new List<int> { 1, 2 };
+            var funcs = new List<Func<int>>();
+
+            foreach (int v in vals)
+            {
+                funcs.Add(() => v);
+            }
+
+            sb.Append(funcs[0]().ToString());
+            sb.Append(funcs[1]().ToString());
+
+            return sb.ToString();
+        }
+```
+```C#
+.method public hidebysig instance string 
+        ForEach() cil managed
+{
+  // Code size       183 (0xb7)
+  .maxstack  3
+  .locals init (class [System.Runtime]System.Text.StringBuilder V_0,
+           class [System.Collections]System.Collections.Generic.List`1<int32> V_1,
+           class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>> V_2,
+           valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32> V_3,
+           class dotnetwhat.library.Looping/'<>c__DisplayClass0_0' V_4,
+           int32 V_5,
+           string V_6)
+  IL_0000:  nop
+  IL_0001:  newobj     instance void [System.Runtime]System.Text.StringBuilder::.ctor()
+  IL_0006:  stloc.0
+  IL_0007:  newobj     instance void class [System.Collections]System.Collections.Generic.List`1<int32>::.ctor()
+  IL_000c:  dup
+  IL_000d:  ldc.i4.1
+  IL_000e:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<int32>::Add(!0)
+  IL_0013:  nop
+  IL_0014:  dup
+  IL_0015:  ldc.i4.2
+  IL_0016:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<int32>::Add(!0)
+  IL_001b:  nop
+  IL_001c:  stloc.1
+  IL_001d:  newobj     instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::.ctor()
+  IL_0022:  stloc.2
+  IL_0023:  nop
+  IL_0024:  ldloc.1
+  IL_0025:  callvirt   instance valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<!0> class [System.Collections]System.Collections.Generic.List`1<int32>::GetEnumerator()
+  IL_002a:  stloc.3
+  .try
+  {
+    IL_002b:  br.s       IL_0058
+    IL_002d:  newobj     instance void dotnetwhat.library.Looping/'<>c__DisplayClass0_0'::.ctor()
+    IL_0032:  stloc.s    V_4
+    IL_0034:  ldloc.s    V_4
+    IL_0036:  ldloca.s   V_3
+    IL_0038:  call       instance !0 valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32>::get_Current()
+    IL_003d:  stfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass0_0'::v
+    IL_0042:  nop
+    IL_0043:  ldloc.2
+    IL_0044:  ldloc.s    V_4
+    IL_0046:  ldftn      instance int32 dotnetwhat.library.Looping/'<>c__DisplayClass0_0'::'<ForEach>b__0'()
+    IL_004c:  newobj     instance void class [System.Runtime]System.Func`1<int32>::.ctor(object,
+                                                                                         native int)
+    IL_0051:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::Add(!0)
+    IL_0056:  nop
+    IL_0057:  nop
+    IL_0058:  ldloca.s   V_3
+    IL_005a:  call       instance bool valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32>::MoveNext()
+    IL_005f:  brtrue.s   IL_002d
+    IL_0061:  leave.s    IL_0072
+  }  // end .try
+  finally
+  {
+    IL_0063:  ldloca.s   V_3
+    IL_0065:  constrained. valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32>
+    IL_006b:  callvirt   instance void [System.Runtime]System.IDisposable::Dispose()
+    IL_0070:  nop
+    IL_0071:  endfinally
+  }  // end handler
+  IL_0072:  ldloc.0
+  IL_0073:  ldloc.2
+  IL_0074:  ldc.i4.0
+  IL_0075:  callvirt   instance !0 class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::get_Item(int32)
+  IL_007a:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_007f:  stloc.s    V_5
+  IL_0081:  ldloca.s   V_5
+  IL_0083:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_0088:  callvirt   instance class [System.Runtime]System.Text.StringBuilder [System.Runtime]System.Text.StringBuilder::Append(string)
+  IL_008d:  pop
+  IL_008e:  ldloc.0
+  IL_008f:  ldloc.2
+  IL_0090:  ldc.i4.1
+  IL_0091:  callvirt   instance !0 class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::get_Item(int32)
+  IL_0096:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_009b:  stloc.s    V_5
+  IL_009d:  ldloca.s   V_5
+  IL_009f:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_00a4:  callvirt   instance class [System.Runtime]System.Text.StringBuilder [System.Runtime]System.Text.StringBuilder::Append(string)
+  IL_00a9:  pop
+  IL_00aa:  ldloc.0
+  IL_00ab:  callvirt   instance string [System.Runtime]System.Object::ToString()
+  IL_00b0:  stloc.s    V_6
+  IL_00b2:  br.s       IL_00b4
+  IL_00b4:  ldloc.s    V_6
+  IL_00b6:  ret
+} // end of method Looping::ForEach
+```
 
 ## Performance
 <!--
