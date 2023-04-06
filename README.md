@@ -23,8 +23,8 @@
   - [Lambda](#lambda)
   - [Captured Variable](#captured-variable)
   - [Closing Over a Loop Variable](#closing-over-a-loop-variable)
-     - [for](#for)
-     - [foreach](#foreach)     
+     - [for loop](#for-loop)
+     - [foreach loop](#foreach-loop)     
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -607,7 +607,11 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ```
 
 #### Captured Variable
-[Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expressions can refer to variables declared outside of it's scope e.g. the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expression can refer to a variable that is outside the lambda expression but local to the method that contains the lambda expression. These outer variables consumed by a lambda expression are called captured variables. [Captured variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) won't be garbage-collected until the delegate that references it becomes eligible for garbage collection. Captured variables are evaluated when a delegate is invoked.
+[Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expressions can refer to variables declared outside of it's scope e.g. the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expression can refer to a variable that is outside the lambda expression but local to the method that contains the lambda expression. These outer variables consumed by a lambda expression are called captured variables. [Captured variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) won't be garbage-collected until the delegate that references it becomes eligible for garbage collection.
+
+Key points to note:
+- Closures close over variables, not over values.
+- Captured variables are evaluated when a delegate is invoked, not when it is created.
 
 > **Note** Captured variables is the same as "closed" variables. When a function references a variable that is declared externally to it, the variable is "closed over" when the function is formed i.e. the variable is bound to the function so it remains accessible to the function. The C# compiler does this when it detects a closure, by creating a compiler generated class containing the delegate and the associated local variables
 
@@ -634,7 +638,7 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ![CIL for incrementing a Captured Variable](/readme-images/Captured_variable.png?raw=true "CIL for incrementing a Captured Variable")
 
 #### Closing Over a Loop Variable
-When a function references a variable that is declared externally to it, the variable is "closed over" when the function is formed i.e. the variable is bound to the function so the variable remains accessible to it. When the C# compiler detects a closure it creates a compiler generated class containing the delegate and the associated local variables 
+The behavior for closing over loop variables is different for `for` loops and `foreach` loops. 
 
 <!-- 
 https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/#more-1441
@@ -644,11 +648,13 @@ https://unicorn-dev.medium.com/how-to-capture-a-variable-in-c-and-not-to-shoot-y
 
 In C# 5, the loop variable of a foreach will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time. The for loop will not be changed. 
 
-Closures close over variables, not over values.
+
 
 You see, the C# compiler detects when a delegate forms a closure which is passed out of the current scope and it promotes the delegate, and the associated local variables into a compiler generated class. This way, it simply needs a bit of compiler trickery to pass around an instance of the compiler generated class, so each time we invoke the delegate we are actually calling the method on this class. Once we are no longer holding a reference to this delegate, the class can be garbage collected and it all works exactly as it is supposed to!
 -->
-##### for
+##### for loop
+The loop variable of a `for` loop will be logically outside the loop, and therefore closures will close over the same copy of the variable.
+
 ```C#
         public string For()
         {
@@ -744,7 +750,9 @@ You see, the C# compiler detects when a delegate forms a closure which is passed
 } // end of method Looping::For
 ```
 
-##### foreach
+##### foreach loop
+The loop variable of a `foreach` will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time.
+
 ```C#
         public string ForEach()
         {
