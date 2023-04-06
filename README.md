@@ -632,13 +632,19 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ![CIL for incrementing a Captured Variable](/readme-images/Captured_variable.png?raw=true "CIL for incrementing a Captured Variable")
 
 #### Closing Over a Loop Variable
+When a function references a variable that is declared externally to it, the variable is "closed over" when the function is formed i.e. the variable is bound to the function so the variable remains accessible to it. When the C# compiler detects a closure it creates a compiler generated class containing the delegate and the associated local variables 
+
 <!-- 
 https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/#more-1441
 https://csharpindepth.com/articles/Closures
+https://www.simplethread.com/c-closures-explained/
+https://unicorn-dev.medium.com/how-to-capture-a-variable-in-c-and-not-to-shoot-yourself-in-the-foot-d169aa161aa6
 
 In C# 5, the loop variable of a foreach will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time. The for loop will not be changed. 
 
 Closures close over variables, not over values.
+
+You see, the C# compiler detects when a delegate forms a closure which is passed out of the current scope and it promotes the delegate, and the associated local variables into a compiler generated class. This way, it simply needs a bit of compiler trickery to pass around an instance of the compiler generated class, so each time we invoke the delegate we are actually calling the method on this class. Once we are no longer holding a reference to this delegate, the class can be garbage collected and it all works exactly as it is supposed to!
 -->
 ##### for
 ```C#
