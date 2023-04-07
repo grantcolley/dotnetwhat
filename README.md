@@ -80,7 +80,7 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 
 >  **Note** 
 >  
->  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by Jon Skeet on [**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
+>  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by [Jon Skeet](https://codeblog.jonskeet.uk/category/csharp/) on [**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
 >
 > ### A piece of paper has the address of a house written on it
 > 
