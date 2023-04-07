@@ -1005,6 +1005,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 * **Common Type System (CTS)** *- defines rules all languages must follow when it comes to working with types*
 * **Fixed** *- declares a pointer to a variable and fixes or "pins" it, so the garbage collection can't relocate it*
 * **Garbage Collection** *- the process of releasing and compacting heap memory*
+* **ILDASM.exe** *- IL Disassembler (ILDASM*
 * **in Keyword** *- an argument is passed by reference, however it cannot be modified in the called method*
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Lambda** *- lambda expression used to create anonymous functions*
@@ -1055,6 +1056,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
   * [Dispose Pattern](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose)
   * [Fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed)
   * [Garbage Collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
+  * [IL Disassembler (ILDASM)](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler)
   * [in Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
   * [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
