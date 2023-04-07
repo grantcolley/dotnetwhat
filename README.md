@@ -638,7 +638,9 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ![CIL for incrementing a Captured Variable](/readme-images/Captured_variable.png?raw=true "CIL for incrementing a Captured Variable")
 
 #### Closing Over a Loop Variable
-The behavior for closing over loop variables is different for `for` loops and `foreach` loops. 
+The behavior for closing over loop variables is the same for `for` loops and `while` loops, where the loop variable is logically outside the loop, and therefore closures will close over the same copy of the variable. However, it is different for `foreach` loops, where the loop variable of a `foreach` will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time.
+
+The examples below show the generated [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for the `for` loop and the `foreach` loop for comparison.
 
 <!-- 
 https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/#more-1441
@@ -646,7 +648,7 @@ https://csharpindepth.com/articles/Closures
 https://www.simplethread.com/c-closures-explained/
 https://unicorn-dev.medium.com/how-to-capture-a-variable-in-c-and-not-to-shoot-yourself-in-the-foot-d169aa161aa6
 
-In C# 5, the loop variable of a foreach will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time. The for loop will not be changed. 
+In C# 5,  The for loop will not be changed. 
 
 
 
