@@ -628,14 +628,43 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 
             Func<int> increment = () => myLocalValue++;
 
-            increment();
+            increment(); // Captured variable is evaluated when the delegate is invoked
 
-            return myLocalValue;
+            return myLocalValue; // returns 1
         }
     }
 ```
-
 ![CIL for incrementing a Captured Variable](/readme-images/Captured_variable.png?raw=true "CIL for incrementing a Captured Variable")
+```C#
+.method public hidebysig instance int32  IncrementLocalVariable() cil managed
+{
+  // Code size       45 (0x2d)
+  .maxstack  2
+  .locals init (class dotnetwhat.library.CapturedVariable/'<>c__DisplayClass0_0' V_0,
+           class [System.Runtime]System.Func`1<int32> V_1,
+           int32 V_2)
+  IL_0000:  newobj     instance void dotnetwhat.library.CapturedVariable/'<>c__DisplayClass0_0'::.ctor()
+  IL_0005:  stloc.0
+  IL_0006:  nop
+  IL_0007:  ldloc.0
+  IL_0008:  ldc.i4.0
+  IL_0009:  stfld      int32 dotnetwhat.library.CapturedVariable/'<>c__DisplayClass0_0'::myLocalValue
+  IL_000e:  ldloc.0
+  IL_000f:  ldftn      instance int32 dotnetwhat.library.CapturedVariable/'<>c__DisplayClass0_0'::'<IncrementLocalVariable>b__0'()
+  IL_0015:  newobj     instance void class [System.Runtime]System.Func`1<int32>::.ctor(object,
+                                                                                       native int)
+  IL_001a:  stloc.1
+  IL_001b:  ldloc.1
+  IL_001c:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_0021:  pop
+  IL_0022:  ldloc.0
+  IL_0023:  ldfld      int32 dotnetwhat.library.CapturedVariable/'<>c__DisplayClass0_0'::myLocalValue
+  IL_0028:  stloc.2
+  IL_0029:  br.s       IL_002b
+  IL_002b:  ldloc.2
+  IL_002c:  ret
+} // end of method CapturedVariable::IncrementLocalVariable
+```
 
 #### Closing Over a Loop Variable
 The behavior for closing over loop variables is the same for `for` loops and `while` loops, where the loop variable is logically outside the loop, and therefore closures will close over the same copy of the variable. However, it is different for `foreach` loops, where the loop variable of a `foreach` will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time.
