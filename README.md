@@ -642,20 +642,10 @@ The behavior for closing over loop variables is the same for `for` loops and `wh
 
 The examples below show the generated [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for the `for` loop and the `foreach` loop for comparison.
 
-<!-- 
-https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/#more-1441
-https://csharpindepth.com/articles/Closures
-https://www.simplethread.com/c-closures-explained/
-https://unicorn-dev.medium.com/how-to-capture-a-variable-in-c-and-not-to-shoot-yourself-in-the-foot-d169aa161aa6
+> **Note** the container class `<>c__DisplayClass0_0` generated for the `for` loop, `while` loop and `foreach` loop is identical. 
 
-In C# 5,  The for loop will not be changed. 
-
-
-
-You see, the C# compiler detects when a delegate forms a closure which is passed out of the current scope and it promotes the delegate, and the associated local variables into a compiler generated class. This way, it simply needs a bit of compiler trickery to pass around an instance of the compiler generated class, so each time we invoke the delegate we are actually calling the method on this class. Once we are no longer holding a reference to this delegate, the class can be garbage collected and it all works exactly as it is supposed to!
--->
 ##### for loop
-The loop variable of a `for` loop will be logically outside the loop, and therefore closures will close over the same copy of the variable.
+The loop variable of a `for` loop will be logically outside the loop, and therefore closures will close over the same copy of the variable. In the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) we can see in line `IL_000e:` an instance of the container class `<>c__DisplayClass0_0` is created outside the loop and the same instance is referenced inside the loop with each iteration.
 
 ```C#
         public string For()
@@ -675,6 +665,7 @@ The loop variable of a `for` loop will be logically outside the loop, and theref
             return sb.ToString();
         }
 ````
+![CIL for loop](/readme-images/Looping_For.png?raw=true "CIL for loop")
 ```C#
 .method public hidebysig instance string 
         For() cil managed
@@ -754,7 +745,7 @@ The loop variable of a `for` loop will be logically outside the loop, and theref
 ```
 
 ##### foreach loop
-The loop variable of a `foreach` will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time.
+The loop variable of a `foreach` will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time. In the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) we can see in line `IL_002d:` a new instance of the container class `<>c__DisplayClass0_0` is created inside the loop on each iteration.
 
 ```C#
         public string ForEach()
@@ -775,6 +766,7 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
             return sb.ToString();
         }
 ```
+![CIL foreach loop](/readme-images/Looping_Foreach.png?raw=true "CIL foreach loop")
 ```C#
 .method public hidebysig instance string 
         ForEach() cil managed
