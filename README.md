@@ -659,10 +659,10 @@ The loop variable of a `for` loop will be logically outside the loop, and theref
                 funcs.Add(() => i);
             }
 
-            sb.Append(funcs[0]().ToString());
-            sb.Append(funcs[1]().ToString());
+            sb.Append(funcs[0]().ToString()); // Closed variable evaluated when delegate is invoked
+            sb.Append(funcs[1]().ToString()); // Closed variable evaluated when delegate is invoked
 
-            return sb.ToString();
+            return sb.ToString(); // returns 22
         }
 ````
 ![CIL for loop](/readme-images/Looping_For.png?raw=true "CIL for loop")
@@ -760,10 +760,10 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
                 funcs.Add(() => v);
             }
 
-            sb.Append(funcs[0]().ToString());
-            sb.Append(funcs[1]().ToString());
+            sb.Append(funcs[0]().ToString()); // Closed variable evaluated when delegate is invoked
+            sb.Append(funcs[1]().ToString()); // Closed variable evaluated when delegate is invoked
 
-            return sb.ToString();
+            return sb.ToString(); // returns 12
         }
 ```
 ![CIL foreach loop](/readme-images/Looping_Foreach.png?raw=true "CIL foreach loop")
