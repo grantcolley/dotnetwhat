@@ -179,7 +179,7 @@ namespace dotnetwhat.tests
             var looping = new Looping_Foreach();
 
             // Act
-            var result = looping.ForEach();
+            var result = looping.Loop();
 
             // Assert
             Assert.AreEqual("12", result);
@@ -192,7 +192,7 @@ namespace dotnetwhat.tests
             var looping = new Looping_For();
 
             // Act
-            var result = looping.For();
+            var result = looping.Loop();
 
             // Assert
             Assert.AreEqual("22", result);
@@ -205,7 +205,7 @@ namespace dotnetwhat.tests
             var looping = new Looping_While();
 
             // Act
-            var result = looping.While();
+            var result = looping.Loop();
 
             // Assert
             Assert.AreEqual("22", result);

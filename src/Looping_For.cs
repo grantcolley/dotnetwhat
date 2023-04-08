@@ -4,7 +4,7 @@ namespace dotnetwhat.library
 {
     public class Looping_For
     {
-        public string For()
+        public string Loop()
         {
             StringBuilder sb = new StringBuilder();
 

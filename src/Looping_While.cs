@@ -4,7 +4,7 @@ namespace dotnetwhat.library
 {
     public class Looping_While
     {
-        public string While()
+        public string Loop()
         {
             StringBuilder sb = new StringBuilder();
 

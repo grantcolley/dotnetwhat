@@ -4,7 +4,7 @@ namespace dotnetwhat.library
 {
     public class Looping_Foreach
     {
-        public string ForEach()
+        public string Loop()
         {
             StringBuilder sb = new StringBuilder();
 
