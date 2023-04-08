@@ -685,11 +685,11 @@ The loop variable of a `for` loop will be logically outside the loop, and theref
 
             for(int i = 0; i < 2; i++)
             {
-                funcs.Add(() => i);
+                funcs.Add(() => i); // same copy of the closed variable is updated
             }
 
-            sb.Append(funcs[0]().ToString()); // Closed variable evaluated when delegate is invoked
-            sb.Append(funcs[1]().ToString()); // Closed variable evaluated when delegate is invoked
+            sb.Append(funcs[0]().ToString()); // closed variable evaluated when delegate is invoked
+            sb.Append(funcs[1]().ToString()); // closed variable evaluated when delegate is invoked
 
             return sb.ToString(); // returns 22
         }
@@ -786,7 +786,7 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
 
             foreach (int v in vals)
             {
-                funcs.Add(() => v);
+                funcs.Add(() => v); // a fresh copy of the closed variable with each iteration
             }
 
             sb.Append(funcs[0]().ToString()); // Closed variable evaluated when delegate is invoked
