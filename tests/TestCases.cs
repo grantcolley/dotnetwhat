@@ -171,5 +171,44 @@ namespace dotnetwhat.tests
             // Assert
             Assert.AreEqual(1, result);
         }
+
+        [TestMethod]
+        public void Looping_ForEach()
+        {
+            // Arrange
+            var looping = new Looping_Foreach();
+
+            // Act
+            var result = looping.ForEach();
+
+            // Assert
+            Assert.AreEqual("12", result);
+        }
+
+        [TestMethod]
+        public void Looping_For()
+        {
+            // Arrange
+            var looping = new Looping_For();
+
+            // Act
+            var result = looping.For();
+
+            // Assert
+            Assert.AreEqual("22", result);
+        }
+
+        [TestMethod]
+        public void Looping_While()
+        {
+            // Arrange
+            var looping = new Looping_While();
+
+            // Act
+            var result = looping.While();
+
+            // Assert
+            Assert.AreEqual("22", result);
+        }
     }
 }
