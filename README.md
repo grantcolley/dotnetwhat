@@ -11,7 +11,7 @@
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
-      - [Unsafe and Fixed](#unsafe-and-fixed)
+      - [unsafe and fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
 - [What's in the CIL](#whats-in-the-cil)
@@ -23,6 +23,8 @@
   - [Lambda](#lambda)
   - [Captured Variable](#captured-variable)
   - [Closing Over a Loop Variable](#closing-over-a-loop-variable)
+     - [for loop](#for-loop)
+     - [foreach loop](#foreach-loop)     
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -32,7 +34,7 @@
 
 ## Overview
 
-The pillars of the .NET stack is the runtime, libraries and languages.
+The [pillars of the .NET](https://devblogs.microsoft.com/dotnet/why-dotnet/#the-pillars-of-the-net-stack) stack is the runtime, libraries and languages.
 
 .NET is known as [**managed**](https://learn.microsoft.com/en-us/dotnet/standard/managed-code) because it provides a runtime environment called the **Common Language Runtime ([CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr))** to [**manage code execution**](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process). The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** is a set of libraries for running .NET applications and is responsible for things like enforcing type safety and memory management. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** also **Just In Time ([JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code))** compiles managed code into native processor-specific code on demand at runtime. Only code that is used gets **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiled to avoid wasting resources.
 
@@ -78,7 +80,7 @@ The main difference between [**value types**](https://learn.microsoft.com/en-us/
 
 >  **Note** 
 >  
->  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by Jon Skeet on [**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
+>  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by [Jon Skeet](https://codeblog.jonskeet.uk/category/csharp/) on [**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
 >
 > ### A piece of paper has the address of a house written on it
 > 
@@ -211,7 +213,7 @@ C# code is called "verifiably safe code" because .NET tools can verify that the 
 
 A [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) is a reference type with value type semantics. [Strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) store text as a readonly collection of [char](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/char) objects. [Strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) are [immutable](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#immutability-of-strings) i.e. once created they cannot be modified. If a [strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) variable is updated, a new [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) is created and the original is released for disposal by the garabage collector. 
 
-##### Unsafe and Fixed
+##### unsafe and fixed
 [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code is written with the `unsafe` keyword, where you can directly access memory using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). A [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) is simply a variable that holds the memory address of another type or variable. The variable also needs to be [fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed) or "pinned", so the garbage collector can't move it while compacting the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). 
 
 [Unsafe code](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) isn't necessarily dangerous; it's just code whose safety cannot be verified.
@@ -605,11 +607,17 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ```
 
 #### Captured Variable
-[Lambdas](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) can refer to outer variables. Outer variables are local variables within the method that contains the lambda expression. Outer variables consumed by a lambda expression are called captured variables. [Captured variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) won't be garbage-collected until the delegate that references it becomes eligible for garbage collection. 
+[Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expressions can refer to variables declared outside of it's scope e.g. the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expression can refer to a variable that is outside the lambda expression but local to the method that contains the lambda expression. These outer variables consumed by a lambda expression are called captured variables. [Captured variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) won't be garbage-collected until the delegate that references it becomes eligible for garbage collection.
 
->  **Note** A lambda expression can't directly capturea parameter that has been passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref).
+>  **Warning** A lambda expression can't directly capture a parameter that has been passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref).
 
-In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/src/CapturedVariable.cs) a lambda expression increments a captured variable and returns the result. We can see in [IL Disassembler](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler) the compiler converts the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression into a private nested container class (inside the red box). The container class contains a public field `myLocalValue : public int32` i.e. this is where the compiler moves the captured variable that is to be incremented, thereby ensuring the captured variable won't be garbage-collected until the containing class is garbage collected.
+> **Note** Captured variables is the same as "closed" variables. When a function references a variable that is declared externally to it, the variable is "closed over" when the function is formed i.e. the variable is bound to the function so it remains accessible to the function. When the C# compiler detects a closure it creates a compiler generated class containing the delegate and the associated local variables.
+
+Key points to note:
+- Closures close over variables, not over values.
+- Captured variables are evaluated when a delegate is invoked, not when it is created.
+
+In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/src/CapturedVariable.cs) a [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expression increments a captured variable and returns the result. We can see in [IL Disassembler (ILDASM)](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler) the compiler converts the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression into a private nested container class (inside the red box). The container class contains a public field `myLocalValue : public int32` i.e. this is where the compiler moves the captured variable that is to be incremented, thereby ensuring the captured variable won't be garbage-collected until the containing class is garbage collected, which is only elegible for collection when the lambda is out of scope.
 
 ```C#
     public class CapturedVariable
@@ -630,10 +638,235 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 ![CIL for incrementing a Captured Variable](/readme-images/Captured_variable.png?raw=true "CIL for incrementing a Captured Variable")
 
 #### Closing Over a Loop Variable
+The behavior for closing over loop variables is the same for `for` loops and `while` loops, where the loop variable is logically outside the loop, and therefore closures will close over the same copy of the variable. However, it is different for `foreach` loops, where the loop variable of a `foreach` will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time.
+
+The examples below show the generated [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for the `for` loop and the `foreach` loop for comparison.
+
 <!-- 
 https://ericlippert.com/2009/11/12/closing-over-the-loop-variable-considered-harmful-part-one/#more-1441
 https://csharpindepth.com/articles/Closures
+https://www.simplethread.com/c-closures-explained/
+https://unicorn-dev.medium.com/how-to-capture-a-variable-in-c-and-not-to-shoot-yourself-in-the-foot-d169aa161aa6
+
+In C# 5,  The for loop will not be changed. 
+
+
+
+You see, the C# compiler detects when a delegate forms a closure which is passed out of the current scope and it promotes the delegate, and the associated local variables into a compiler generated class. This way, it simply needs a bit of compiler trickery to pass around an instance of the compiler generated class, so each time we invoke the delegate we are actually calling the method on this class. Once we are no longer holding a reference to this delegate, the class can be garbage collected and it all works exactly as it is supposed to!
 -->
+##### for loop
+The loop variable of a `for` loop will be logically outside the loop, and therefore closures will close over the same copy of the variable.
+
+```C#
+        public string For()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var funcs = new List<Func<int>>(2);
+
+            for(int i = 0; i < 2; i++)
+            {
+                funcs.Add(() => i);
+            }
+
+            sb.Append(funcs[0]().ToString());
+            sb.Append(funcs[1]().ToString());
+
+            return sb.ToString();
+        }
+````
+```C#
+.method public hidebysig instance string 
+        For() cil managed
+{
+  .custom instance void System.Runtime.CompilerServices.NullableContextAttribute::.ctor(uint8) = ( 01 00 01 00 00 ) 
+  // Code size       148 (0x94)
+  .maxstack  3
+  .locals init (class [System.Runtime]System.Text.StringBuilder V_0,
+           class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>> V_1,
+           class dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0' V_2,
+           int32 V_3,
+           bool V_4,
+           string V_5)
+  IL_0000:  nop
+  IL_0001:  newobj     instance void [System.Runtime]System.Text.StringBuilder::.ctor()
+  IL_0006:  stloc.0
+  IL_0007:  ldc.i4.2
+  IL_0008:  newobj     instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::.ctor(int32)
+  IL_000d:  stloc.1
+  IL_000e:  newobj     instance void dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::.ctor()
+  IL_0013:  stloc.2
+  IL_0014:  ldloc.2
+  IL_0015:  ldc.i4.0
+  IL_0016:  stfld      int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::i
+  IL_001b:  br.s       IL_0042
+  IL_001d:  nop
+  IL_001e:  ldloc.1
+  IL_001f:  ldloc.2
+  IL_0020:  ldftn      instance int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::'<For>b__0'()
+  IL_0026:  newobj     instance void class [System.Runtime]System.Func`1<int32>::.ctor(object,
+                                                                                       native int)
+  IL_002b:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::Add(!0)
+  IL_0030:  nop
+  IL_0031:  nop
+  IL_0032:  ldloc.2
+  IL_0033:  ldfld      int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::i
+  IL_0038:  stloc.3
+  IL_0039:  ldloc.2
+  IL_003a:  ldloc.3
+  IL_003b:  ldc.i4.1
+  IL_003c:  add
+  IL_003d:  stfld      int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::i
+  IL_0042:  ldloc.2
+  IL_0043:  ldfld      int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::i
+  IL_0048:  ldc.i4.2
+  IL_0049:  clt
+  IL_004b:  stloc.s    V_4
+  IL_004d:  ldloc.s    V_4
+  IL_004f:  brtrue.s   IL_001d
+  IL_0051:  ldloc.0
+  IL_0052:  ldloc.1
+  IL_0053:  ldc.i4.0
+  IL_0054:  callvirt   instance !0 class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::get_Item(int32)
+  IL_0059:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_005e:  stloc.3
+  IL_005f:  ldloca.s   V_3
+  IL_0061:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_0066:  callvirt   instance class [System.Runtime]System.Text.StringBuilder [System.Runtime]System.Text.StringBuilder::Append(string)
+  IL_006b:  pop
+  IL_006c:  ldloc.0
+  IL_006d:  ldloc.1
+  IL_006e:  ldc.i4.1
+  IL_006f:  callvirt   instance !0 class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::get_Item(int32)
+  IL_0074:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_0079:  stloc.3
+  IL_007a:  ldloca.s   V_3
+  IL_007c:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_0081:  callvirt   instance class [System.Runtime]System.Text.StringBuilder [System.Runtime]System.Text.StringBuilder::Append(string)
+  IL_0086:  pop
+  IL_0087:  ldloc.0
+  IL_0088:  callvirt   instance string [System.Runtime]System.Object::ToString()
+  IL_008d:  stloc.s    V_5
+  IL_008f:  br.s       IL_0091
+  IL_0091:  ldloc.s    V_5
+  IL_0093:  ret
+} // end of method Looping_For::For
+```
+
+##### foreach loop
+The loop variable of a `foreach` will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time.
+
+```C#
+        public string ForEach()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var vals = new List<int> { 1, 2 };
+            var funcs = new List<Func<int>>();
+
+            foreach (int v in vals)
+            {
+                funcs.Add(() => v);
+            }
+
+            sb.Append(funcs[0]().ToString());
+            sb.Append(funcs[1]().ToString());
+
+            return sb.ToString();
+        }
+```
+```C#
+.method public hidebysig instance string 
+        ForEach() cil managed
+{
+  .custom instance void System.Runtime.CompilerServices.NullableContextAttribute::.ctor(uint8) = ( 01 00 01 00 00 ) 
+  // Code size       183 (0xb7)
+  .maxstack  3
+  .locals init (class [System.Runtime]System.Text.StringBuilder V_0,
+           class [System.Collections]System.Collections.Generic.List`1<int32> V_1,
+           class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>> V_2,
+           valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32> V_3,
+           class dotnetwhat.library.Looping_Foreach/'<>c__DisplayClass0_0' V_4,
+           int32 V_5,
+           string V_6)
+  IL_0000:  nop
+  IL_0001:  newobj     instance void [System.Runtime]System.Text.StringBuilder::.ctor()
+  IL_0006:  stloc.0
+  IL_0007:  newobj     instance void class [System.Collections]System.Collections.Generic.List`1<int32>::.ctor()
+  IL_000c:  dup
+  IL_000d:  ldc.i4.1
+  IL_000e:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<int32>::Add(!0)
+  IL_0013:  nop
+  IL_0014:  dup
+  IL_0015:  ldc.i4.2
+  IL_0016:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<int32>::Add(!0)
+  IL_001b:  nop
+  IL_001c:  stloc.1
+  IL_001d:  newobj     instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::.ctor()
+  IL_0022:  stloc.2
+  IL_0023:  nop
+  IL_0024:  ldloc.1
+  IL_0025:  callvirt   instance valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<!0> class [System.Collections]System.Collections.Generic.List`1<int32>::GetEnumerator()
+  IL_002a:  stloc.3
+  .try
+  {
+    IL_002b:  br.s       IL_0058
+    IL_002d:  newobj     instance void dotnetwhat.library.Looping_Foreach/'<>c__DisplayClass0_0'::.ctor()
+    IL_0032:  stloc.s    V_4
+    IL_0034:  ldloc.s    V_4
+    IL_0036:  ldloca.s   V_3
+    IL_0038:  call       instance !0 valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32>::get_Current()
+    IL_003d:  stfld      int32 dotnetwhat.library.Looping_Foreach/'<>c__DisplayClass0_0'::v
+    IL_0042:  nop
+    IL_0043:  ldloc.2
+    IL_0044:  ldloc.s    V_4
+    IL_0046:  ldftn      instance int32 dotnetwhat.library.Looping_Foreach/'<>c__DisplayClass0_0'::'<ForEach>b__0'()
+    IL_004c:  newobj     instance void class [System.Runtime]System.Func`1<int32>::.ctor(object,
+                                                                                         native int)
+    IL_0051:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::Add(!0)
+    IL_0056:  nop
+    IL_0057:  nop
+    IL_0058:  ldloca.s   V_3
+    IL_005a:  call       instance bool valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32>::MoveNext()
+    IL_005f:  brtrue.s   IL_002d
+    IL_0061:  leave.s    IL_0072
+  }  // end .try
+  finally
+  {
+    IL_0063:  ldloca.s   V_3
+    IL_0065:  constrained. valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32>
+    IL_006b:  callvirt   instance void [System.Runtime]System.IDisposable::Dispose()
+    IL_0070:  nop
+    IL_0071:  endfinally
+  }  // end handler
+  IL_0072:  ldloc.0
+  IL_0073:  ldloc.2
+  IL_0074:  ldc.i4.0
+  IL_0075:  callvirt   instance !0 class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::get_Item(int32)
+  IL_007a:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_007f:  stloc.s    V_5
+  IL_0081:  ldloca.s   V_5
+  IL_0083:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_0088:  callvirt   instance class [System.Runtime]System.Text.StringBuilder [System.Runtime]System.Text.StringBuilder::Append(string)
+  IL_008d:  pop
+  IL_008e:  ldloc.0
+  IL_008f:  ldloc.2
+  IL_0090:  ldc.i4.1
+  IL_0091:  callvirt   instance !0 class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::get_Item(int32)
+  IL_0096:  callvirt   instance !0 class [System.Runtime]System.Func`1<int32>::Invoke()
+  IL_009b:  stloc.s    V_5
+  IL_009d:  ldloca.s   V_5
+  IL_009f:  call       instance string [System.Runtime]System.Int32::ToString()
+  IL_00a4:  callvirt   instance class [System.Runtime]System.Text.StringBuilder [System.Runtime]System.Text.StringBuilder::Append(string)
+  IL_00a9:  pop
+  IL_00aa:  ldloc.0
+  IL_00ab:  callvirt   instance string [System.Runtime]System.Object::ToString()
+  IL_00b0:  stloc.s    V_6
+  IL_00b2:  br.s       IL_00b4
+  IL_00b4:  ldloc.s    V_6
+  IL_00b6:  ret
+} // end of method Looping_Foreach::ForEach
+```
 
 ## Performance
 <!--
@@ -776,6 +1009,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 * **Common Type System (CTS)** *- defines rules all languages must follow when it comes to working with types*
 * **Fixed** *- declares a pointer to a variable and fixes or "pins" it, so the garbage collection can't relocate it*
 * **Garbage Collection** *- the process of releasing and compacting heap memory*
+* **ILDASM.exe** *- IL Disassembler (ILDASM*
 * **in Keyword** *- an argument is passed by reference, however it cannot be modified in the called method*
 * **Just-In-Time compilation (JIT)** *- at runtime the JIT compiler translates MSIL into native code, which is processor specific code*
 * **Lambda** *- lambda expression used to create anonymous functions*
@@ -826,6 +1060,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
   * [Dispose Pattern](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose)
   * [Fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed)
   * [Garbage Collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
+  * [IL Disassembler (ILDASM)](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler)
   * [in Keyword](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier)
   * [Integrity of UI Components](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8)
   * [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions)
