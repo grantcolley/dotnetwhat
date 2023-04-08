@@ -679,11 +679,12 @@ The loop variable of a `for` loop will be logically outside the loop, and theref
 .method public hidebysig instance string 
         For() cil managed
 {
+  .custom instance void System.Runtime.CompilerServices.NullableContextAttribute::.ctor(uint8) = ( 01 00 01 00 00 ) 
   // Code size       148 (0x94)
   .maxstack  3
   .locals init (class [System.Runtime]System.Text.StringBuilder V_0,
            class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>> V_1,
-           class dotnetwhat.library.Looping/'<>c__DisplayClass1_0' V_2,
+           class dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0' V_2,
            int32 V_3,
            bool V_4,
            string V_5)
@@ -693,31 +694,31 @@ The loop variable of a `for` loop will be logically outside the loop, and theref
   IL_0007:  ldc.i4.2
   IL_0008:  newobj     instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::.ctor(int32)
   IL_000d:  stloc.1
-  IL_000e:  newobj     instance void dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::.ctor()
+  IL_000e:  newobj     instance void dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::.ctor()
   IL_0013:  stloc.2
   IL_0014:  ldloc.2
   IL_0015:  ldc.i4.0
-  IL_0016:  stfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::i
+  IL_0016:  stfld      int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::i
   IL_001b:  br.s       IL_0042
   IL_001d:  nop
   IL_001e:  ldloc.1
   IL_001f:  ldloc.2
-  IL_0020:  ldftn      instance int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::'<For>b__0'()
+  IL_0020:  ldftn      instance int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::'<For>b__0'()
   IL_0026:  newobj     instance void class [System.Runtime]System.Func`1<int32>::.ctor(object,
                                                                                        native int)
   IL_002b:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::Add(!0)
   IL_0030:  nop
   IL_0031:  nop
   IL_0032:  ldloc.2
-  IL_0033:  ldfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::i
+  IL_0033:  ldfld      int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::i
   IL_0038:  stloc.3
   IL_0039:  ldloc.2
   IL_003a:  ldloc.3
   IL_003b:  ldc.i4.1
   IL_003c:  add
-  IL_003d:  stfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::i
+  IL_003d:  stfld      int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::i
   IL_0042:  ldloc.2
-  IL_0043:  ldfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass1_0'::i
+  IL_0043:  ldfld      int32 dotnetwhat.library.Looping_For/'<>c__DisplayClass0_0'::i
   IL_0048:  ldc.i4.2
   IL_0049:  clt
   IL_004b:  stloc.s    V_4
@@ -749,7 +750,7 @@ The loop variable of a `for` loop will be logically outside the loop, and theref
   IL_008f:  br.s       IL_0091
   IL_0091:  ldloc.s    V_5
   IL_0093:  ret
-} // end of method Looping::For
+} // end of method Looping_For::For
 ```
 
 ##### foreach loop
@@ -778,13 +779,14 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
 .method public hidebysig instance string 
         ForEach() cil managed
 {
+  .custom instance void System.Runtime.CompilerServices.NullableContextAttribute::.ctor(uint8) = ( 01 00 01 00 00 ) 
   // Code size       183 (0xb7)
   .maxstack  3
   .locals init (class [System.Runtime]System.Text.StringBuilder V_0,
            class [System.Collections]System.Collections.Generic.List`1<int32> V_1,
            class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>> V_2,
            valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32> V_3,
-           class dotnetwhat.library.Looping/'<>c__DisplayClass0_0' V_4,
+           class dotnetwhat.library.Looping_Foreach/'<>c__DisplayClass0_0' V_4,
            int32 V_5,
            string V_6)
   IL_0000:  nop
@@ -809,16 +811,16 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
   .try
   {
     IL_002b:  br.s       IL_0058
-    IL_002d:  newobj     instance void dotnetwhat.library.Looping/'<>c__DisplayClass0_0'::.ctor()
+    IL_002d:  newobj     instance void dotnetwhat.library.Looping_Foreach/'<>c__DisplayClass0_0'::.ctor()
     IL_0032:  stloc.s    V_4
     IL_0034:  ldloc.s    V_4
     IL_0036:  ldloca.s   V_3
     IL_0038:  call       instance !0 valuetype [System.Collections]System.Collections.Generic.List`1/Enumerator<int32>::get_Current()
-    IL_003d:  stfld      int32 dotnetwhat.library.Looping/'<>c__DisplayClass0_0'::v
+    IL_003d:  stfld      int32 dotnetwhat.library.Looping_Foreach/'<>c__DisplayClass0_0'::v
     IL_0042:  nop
     IL_0043:  ldloc.2
     IL_0044:  ldloc.s    V_4
-    IL_0046:  ldftn      instance int32 dotnetwhat.library.Looping/'<>c__DisplayClass0_0'::'<ForEach>b__0'()
+    IL_0046:  ldftn      instance int32 dotnetwhat.library.Looping_Foreach/'<>c__DisplayClass0_0'::'<ForEach>b__0'()
     IL_004c:  newobj     instance void class [System.Runtime]System.Func`1<int32>::.ctor(object,
                                                                                          native int)
     IL_0051:  callvirt   instance void class [System.Collections]System.Collections.Generic.List`1<class [System.Runtime]System.Func`1<int32>>::Add(!0)
@@ -863,7 +865,7 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
   IL_00b2:  br.s       IL_00b4
   IL_00b4:  ldloc.s    V_6
   IL_00b6:  ret
-} // end of method Looping::ForEach
+} // end of method Looping_Foreach::ForEach
 ```
 
 ## Performance
