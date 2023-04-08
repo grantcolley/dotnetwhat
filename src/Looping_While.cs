@@ -15,13 +15,13 @@ namespace dotnetwhat.library
             while(i < 2)
             {
                 i++;
-                funcs.Add(() => i);
+                funcs.Add(() => i); // same copy of the closed variable is updated
             }
 
-            sb.Append(funcs[0]().ToString());
-            sb.Append(funcs[1]().ToString());
+            sb.Append(funcs[0]().ToString()); // closed variable evaluated when delegate is invoked
+            sb.Append(funcs[1]().ToString()); // closed variable evaluated when delegate is invoked
 
-            return sb.ToString();
+            return sb.ToString(); // returns 22
         }
     }
 }
