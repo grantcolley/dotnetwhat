@@ -1066,6 +1066,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 * **stackalloc** *- allocates a block of memory on the stack*
 * **StackOverflowException** *- thrown when the execution stack exceeds the stack size*
 * **String** *- a reference type that stores text in a readonly collection of char objects. Strings are therefore immutable.*
+* **Struct** *- a value type structure that can encapsulate data and related functionality*
 * **System.Object** *- the base class of all .NET classes*
 * **Unboxing** *- the process of explicitly converting an objects value, or interface type, to a value type*
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
@@ -1120,6 +1121,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
   * [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc)
   * [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception)
   * [String](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings)
+  * [Struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
   * [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code)
