@@ -4,6 +4,11 @@
 
 ### Table of Contents
 - [Overview](#overview)
+  - [CLR](#clr)
+  - [CTS and CLS](#cts-and-cls)
+  - [SDK and BCL](#sdk-and-bcl)
+  - [CIL](#cil)
+  - [Running an Application](#running-an-application)
 - [Value Types, Reference Types and Variables](#value-types-reference-types-and-variables)
 - [Memory](#memory)
   - [Memory Allocation](#memory-allocation)
@@ -36,18 +41,23 @@
 
 The [pillars of the .NET](https://devblogs.microsoft.com/dotnet/why-dotnet/#the-pillars-of-the-net-stack) stack is the runtime, libraries and languages.
 
+### CLR
 .NET is known as [**managed**](https://learn.microsoft.com/en-us/dotnet/standard/managed-code) because it provides a runtime environment called the **Common Language Runtime ([CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr))** to [**manage code execution**](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process). The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** is a set of libraries for running .NET applications and is responsible for things like enforcing type safety and memory management. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** also **Just In Time ([JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code))** compiles managed code into native processor-specific code on demand at runtime. Only code that is used gets **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiled to avoid wasting resources.
 
+### CTS and CLS
 The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** establishes a framework for cross language execution by defining rules all languages must follow when it comes to working with types. It also has a library containing the basic primitive types including char, bool, byte etc. The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** also defines two main kinds of types that must be supported: value types and reference types.
 The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** also includes rules for inheritance, interfaces, and virtual methods etc. that enables an object-oriented programming model.
 The **[CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** is a subset of the **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** and defines a set of common features needed by applications.
 
-The **[.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)** is a set of libraries and tools for developing .NET applications. .NET also has a large set of libraries called the **Base Class Library ([BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries))**, which provides implementation for many general types, algorithms, and utility functionality.
-
 .NET applications can be written in different languages and the language compiler must adhere to the rules laid out in the **Common Type System ([CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system))** and **Common Language Specification ([CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system))**.
 
+### SDK and BCL
+The **[.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)** is a set of libraries and tools for developing .NET applications. .NET also has a large set of libraries called the **Base Class Library ([BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries))**, which provides implementation for many general types, algorithms, and utility functionality.
+
+### CIL
 Code is compiled into **Common Intermediate language ([CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language))**, in the form of Portable Executable files such as *.exe* and *.dll* files. **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** is CPU-independent [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc. **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** is **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiled to native (CPU-specific) code by the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** as runtime.
 
+### Running an Application
 When a .NET application is initialised the operating system loads the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)**. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** then loads the application assemblies into memory and reserves a contiguous region of virtual address space for the application called the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/automatic-memory-management#allocating-memory), with a default size of 2GB for 32-bit syatems. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** also creates the main application domain, which in turn creates the main thread with a default stack size of 1MB on a 32-bit system and 4MB on a 64-bit system. Every thread is allocated it's own stack memory which provides the thread context. The main thread executes the application's entry point, typically the static Main method, and the application starts running. The **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** continues to provide services such as memory management, garbage collection, exception handling, and **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiling **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** code into native code.
 
 The main thread creates the GUI and executes the [**message loop**](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows), which is responsible for processing and dispatching messages queued by the operating system, such as key presses and mouse clicks. Each user control is bound to the thread that created it, typically the main thread, and cannot be updated by another. This is to ensure the [**integrity of UI components**](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/threading-model?view=netframeworkdesktop-4.8). 
