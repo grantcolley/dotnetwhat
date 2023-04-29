@@ -9,8 +9,10 @@
   - [SDK and BCL](#sdk-and-bcl)
   - [CIL](#cil)
   - [Running an Application](#running-an-application)
-- [Value Types, Reference Types and Variables](#value-types-reference-types-and-variables)
 - [Memory](#memory)
+  - [Variables](#variables) 
+  - [Value Types](#value-types) 
+  - [Reference Types](#reference-types) 
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
@@ -77,14 +79,17 @@ while (GetMessage(&msg, NULL, 0, 0))
 
 The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows) calls `GetMessage(&msg, NULL, 0, 0)` to check the message queue. If there is no message the thread is blocked until one arrives e.g. mouse move, mouse click or key press etc. When a message is placed in the queue the thread picks it off and calls `TranslateMessage(&msg);` to translate it into something meaningful. The message is then passed into `DispatchMessage(&msg);`, which routes it to the applicable even handler for processing e.g. `Button1_Click(object sender, EventArgs e)`. When the event has finished processing `GetMessage(&msg, NULL, 0, 0)` and the process is repeated until the application shuts down.
 
-## Value Types, Reference Types and Variables
+## Memory
 
+### Variables
 [**Variables**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables) are simply named storage locations in memory. C# is a type-safe language and variables store types that determine the size and layout of the variables memory. Variables store [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) and [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and the main difference between them are the way they are handled in memory.
 
+### Value Types
 [**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) objects numeric types (`int`, `decimal` etc.), `char`, `bool`, `enum` and `DateTime`. Custom value types can be created using a [struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct).
 [**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables store the actual value of the type in the variable e.g. `Int32 abc = 5;` will create a storage location named `abc` that can store a 32 bit `integer`, and then assign `abc` the value `5`. 
 When value type variables are assigned assigned from one variable to another, or as an argument to a method, the value is copied. The new variable will have its own copy of the value and changing the value of one variable will not impact the value of the other variable.
 
+### Reference Types
 [**Reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) objects are represented by a reference to the actual object i.e. the object is stored at an address in memory and the reference points to the object. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Unlike variables for [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), multiple variables can point to the same [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object therefore operations on one variable can affect the object referenced by the other variable.
 <br>
 
@@ -102,8 +107,6 @@ When value type variables are assigned assigned from one variable to another, or
 > 
 > You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). If the garbage collector came along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to make space for a new object e.g. an array of flats.
 <br>
-
-## Memory
 
 #### Memory Allocation
 When code execution enters a method, parameters passed into the method and local variables are allocated on the threads **stack** memory. For [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables the value of the type is stored on the **stack**. For [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) variables the reference to the object is stored on the **stack**, while the object is stored on the [**heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
