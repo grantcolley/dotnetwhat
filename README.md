@@ -35,6 +35,7 @@
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
+  - [Mark Members Static](#mark-members-static)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -1032,6 +1033,10 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 
 ![Benchmark StringBuilder](/readme-images/TextBuilder.png?raw=true "Benchmark StringBuilder")
 
+#### Mark Members Static
+Mark those members that do not reference instance data or call instance methods can be marked as static. This will prevent a runtime check to see if the object pointer is not null resulting in a performance gain.
+
+See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1822)
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
