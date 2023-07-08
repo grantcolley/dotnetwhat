@@ -337,9 +337,15 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 ```
 
 ## Concurrency
-The operating system runs code on threads. 
-Threads execute independently from each other and are each allocated stack memory for storing their context. This is where a method's local variables and arguments are stored.
+The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
 Threads can run concurrently. Physical concurrency is when multiple threads are run in parallel on multiple CPU's. Logical concurrency is when multiple threads are interleaved on a single CPU.
+
+> **Note**
+> 
+> [About Processes and Threads](https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads)
+> 
+> ...A thread is the entity within a process that can be scheduled for execution. All threads of a process share its virtual address space and system resources. In addition, each thread maintains exception handlers, a scheduling priority, thread local storage, a unique thread identifier, and a set of structures the system will use to save the thread context until it is scheduled. The thread context includes the thread's set of machine registers, the kernel stack, a thread environment block, and a user stack in the address space of the thread's process. Threads can also have their own security context, which can be used for impersonating clients....
+> 
 
 #### Threads
 When creating an instance of a Thread object, pass into it's constructor a callback to the code to execute. The thread can then be configured e.g. set its `thread.IsBackground = true`. Start running a thread by calling `thread.Start()`, optionally passing into it a parameter of type `object`.
@@ -362,12 +368,13 @@ Threads are only suitable for long running code and when it’s properties need 
 ```
 
 #### ThreadPool
-The ThreadPool contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the ThreadPool is in use then any new requests must wait until one becomes free. If the ThreadPool is used for long running code then the thread is taken out of rotation.
+The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. If the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is used for long running code then the thread is taken out of rotation.
 
-The ThreadPool uses background threads that do not keep the application running if all foreground threads finish.
+The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) uses background threads that do not keep the application running if all foreground threads finish.
 
 >  **Note**
-> When ThreadPool threads are rotated they do not clear local storage or fields marked with the ThreadStaticAttribute. Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the ThreadPool thread.
+> 
+> When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the ThreadStaticAttribute. Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.
 
 ```C#
 	private void RunThreadFromThreadPool()
@@ -1140,6 +1147,7 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
 
 ## References
 * **.NET Blogs**
+  * [About Processes and Threads](https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads)
   * [All About Span: Exploring a New .NET Mainstay](https://learn.microsoft.com/en-us/archive/msdn-magazine/2018/january/csharp-all-about-span-exploring-a-new-net-mainstay)
   * [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
   * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
@@ -1187,6 +1195,7 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
   * [String](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings)
   * [Struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
+  * [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
   * [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code)
   * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
