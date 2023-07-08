@@ -349,18 +349,41 @@ Threads are only suitable for long running code and when it’s properties need 
 	private void RunThread()
 	{
 		var message = "Hello World!";
+
 		var thread = new Thread(WriteToConsole);
 		thread.IsBackground = true;
 		thread.Start(message);	
 	}
 	
-	private static WriteToConsole(string message)
+	private static WriteToConsole(string stateInfo)
 	{
-		Console.WriteLine(message);
+		Console.WriteLine(stateInfo);
 	}
 ```
 
 #### ThreadPool
+The ThreadPool contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the ThreadPool is in use then any new requests must wait until one becomes free. If the ThreadPool is used for long running code then the thread is taken out of rotation.
+
+The ThreadPool uses background threads that do not keep the application running if all foreground threads finish.
+
+>  **Note**
+> When ThreadPool threads are rotated they do not clear local storage or fields marked with the ThreadStaticAttribute. Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the ThreadPool thread.
+
+```C#
+	private void RunThreadFromThreadPool()
+	{
+		var message = "Hello World!";
+
+		ThreadPool.QueueUserWorkerItem(WriteToConsole, message);
+	}
+	
+	private static WriteToConsole(string stateInfo)
+	{
+		Console.WriteLine(stateInfo);
+	}
+```
+
+
 #### Tasks
 #### Async Await
 
