@@ -344,6 +344,7 @@ Threads can run concurrently. Physical concurrency is when multiple threads are 
 #### Threads
 When creating an instance of a Thread object, pass into it's constructor a callback to the code to execute. The thread can then be configured e.g. set its `thread.IsBackground = true`. Start running a thread by calling `thread.Start()`, optionally passing into it a parameter of type `object`.
 
+Threads are only suitable for long running code and when it’s properties need to be configured. Do not use threads for asynchronous code or short running code because creating and destroying threads are costly
 ```C#
 	private void RunThread()
 	{
