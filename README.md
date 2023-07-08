@@ -342,6 +342,23 @@ Threads execute independently from each other and are each allocated stack memor
 Threads can run concurrently. Physical concurrency is when multiple threads are run in parallel on multiple CPU's. Logical concurrency is when multiple threads are interleaved on a single CPU.
 
 #### Threads
+When creating an instance of a Thread object, pass into it's constructor a callback to the code to execute. The thread can then be configured e.g. set its `thread.IsBackground = true`. Start running a thread by calling `thread.Start()`, optionally passing into it a parameter of type `object`.
+
+```C#
+	private void RunThread()
+	{
+		var message = "Hello World!";
+		var thread = new Thread(WriteToConsole);
+		thread.IsBackground = true;
+		thread.Start(message);	
+	}
+	
+	private static WriteToConsole(string message)
+	{
+		Console.WriteLine(message);
+	}
+```
+
 #### ThreadPool
 #### Tasks
 #### Async Await
