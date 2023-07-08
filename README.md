@@ -36,9 +36,13 @@
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
   - [Mark Members Static](#mark-members-static)
+- [Concurrency](#concurrency)
+  - [Threads](#threads)
+  - [ThreadPool](#threadpool)
+  - [Tasks](#tasks)
+  - [Async Await](#async-await)
 - [Glossary](#glossary)
 - [References](#references)
-
 
 ## Overview
 
@@ -1037,6 +1041,12 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 Mark those members that do not reference instance data or call instance methods can be marked as static. This will prevent a runtime check to see if the object pointer is not null resulting in a performance gain.
 
 See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1822)
+
+## Concurrency
+#### Threads
+#### ThreadPool
+#### Tasks
+#### Async Await
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
