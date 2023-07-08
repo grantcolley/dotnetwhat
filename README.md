@@ -337,8 +337,8 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 ```
 
 ## Concurrency
-The operating system runs code on [threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread). [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
-[Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) can run concurrently. Physical concurrency is when multiple [threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are run in parallel on multiple CPU's. Logical concurrency is when multiple [threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are interleaved on a single CPU.
+The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
+Threads can run concurrently. Physical concurrency is when multiple threads are run in parallel on multiple CPU's. Logical concurrency is when multiple threads are interleaved on a single CPU.
 
 > **Note**
 > 
