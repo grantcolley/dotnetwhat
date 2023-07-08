@@ -368,7 +368,7 @@ Threads are only suitable for long running code and when it’s properties need 
 ```
 
 #### ThreadPool
-The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. If the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is used for long running code then the thread is taken out of rotation.
+The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. If the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is used for long running code then the thread is taken out of rotation. Unlike when you create a new thread, you can't change the properties of an existing thread from the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool).
 
 The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) uses background threads that do not keep the application running if all foreground threads finish.
 
