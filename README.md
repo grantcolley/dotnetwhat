@@ -21,6 +21,11 @@
       - [unsafe and fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
+- [Concurrency](#concurrency)
+  - [Threads](#threads)
+  - [ThreadPool](#threadpool)
+  - [Tasks](#tasks)
+  - [Async Await](#async-await)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -36,11 +41,6 @@
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
   - [Mark Members Static](#mark-members-static)
-- [Concurrency](#concurrency)
-  - [Threads](#threads)
-  - [ThreadPool](#threadpool)
-  - [Tasks](#tasks)
-  - [Async Await](#async-await)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -335,6 +335,16 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
                 numbers[i] = i;
             }
 ```
+
+## Concurrency
+The operating system runs code on threads. 
+Threads execute independently from each other and are each allocated stack memory for storing their context. This is where a method's local variables and arguments are stored.
+Threads can run concurrently. Physical concurrency is when multiple threads are run in parallel on multiple CPU's. Logical concurrency is when multiple threads are interleaved on a single CPU.
+
+#### Threads
+#### ThreadPool
+#### Tasks
+#### Async Await
 
 ## What's in the CIL
 
@@ -1041,12 +1051,6 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 Mark those members that do not reference instance data or call instance methods can be marked as static. This will prevent a runtime check to see if the object pointer is not null resulting in a performance gain.
 
 See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1822)
-
-## Concurrency
-#### Threads
-#### ThreadPool
-#### Tasks
-#### Async Await
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
