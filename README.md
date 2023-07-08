@@ -374,7 +374,7 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 
 >  **Note**
 > 
-> When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the ThreadStaticAttribute. Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.
+> When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute). Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.
 
 ```C#
 	private void RunThreadFromThreadPool()
@@ -1139,6 +1139,7 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
 * **String** *- a reference type that stores text in a readonly collection of char objects. Strings are therefore immutable.*
 * **Struct** *- a value type structure that can encapsulate data and related functionality*
 * **System.Object** *- the base class of all .NET classes*
+* **ThreadStaticAttribute** *- A static field marked with ThreadStaticAttribute is not shared between threads. Each executing thread has a separate instance*
 * **Unboxing** *- the process of explicitly converting an objects value, or interface type, to a value type*
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
 * **Unsafe code** *- allows direct access to memory using pointers*
@@ -1196,6 +1197,7 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
   * [Struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
   * [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool)
+  * [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
   * [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code)
   * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
