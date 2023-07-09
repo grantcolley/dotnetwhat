@@ -400,7 +400,29 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 >
 > *At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”).*
 
+[Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) queues the specified method to run on the ThreadPool and returns a Task or Task<T> handle for that method. [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) uses the default task scheduler.
 
+[TaskFactory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) gives you fine grained control including specifying [TaskCreationOptions](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcreationoptions), passing parameters such as a [CancellationToken](https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken), and controlling the [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler).
+
+A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler) ensures that the work of a task is eventually executed. The default task scheduler uses the ThreadPool. 
+
+```C#
+	private void RunTask()
+	{
+		var message = "Hello World!";
+
+		Task.Run(() => WriteToConsole(message));
+
+		// does the same thing as Task.Run(() => WriteToConsole(message));
+		Task.Factory.StartNew(() => WriteToConsole(message),
+    			CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+	}
+	
+	private static WriteToConsole(string stateInfo)
+	{
+		Console.WriteLine(stateInfo);
+	}
+```
 
 #### Async Await
 
