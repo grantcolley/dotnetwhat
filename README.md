@@ -24,7 +24,7 @@
 - [Concurrency](#concurrency)
   - [Threads](#threads)
   - [ThreadPool](#threadpool)
-  - [Tasks](#tasks)
+  - [Task and Task\<T>](#task-and-taskt)
   - [Async Await](#async-await)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
@@ -391,7 +391,17 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 ```
 
 
-#### Tasks
+#### Task and Task\<T>
+[Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) represents an asynchronous operation. [Task\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) represents and asynchronous operation that returns a value of type `T`.
+
+> **Note**
+> 
+> Read [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
+>
+> *At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”).*
+
+
+
 #### Async Await
 
 ## What's in the CIL
