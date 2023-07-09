@@ -406,6 +406,12 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 
 A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler) ensures that the work of a task is eventually executed. The default task scheduler uses the ThreadPool. 
 
+> **Note**
+> 
+> Read [Task.Run vs Task.Factory.StartNew](https://devblogs.microsoft.com/pfxteam/task-run-vs-task-factory-startnew/)
+>
+> Task.Run in no way obsoletes Task.Factory.StartNew, but rather should simply be thought of as a quick way to use Task.Factory.StartNew without needing to specify a bunch of parameters.  It’s a shortcut.
+
 ```C#
 	private void RunTask()
 	{
@@ -413,7 +419,7 @@ A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threadin
 
 		Task.Run(() => WriteToConsole(message));
 
-		// does the same thing as Task.Run(() => WriteToConsole(message));
+		// this does the same thing as Task.Run()
 		Task.Factory.StartNew(() => WriteToConsole(message),
     			CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
 	}
