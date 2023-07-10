@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace dotnetwhat.tests
 {
     [TestClass]
@@ -209,6 +211,45 @@ namespace dotnetwhat.tests
 
             // Assert
             Assert.AreEqual("22", result);
+        }
+
+        [TestMethod]
+        public void Thread_Execute()
+        {
+            // Arrange
+            var threads = new Threads();
+
+            // Act
+            threads.RunThread();
+
+            // Assert
+
+        }
+
+        [TestMethod]
+        public void ThreadPool_Execute()
+        {
+            // Arrange
+            var theThreadPool = new TheThreadPool();
+
+            // Act
+            theThreadPool.RunThreadFromThreadPool();
+
+            // Assert
+
+        }
+
+        [TestMethod]
+        public void Tasks_Execute()
+        {
+            // Arrange
+            var tasks = new Tasks();
+
+            // Act
+            tasks.RunTask();
+
+            // Assert
+
         }
     }
 }
