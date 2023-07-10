@@ -392,6 +392,7 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 
 
 #### Task and Task\<T>
+A **Task** is a data structure that represents the eventual completion of an asynchronous operation. 
 [Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) represents an asynchronous operation. [Task\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) represents and asynchronous operation that returns a value of type `T`.
 
 > **Note**
@@ -400,9 +401,11 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 >
 > *At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”).*
 
-[Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) queues the specified method to run on the ThreadPool and returns a Task or Task<T> handle for that method. [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) uses the default task scheduler.
+Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). The task is able to tell you if a thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) has completed executing the method, if an exception occurred and, crucially, because a task supports a continuation, it can tell you asynchronously when the method has completed. The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) executes the method while task synchronises everything to ensure the continuation is invoked.
 
-[TaskFactory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) gives you fine grained control including specifying [TaskCreationOptions](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcreationoptions), passing parameters such as a [CancellationToken](https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken), and controlling the [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler).
+[Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) queues the specified method to run on the ThreadPool using the default task scheduler and default [TaskCreationOptions](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcreationoptions), and returns a Task or Task<T> handle for that method.
+
+[Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) gives you fine grained control including specifying [TaskCreationOptions](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcreationoptions), passing parameters such as a [CancellationToken](https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken), and controlling the [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler).
 
 A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler) ensures that the work of a task is eventually executed. The default task scheduler uses the ThreadPool. 
 
