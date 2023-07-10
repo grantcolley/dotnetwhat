@@ -385,17 +385,17 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 > When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute). Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.
 
 ```C#
-	private void RunThreadFromThreadPool()
-	{
-		var message = "Hello World!";
+        public void RunThreadFromThreadPool()
+        {
+            var message = "Hello World!";
 
-		ThreadPool.QueueUserWorkerItem(WriteToConsole, message);
-	}
-	
-	private static WriteToConsole(string stateInfo)
-	{
-		Console.WriteLine(stateInfo);
-	}
+            ThreadPool.QueueUserWorkItem(WriteToConsole, message);
+        }
+
+        private static void WriteToConsole(object stateInfo)
+        {
+            Console.WriteLine(stateInfo);
+        }
 ```
 
 
