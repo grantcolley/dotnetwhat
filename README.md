@@ -21,6 +21,11 @@
       - [unsafe and fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
+- [Concurrency](#concurrency)
+  - [Threads](#threads)
+  - [ThreadPool](#threadpool)
+  - [Task and Task\<T>](#task-and-taskt)
+  - [Async Await](#async-await)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -38,7 +43,6 @@
   - [Mark Members Static](#mark-members-static)
 - [Glossary](#glossary)
 - [References](#references)
-
 
 ## Overview
 
@@ -331,6 +335,113 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
                 numbers[i] = i;
             }
 ```
+
+## Concurrency
+The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
+Threads can run concurrently. Physical concurrency is when multiple threads are run in parallel on multiple CPU's. Logical concurrency is when multiple threads are interleaved on a single CPU.
+
+> **Note**
+> 
+> Read [About Processes and Threads](https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads)
+> 
+> ...A thread is the entity within a process that can be scheduled for execution. All threads of a process share its virtual address space and system resources. In addition, each thread maintains exception handlers, a scheduling priority, thread local storage, a unique thread identifier, and a set of structures the system will use to save the thread context until it is scheduled. The thread context includes the thread's set of machine registers, the kernel stack, a thread environment block, and a user stack in the address space of the thread's process. Threads can also have their own security context, which can be used for impersonating clients....
+> 
+
+#### Threads
+When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread), pass into it's constructor a callback to the code to execute. The [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) can then be configured e.g. set its `thread.IsBackground = true`. Start running a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) by calling `thread.Start()`, optionally passing into it a parameter of type `object`.
+
+> **Note**
+>
+> Threads don't return values. You can call a method that has parameter of type `object` e.g. `object stateInfo`
+> but the return type of the method must be void.
+> 
+> A work around is to update a shared variable inside a lock().
+
+[Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are only suitable for long running code and when it’s properties need to be configured. Do not use [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) for asynchronous code or short running code because creating and destroying [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are costly
+
+```C#
+        public void RunThread()
+        {
+            var message = "Hello World!";
+
+            var thread = new Thread(WriteToConsole);
+            thread.IsBackground = true;
+            thread.Start(message);            
+        }
+
+        private static void WriteToConsole(object stateInfo)
+        {
+            Console.WriteLine(stateInfo);
+        }
+```
+
+#### ThreadPool
+The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. If the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is used for long running code then the thread is taken out of rotation. Unlike when you create a new thread, you can't change the properties of an existing thread from the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool).
+
+The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) uses background threads that do not keep the application running if all foreground threads finish.
+
+>  **Note**
+> 
+> When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute). Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.
+
+```C#
+        public void RunThreadFromThreadPool()
+        {
+            var message = "Hello World!";
+
+            ThreadPool.QueueUserWorkItem(WriteToConsole, message);
+        }
+
+        private static void WriteToConsole(object stateInfo)
+        {
+            Console.WriteLine(stateInfo);
+        }
+```
+
+
+#### Task and Task\<T>
+A **Task** is a data structure that represents the eventual completion of an asynchronous operation. 
+[Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) represents an asynchronous operation. [Task\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) represents and asynchronous operation that returns a value of type `T`.
+
+> **Note**
+> 
+> Read [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
+>
+> *At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”).*
+
+Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). The task is able to tell you if a thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) has completed executing the method, if an exception occurred and, crucially, because a task supports a continuation, it can tell you asynchronously when the method has completed. The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) executes the method while task synchronises everything to ensure the continuation is invoked.
+
+[Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) queues the specified method to run on the ThreadPool using the default task scheduler and default [TaskCreationOptions](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcreationoptions), and returns a Task or Task<T> handle for that method.
+
+[Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) gives you fine grained control including specifying [TaskCreationOptions](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcreationoptions), passing parameters such as a [CancellationToken](https://learn.microsoft.com/en-us/dotnet/api/system.threading.cancellationtoken), and controlling the [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler).
+
+A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler) ensures that the work of a task is eventually executed. The default task scheduler uses the ThreadPool. 
+
+> **Note**
+> 
+> Read [Task.Run vs Task.Factory.StartNew](https://devblogs.microsoft.com/pfxteam/task-run-vs-task-factory-startnew/)
+>
+> Task.Run in no way obsoletes Task.Factory.StartNew, but rather should simply be thought of as a quick way to use Task.Factory.StartNew without needing to specify a bunch of parameters.  It’s a shortcut.
+
+```C#
+        public void RunTask()
+        {
+            var message = "Hello World!";
+
+            _ = Task.Run(() => WriteToConsole(message));
+
+            // this does the same thing as Task.Run()
+            _ = Task.Factory.StartNew(() => WriteToConsole(message),
+                    CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+        }
+
+        private static void WriteToConsole(string stateInfo)
+        {
+            Console.WriteLine(stateInfo);
+        }
+```
+
+#### Async Await
 
 ## What's in the CIL
 
@@ -1077,6 +1188,9 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
 * **String** *- a reference type that stores text in a readonly collection of char objects. Strings are therefore immutable.*
 * **Struct** *- a value type structure that can encapsulate data and related functionality*
 * **System.Object** *- the base class of all .NET classes*
+* **Thread** *- threads execute application code*
+* **ThreadPool** *- a pool of threads that can be used to execute tasks*
+* **ThreadStaticAttribute** *- A static field marked with ThreadStaticAttribute is not shared between threads. Each executing thread has a separate instance*
 * **Unboxing** *- the process of explicitly converting an objects value, or interface type, to a value type*
 * **Unmanaged resources** *- common types include files, windows, network connections, or database connections*
 * **Unsafe code** *- allows direct access to memory using pointers*
@@ -1085,6 +1199,7 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
 
 ## References
 * **.NET Blogs**
+  * [About Processes and Threads](https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads)
   * [All About Span: Exploring a New .NET Mainstay](https://learn.microsoft.com/en-us/archive/msdn-magazine/2018/january/csharp-all-about-span-exploring-a-new-net-mainstay)
   * [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
   * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
@@ -1132,6 +1247,9 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
   * [String](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings)
   * [Struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct)
   * [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object)
+  * [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread)
+  * [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool)
+  * [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute)
   * [Unmanaged Resources](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged)
   * [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code)
   * [Value Types](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types)
