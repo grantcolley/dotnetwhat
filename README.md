@@ -350,21 +350,29 @@ Threads can run concurrently. Physical concurrency is when multiple threads are 
 #### Threads
 When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread), pass into it's constructor a callback to the code to execute. The [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) can then be configured e.g. set its `thread.IsBackground = true`. Start running a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) by calling `thread.Start()`, optionally passing into it a parameter of type `object`.
 
-[Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are only suitable for long running code and when it’s properties need to be configured. Do not use [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) for asynchronous code or short running code because creating and destroying [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are costly
-```C#
-	private void RunThread()
-	{
-		var message = "Hello World!";
+> **Note**
+>
+> Threads don't return values. You can call a method that has parameter of type `object` e.g. `object stateInfo`
+> but the return type of the method must be void.
+> 
+> A work around is to update a shared variable inside a lock().
 
-		var thread = new Thread(WriteToConsole);
-		thread.IsBackground = true;
-		thread.Start(message);	
-	}
-	
-	private static WriteToConsole(string stateInfo)
-	{
-		Console.WriteLine(stateInfo);
-	}
+[Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are only suitable for long running code and when it’s properties need to be configured. Do not use [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) for asynchronous code or short running code because creating and destroying [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are costly
+
+```C#
+        public void RunThread()
+        {
+            var message = "Hello World!";
+
+            var thread = new Thread(WriteToConsole);
+            thread.IsBackground = true;
+            thread.Start(message);            
+        }
+
+        private static void WriteToConsole(object stateInfo)
+        {
+            Console.WriteLine(stateInfo);
+        }
 ```
 
 #### ThreadPool
