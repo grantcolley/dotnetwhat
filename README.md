@@ -424,21 +424,21 @@ A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threadin
 > Task.Run in no way obsoletes Task.Factory.StartNew, but rather should simply be thought of as a quick way to use Task.Factory.StartNew without needing to specify a bunch of parameters.  It’s a shortcut.
 
 ```C#
-	private void RunTask()
-	{
-		var message = "Hello World!";
+        public void RunTask()
+        {
+            var message = "Hello World!";
 
-		Task.Run(() => WriteToConsole(message));
+            _ = Task.Run(() => WriteToConsole(message));
 
-		// this does the same thing as Task.Run()
-		Task.Factory.StartNew(() => WriteToConsole(message),
-    			CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
-	}
-	
-	private static WriteToConsole(string stateInfo)
-	{
-		Console.WriteLine(stateInfo);
-	}
+            // this does the same thing as Task.Run()
+            _ = Task.Factory.StartNew(() => WriteToConsole(message),
+                    CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default);
+        }
+
+        private static void WriteToConsole(string stateInfo)
+        {
+            Console.WriteLine(stateInfo);
+        }
 ```
 
 #### Async Await
