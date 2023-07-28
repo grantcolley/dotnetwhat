@@ -344,7 +344,7 @@ Threads can run concurrently. Physical concurrency is when multiple threads are 
 > 
 > Read [About Processes and Threads](https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads)
 > 
-> ...A thread is the entity within a process that can be scheduled for execution. All threads of a process share its virtual address space and system resources. In addition, each thread maintains exception handlers, a scheduling priority, thread local storage, a unique thread identifier, and a set of structures the system will use to save the thread context until it is scheduled. The thread context includes the thread's set of machine registers, the kernel stack, a thread environment block, and a user stack in the address space of the thread's process. Threads can also have their own security context, which can be used for impersonating clients....
+> *...A thread is the entity within a process that can be scheduled for execution. All threads of a process share its virtual address space and system resources. In addition, each thread maintains exception handlers, a scheduling priority, thread local storage, a unique thread identifier, and a set of structures the system will use to save the thread context until it is scheduled. The thread context includes the thread's set of machine registers, the kernel stack, a thread environment block, and a user stack in the address space of the thread's process. Threads can also have their own security context, which can be used for impersonating clients....*
 > 
 
 #### Threads
@@ -352,12 +352,12 @@ When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.thr
 
 > **Note**
 >
-> Threads don't return values. You can call a method that has parameter of type `object` e.g. `object stateInfo`
-> but the return type of the method must be void.
+> *Threads don't return values. You can call a method that has parameter of type `object` e.g. `object stateInfo`
+> but the return type of the method must be void.*
 > 
-> A work around is to update a shared variable inside a lock().
+> *A work around is to update a shared variable inside a [lock()](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/lock) statement.*
 
-[Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are only suitable for long running code and when it’s properties need to be configured. Do not use [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) for asynchronous code or short running code because creating and destroying [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are costly
+[Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are only suitable for long running code and when it’s properties need to be configured. Do not use [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) for asynchronous code or short running code because creating and destroying [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) is costly
 
 ```C#
         public void RunThread()
@@ -378,11 +378,12 @@ When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.thr
 #### ThreadPool
 The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. If the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is used for long running code then the thread is taken out of rotation. Unlike when you create a new thread, you can't change the properties of an existing thread from the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool).
 
-The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) uses background threads that do not keep the application running if all foreground threads finish.
-
 >  **Note**
 > 
-> When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute). Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.
+> *When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute). Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.*
+>
+
+The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) uses background threads that do not keep the application running if all foreground threads finish.
 
 ```C#
         public void RunThreadFromThreadPool()
@@ -400,14 +401,15 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 
 
 #### Task and Task\<T>
-A **Task** is a data structure that represents the eventual completion of an asynchronous operation. 
-[Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) represents an asynchronous operation. [Task\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) represents and asynchronous operation that returns a value of type `T`.
+A **Task** is a data structure that represents the eventual completion of an asynchronous operation.
+
+[Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) represents an asynchronous operation while [Task\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) represents and asynchronous operation that returns a value of type `T`.
 
 > **Note**
 > 
-> Read [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
+> Read [How Async/Await Really Works in C#]([https://devblogs.microsoft.com/dotnet/how-async-await-really-works/](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/#enter-tasks))
 >
-> *At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”).*
+> *...At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”)....*
 
 Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). The task is able to tell you if a thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) has completed executing the method, if an exception occurred and, crucially, because a task supports a continuation, it can tell you asynchronously when the method has completed. The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) executes the method while task synchronises everything to ensure the continuation is invoked.
 
@@ -421,7 +423,7 @@ A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threadin
 > 
 > Read [Task.Run vs Task.Factory.StartNew](https://devblogs.microsoft.com/pfxteam/task-run-vs-task-factory-startnew/)
 >
-> Task.Run in no way obsoletes Task.Factory.StartNew, but rather should simply be thought of as a quick way to use Task.Factory.StartNew without needing to specify a bunch of parameters.  It’s a shortcut.
+> *...Task.Run in no way obsoletes Task.Factory.StartNew, but rather should simply be thought of as a quick way to use Task.Factory.StartNew without needing to specify a bunch of parameters.  It’s a shortcut...*
 
 ```C#
         public void RunTask()
