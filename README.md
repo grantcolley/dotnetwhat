@@ -135,6 +135,14 @@ The small object heap is divided into three generations, 0, 1, and 2, so it can 
 
 The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes in size, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
 
+To put what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) into context, 85,000 bytes is the equivalent of the following:
+|Type|85,000 bytes|
+|--------:|-------------------------------:|
+|string|9 A4 pages of text|
+|Int32|An array containing 21,250 integers|
+|Int64|An array containing 10,625 longs|
+|Decimal|An array containing 5,312 decimals|
+
 #### Releasing Memory
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0. The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap#loh-performance-implications) and Gen 2 are collected together, if either one's threshold is exceeded, a generation 2 collection is triggered.
 
