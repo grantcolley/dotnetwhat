@@ -456,9 +456,9 @@ A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threadin
 
 |Type|Description|
 |----------------------------:|-------------------------------------------------------------------------------------|
-|Task.CompletedTask|Gets a task that has already completed successfully.|
-|Task.FromResult<TResult>|Creates a Task<TResult> that's completed successfully with the specified result. The method is commonly used when the return value of a task is immediately known without executing a longer code path.|
-|TaskCompletionSource<TResult>|Represents the producer side of a Task<TResult>. In many scenarios, it is useful to enable a Task<TResult> to represent an external asynchronous operation. TaskCompletionSource<TResult> is provided for this purpose. It enables the creation of a task that can be handed out to consumers. It doesn't tie up a thread.|
+|[Task.CompletedTask](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.completedtask)|Gets a task that has already completed successfully.|
+|[Task.FromResult<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.fromresult)|Creates a Task<TResult> that's completed successfully with the specified result. The method is commonly used when the return value of a task is immediately known without executing a longer code path.|
+|[TaskCompletionSource<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcompletionsource-1)|Represents the producer side of a Task<TResult>. In many scenarios, it is useful to enable a Task<TResult> to represent an external asynchronous operation. TaskCompletionSource<TResult> is provided for this purpose. It enables the creation of a task that can be handed out to consumers. It doesn't tie up a thread.|
 
 #### Async Await
 
