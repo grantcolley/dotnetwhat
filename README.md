@@ -354,8 +354,6 @@ When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.thr
 >
 > *Threads don't return values. You can call a method that has parameter of type `object` e.g. `object stateInfo`
 > but the return type of the method must be void.*
-> 
-> *A work around is to update a shared variable inside a [lock()](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/lock) statement.*
 
 [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) are only suitable for long running code and when it’s properties need to be configured. Do not use [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) for asynchronous code or short running code because creating and destroying [Threads](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) is costly
 
@@ -376,9 +374,13 @@ When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.thr
 ```
 
 #### ThreadPool
-The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. If the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is used for long running code then the thread is taken out of rotation. Unlike when you create a new thread, you can't change the properties of an existing thread from the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool).
+The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. Unlike when you create a new thread, you can't change the properties of an existing thread from the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool).
 
->  **Note**
+> **Note**
+>
+> If the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is used for long running code then the thread is taken out of rotation.
+
+>  **Warning**
 > 
 > *When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute). Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.*
 >
@@ -407,7 +409,7 @@ A **Task** is a data structure that represents the eventual completion of an asy
 
 > **Note**
 > 
-> Read [How Async/Await Really Works in C#]([https://devblogs.microsoft.com/dotnet/how-async-await-really-works/](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/#enter-tasks))
+> Read [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
 >
 > *...At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”)....*
 
