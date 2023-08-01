@@ -92,7 +92,10 @@ The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windo
 
 ### Value Types
 [**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) objects numeric types (`int`, `decimal` etc.), `char`, `bool`, `enum` and `DateTime`. Custom value types can be created using a [struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct).
+
 [**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables store the actual value of the type in the variable e.g. `Int32 abc = 5;` will create a storage location named `abc` that can store a 32 bit `integer`, and then assign `abc` the value `5`. 
+No additional type information is stored with a value type, as the type information is known at compile-time and embedded in the generated IL code.
+
 When value type variables are assigned assigned from one variable to another, or as an argument to a method, the value is copied. The new variable will have its own copy of the value and changing the value of one variable will not impact the value of the other variable.
 
 >  **Note**
