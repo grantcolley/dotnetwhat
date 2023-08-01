@@ -1,6 +1,6 @@
 # dotnetwhat
 
-*Programming is communicating instructions. Communication is all about meaning, semantics matter.*
+*Programming is communicating instructions, semantics matter.*
 
 ### Table of Contents
 - [Overview](#overview)
