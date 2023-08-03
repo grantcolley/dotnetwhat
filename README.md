@@ -229,7 +229,7 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
         // Do not provide finalizer in types derived from this class.
         ~Foo()
         {
-            Dispose(disposing false);
+            Dispose(false);
         }
     }
 ```
