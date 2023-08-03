@@ -156,6 +156,14 @@ To put what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/sta
 - **Compact:** *relocate objects next to each other to reduce fragmentation of the heap. Then update all references to point to the new locations*
 - **Resume:** *manage threads are allowed to resume*
 
+> **Note**
+>
+> Read [Fundamentals of garbage collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
+> 
+> *...After the garbage collector performs a collection of generation 0, it compacts the memory for the reachable objects and promotes them to generation 1...*
+> 
+> *...Ordinarily, the large object heap (LOH) isn't compacted because copying large objects imposes a performance penalty. However, in .NET Core and in .NET Framework 4.5.1 and later, you can use the GCSettings.LargeObjectHeapCompactionMode property to compact the large object heap on demand....*
+
 [**Workstation GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc) collection occurs on the user thread that triggered the garbage collection and remains at the same priority.
 
 [**Server GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc) collection occurs on multiple dedicated threads. On Windows, these threads run at `THREAD_PRIORITY_HIGHEST` priority level. A heap and a dedicated thread to perform garbage collection are provided for each logical CPU
