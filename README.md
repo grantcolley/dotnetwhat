@@ -185,7 +185,7 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
         // Don't make Dispose() virtual. It mustn't be overridden by a derived class.
         public void Dispose()
         {
-            Dispose(disposing true);
+            Dispose(true);
             
             // GC.SuppressFinalize takes this object off the finalization queue
             // and prevents finalization code from executing a second time.
