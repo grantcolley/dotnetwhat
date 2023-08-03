@@ -150,6 +150,8 @@ To put what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/sta
 #### Releasing Memory
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0. The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap#loh-performance-implications) and Gen 2 are collected together, if either one's threshold is exceeded, a generation 2 collection is triggered.
 
+Both Gen0 and Gen2 collections compact the memory, however, the large object heap (LOH) isn't compacted unless you use the [GCSettings.LargeObjectHeapCompactionMode](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.gcsettings.largeobjectheapcompactionmode) property to compact the large object heap on demand.
+
 **Phases of Garbage Collection**
 - **Suspension:** *all managed threads are suspended except for the thread that triggered the garbage collection*
 - **Mark:** *the garbage collector starts at each root and follows every object reference and marks those as seen. Roots include static fields, local variables on a thread's stack, CPU registers, GC handles, and the finalize queue*
@@ -161,8 +163,10 @@ To put what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/sta
 > Read [Fundamentals of garbage collection](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection)
 > 
 > *...After the garbage collector performs a collection of generation 0, it compacts the memory for the reachable objects and promotes them to generation 1...*
+>
+> *...Objects on the large object heap (which is sometimes referred to as generation 3) are also collected in generation 2....*
 > 
-> *...Ordinarily, the large object heap (LOH) isn't compacted because copying large objects imposes a performance penalty. However, in .NET Core and in .NET Framework 4.5.1 and later, you can use the GCSettings.LargeObjectHeapCompactionMode property to compact the large object heap on demand....*
+> *...Ordinarily, the large object heap (LOH) isn't compacted because copying large objects imposes a performance penalty. However, in .NET Core and in .NET Framework 4.5.1 and later, you can use the [GCSettings.LargeObjectHeapCompactionMode](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.gcsettings.largeobjectheapcompactionmode) property to compact the large object heap on demand....*
 
 [**Workstation GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc) collection occurs on the user thread that triggered the garbage collection and remains at the same priority.
 
