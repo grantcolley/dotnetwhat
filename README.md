@@ -142,7 +142,7 @@ The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collecti
 To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap), 85,000 bytes is the equivalent of the following:
 |Type|85,000 bytes|
 |--------:|-------------------------------:|
-|string|42,500 characters, equivalent to approx. 9 x A4 pages of text|
+|string|42,500 16bit characters, equivalent to approx. 9 x A4 pages of text|
 |Int32|An array containing 21,250 integers|
 |Int64|An array containing 10,625 longs|
 |Decimal|An array containing 5,312 decimals|
