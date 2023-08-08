@@ -113,7 +113,7 @@ When value type variables are assigned assigned from one variable to another, or
 >  
 >  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by [Jon Skeet](https://codeblog.jonskeet.uk/category/csharp/) on [**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
 >
-> ### A piece of paper has the address of a house written on it
+> ### A piece of paper has the address of a house written on it.
 > 
 > The house is a reference type object in memory. The address is the reference pointing to where that object is located in memory. The piece of paper is the variable containing the address pointing to the object in memory. 
 > 
@@ -139,7 +139,7 @@ The small object heap is divided into three generations, 0, 1, and 2, so it can 
 
 The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes in size, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
 
-To put what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) into context, 85,000 bytes is the equivalent of the following:
+To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap), 85,000 bytes is the equivalent of the following:
 |Type|85,000 bytes|
 |--------:|-------------------------------:|
 |string|9 A4 pages of text|
