@@ -507,7 +507,7 @@ Task task = Task.Run(() => "Hello World!")
 string message = await Task.Run(() => "Hello World!");
 Console.WriteLine(message);
 
-// because the compiler does something along the lines of this...
+// because behind the scene the compiler does something along the lines of this...
 
 Task<string> task = Task.Run(() => "Hello World!");
 TaskAwaiter<string> awaiter = task.GetAwaiter();
