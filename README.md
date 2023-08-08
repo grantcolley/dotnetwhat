@@ -443,7 +443,7 @@ A **Task** is a data structure that represents the eventual completion of an asy
 >
 > *...At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”)....*
 
-Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). A Task exposes a `GetAwaiter` method, which gets an awaiter to await the task i.e. let the caller know when the task is finished. It also lets the caller attach a *Continuation*, which tells what needs to be executed next. 
+Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). A task exposes a `GetAwaiter` method, which gets an awaiter to await the task i.e. let the caller know when the task is finished. The `awaiter` also lets the caller attach a *Continuation*, which tells what needs to be executed next. 
 Ultimately, the task is able to tell you if a thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) has completed executing the method, if an exception occurred and, crucially, because a task supports a continuation, it can tell what needs to be called on completion. 
 The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) executes the method while task synchronises everything to ensure the continuation is invoked.
 
@@ -488,7 +488,36 @@ A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threadin
 [Value Task\<T>](https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/) is the struct equivalent of Task\<T>, altough much more limited than Task\<T>. It was created to help improve asynchronous performance where decreased allocation overhead is important.
 
 #### Async Await
-A 
+A [Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) exposes a `GetAwaiter` method to which the caller can attach a *Continuation*.
+
+The `await` keyword simplifies attaching the continuation.
+
+Consider the following:
+
+```C#
+
+Task task = Task.Run(() => "Hello World!")
+    .ContinueWith(antecedent =>
+    {
+        Console.WriteLine(antecedent.Result);
+    });
+
+// using async/await the code above can be simplified into the following...
+
+string message = await Task.Run(() => "Hello World!");
+Console.WriteLine(message);
+
+// because the compiler does something along the lines of this...
+
+Task<string> task = Task.Run(() => "Hello World!");
+TaskAwaiter<string> awaiter = task.GetAwaiter();
+awaiter.OnCompleted(() =>
+{
+    string message = awaiter.GetResult();
+    Console.WriteLine(message);
+});
+
+```
 
 ## What's in the CIL
 
