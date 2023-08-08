@@ -415,6 +415,22 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
         }
 ```
 
+Updating a UI control on the UI thread can be done by calling the controls `Dispatcher` like this:
+
+```C#
+private void button1_Click(object sender, RoutedEventArgs e)
+{
+    ThreadPool.QueueUserWorkItem(_ =>
+    {
+        string message = ComputeMessage();
+
+        button1.Dispatcher.InvokeAsync(() =>
+        {
+            button1.Content = message;
+        });
+    });
+}
+```
 
 #### Task and Task\<T>
 A **Task** is a data structure that represents the eventual completion of an asynchronous operation.
