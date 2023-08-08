@@ -443,7 +443,7 @@ A **Task** is a data structure that represents the eventual completion of an asy
 >
 > *...At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”)....*
 
-Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). The task is able to tell you if a thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) has completed executing the method, if an exception occurred and, crucially, because a task supports a continuation, it can tell you asynchronously when the method has completed. The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) executes the method while task synchronises everything to ensure the continuation is invoked.
+Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). A Task exposes a `GetAwaiter` method, which gets an awaiter to await the task i.e. let the caller know when the task is finished. It also let the caller attach a *Continuation*. Ultimately, the task is able to tell you if a thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) has completed executing the method, if an exception occurred and, crucially, because a task supports a continuation, it can tell what needs to be called on completion. The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) executes the method while task synchronises everything to ensure the continuation is invoked.
 
 [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) queues the specified method to run on the ThreadPool using the default task scheduler and default [TaskCreationOptions](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcreationoptions), and returns a Task or Task<T> handle for that method.
 
@@ -486,6 +486,7 @@ A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threadin
 [Value Task\<T>](https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/) is the struct equivalent of Task\<T>, altough much more limited than Task\<T>. It was created to help improve asynchronous performance where decreased allocation overhead is important.
 
 #### Async Await
+A 
 
 ## What's in the CIL
 
