@@ -96,7 +96,7 @@ The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windo
 [**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables store the actual value of the type in the variable e.g. `Int32 abc = 5;` will create a storage location named `abc` that can store a 32 bit `integer`, and then assign `abc` the value `5`. 
 No additional type information is stored with a value type, as the type information is known at compile-time and embedded in the generated IL code.
 
-When value type variables are assigned assigned from one variable to another, or as an argument to a method, the value is copied. The new variable will have its own copy of the value and changing the value of one variable will not impact the value of the other variable.
+When value type variables are assigned from one variable to another, or as an argument to a method, the value is copied. The new variable will have its own copy of the value and changing the value of one variable will not impact the value of the other variable.
 
 >  **Note**
 > 
@@ -477,6 +477,31 @@ A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threadin
         {
             Console.WriteLine(stateInfo);
         }
+```
+
+Tasks use [AggregateException](https://learn.microsoft.com/en-us/dotnet/api/system.aggregateexception) to consolidate multiple failures into a single, throwable exception object. Each exception can be handled by calling [AggregateException.Handle](https://learn.microsoft.com/en-us/dotnet/api/system.aggregateexception.handle). [AggregateException.Flatten](), on the otherhand, recursively flattens all instances of [AggregateException](https://learn.microsoft.com/en-us/dotnet/api/system.aggregateexception) exceptions that are *inner exceptions* of the current AggregateException instance.
+
+```C#
+try
+{
+    Func<int, int, int> divide = (x, y) => x / y;
+    var task = Task.Run(() => divide(10, 0));
+    var result = task.Result;
+}
+catch (AggregateException ae)
+{
+    ae.Handle(e =>
+    {
+        if (e is DivideByZeroException)
+        {
+            // do something...
+        }
+        else
+        {
+            // do something else...
+        }
+    });
+}
 ```
 
 
