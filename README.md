@@ -147,6 +147,8 @@ To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-
 |Int64|An array containing 10,625 longs|
 |Decimal|An array containing 5,312 decimals|
 
+The initial size of the heap 2GB-4GB for 32-bit systems, and slightly larger for 64-bit systems. The heap can grow (and shrink) according to the demands of the application. The size the heap can grow to is limited by the available system memory and any restrictions imposed by the operating system and hardware.
+
 #### Releasing Memory
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0. The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap#loh-performance-implications) and Gen 2 are collected together, if either one's threshold is exceeded, a generation 2 collection is triggered.
 
