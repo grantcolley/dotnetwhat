@@ -141,13 +141,13 @@ The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collecti
 
 To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap), 85,000 bytes is the equivalent of the following:
 |Type|85,000 bytes|
-|--------:|-------------------------------:|
+|:--------|:-------------------------------|
 |string|A string with 42,500 16bit characters, equivalent to approx. 9 x A4 pages of text|
 |32 bit object reference|An array containing 21,250 references to objects on a 32 bit system|
 |64 bit object reference|An array containing 10,625 references to objects on a 64 bit system|
 |Int32|An array containing 21,250 integers|
 |Int64|An array containing 10,625 longs|
-|Decimal|An array containing 5,312 decimals|
+|Decimal(16 bytes)|An array containing 5,312 decimals|
 
 The initial size of the heap 2GB-4GB for 32-bit systems, and slightly larger for 64-bit systems. The heap can grow (and shrink) according to the demands of the application. The size the heap can grow to is limited by the available system memory and any restrictions imposed by the operating system and hardware.
 
