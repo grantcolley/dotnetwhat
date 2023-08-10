@@ -1,4 +1,7 @@
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using System.Net.Security;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace dotnetwhat.tests
 {
@@ -250,6 +253,26 @@ namespace dotnetwhat.tests
 
             // Assert
 
+        }
+
+        [TestMethod]
+        public void CapturedVariables()
+        {
+            int seed = 0;
+            Func<int> seedIncrementer = () => seed++;
+            var res1 = seedIncrementer();
+            var res2 = seedIncrementer();
+            var res3 = seedIncrementer();
+
+            // NOTE: seed++ is post-increment
+            //       i.e. the increment happens AFTER
+            //            the return is returned!
+
+            Assert.AreEqual(0, res1);
+            Assert.AreEqual(1, res2);
+            Assert.AreEqual(2, res3);
+
+            Assert.AreEqual(3, seed);
         }
     }
 }
