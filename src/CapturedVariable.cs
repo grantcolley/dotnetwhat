@@ -8,7 +8,16 @@
 
             Func<int> increment = () => myLocalValue++;
 
-            increment();
+            // NOTE: myLocalValue++ is a post-increment
+            //       so calling increment() will return
+            //       0 to variable stillZero:
+            //       i.e. stillZero = 0
+            //
+            //       whereas myLocalValue will equal 1
+            //       after the post-increment kicks in
+            //       i.e. myLocalValue = 1
+
+            int stillZero = increment();
 
             return myLocalValue;
         }
