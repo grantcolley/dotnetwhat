@@ -16,6 +16,7 @@
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
+  - [Memory and ASP.NET Core](#memory-and-aspnet-core)
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
       - [unsafe and fixed](#unsafe-and-fixed)
@@ -239,6 +240,21 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
         }
     }
 ```
+#### Memory and ASP.NET Core
+When an **ASP.NET Core** app starts, the GC allocates heap segments where each segment is a contiguous range of memory.
+**Transient** objects that are referenced during the life of a web request are short lived and remain in gen 0. Application level **singletons** will migrate to generation 2.
+**GC.Collect** should not be done by production **ASP.NET Core apps**.
+**Server GC** is the default **GC** for **ASP.NET Core** apps and are optimized for the server. The **GC** mode can be set explicitly in the project file or in the `runtimeconfig.json` file of the published app. 
+```XML
+<PropertyGroup>
+  <ServerGarbageCollection>true</ServerGarbageCollection>
+</PropertyGroup>
+```
+**Server GC** `gen0` collections are less frequent than **Workstation GC**.
+
+> **Note**
+>
+> On a typical web server environment, CPU usage is more important than memory, therefore the Server GC is better. If memory utilization is high and CPU usage is relatively low, the Workstation GC might be more performant. For example, high density hosting several web apps where memory is scarce.
 
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
