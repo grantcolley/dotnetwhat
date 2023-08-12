@@ -255,6 +255,10 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 > **Note**
 >
 > On a typical web server environment, CPU usage is more important than memory, therefore the Server GC is better. If memory utilization is high and CPU usage is relatively low, the Workstation GC might be more performant. For example, high density hosting several web apps where memory is scarce.
+>
+> See the following about [*GC using Docker and small containers*](https://learn.microsoft.com/en-us/aspnet/core/performance/memory#gc-using-docker-and-small-containers)
+> 
+> *...When multiple containerized apps are running on one machine, Workstation GC might be more performant than Server GC.*
 
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
