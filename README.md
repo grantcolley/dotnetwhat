@@ -260,6 +260,10 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 > 
 > *...When multiple containerized apps are running on one machine, Workstation GC might be more performant than Server GC.*
 
+#### WeakReference
+The [WeakReference](https://learn.microsoft.com/en-us/dotnet/api/system.weakreference) class references an object while still allowing it to be collected by garbage collection under memory pressure. This can be useful for caching.
+[IMemoryCache](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory#use-imemorycache) uses `WeakReference`.
+
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
