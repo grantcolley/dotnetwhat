@@ -16,7 +16,7 @@
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
-  - [WeakRefence Class](#weakrefence-class)
+  - [WeakReference Class](#weakreference-class)
   - [HttpClient](#httpclient)
   - [Memory and ASP.NET Core](#memory-and-aspnet-core)
   - [OutOfMemoryException](#outofmemoryexception)
