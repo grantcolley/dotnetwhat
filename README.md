@@ -16,6 +16,8 @@
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
+  - [WeakRefence Class](#weakrefence-class)
+  - [HttpClient](#httpclient)
   - [Memory and ASP.NET Core](#memory-and-aspnet-core)
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
@@ -263,6 +265,11 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 #### WeakReference
 The [WeakReference](https://learn.microsoft.com/en-us/dotnet/api/system.weakreference) class references an object while still allowing it to be collected by garbage collection under memory pressure. This can be useful for caching.
 [IMemoryCache](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory#use-imemorycache) uses `WeakReference`.
+
+#### HttpClient
+Incorrectly using `HttpClient` can result in a resource leak. `HttpClient` implements `IDisposable`, but should not be disposed on every invocation. Rather, `HttpClient` should be reused.
+
+Even when an `HttpClient` instances is disposed, the actual network connection takes some time to be released by the operating system. By continuously creating new connections, ports exhaustion occurs. Each client connection requires its own client port. One way to prevent port exhaustion is to reuse the same `HttpClient` instance.
 
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
