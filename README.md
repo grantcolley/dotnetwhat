@@ -252,11 +252,12 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
   <ServerGarbageCollection>true</ServerGarbageCollection>
 </PropertyGroup>
 ```
-**Server GC** `gen0` collections are less frequent than **Workstation GC**.
 
 > **Note**
 >
-> On a typical web server environment, CPU usage is more important than memory, therefore the Server GC is better. If memory utilization is high and CPU usage is relatively low, the Workstation GC might be more performant. For example, high density hosting several web apps where memory is scarce.
+> **Server GC** `gen0` collections are less frequent than **Workstation GC**.
+> 
+> On a typical web server environment, CPU usage is more important than memory, therefore the Server GC is better. If memory utilization is high and CPU usage is relatively low, the Workstation GC might be more performant. For example, high density hosting several web apps where memory is scarce e.g. docker containers.
 >
 > See the following about [*GC using Docker and small containers*](https://learn.microsoft.com/en-us/aspnet/core/performance/memory#gc-using-docker-and-small-containers)
 > 
