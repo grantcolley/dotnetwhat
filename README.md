@@ -16,9 +16,10 @@
   - [Memory Allocation](#memory-allocation)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
-  - [Memory and ASP.NET Core](#memory-and-aspnet-core)
   - [WeakReference Class](#weakreference-class)
-  - [HttpClient](#httpclient)
+  - [Memory and ASP.NET Core](#memory-and-aspnet-core)
+      - [HttpClient](#httpclient)
+      - [IHttpClientFactory](#ihttpclientfactory)
   - [OutOfMemoryException](#outofmemoryexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
       - [unsafe and fixed](#unsafe-and-fixed)
@@ -242,6 +243,11 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
         }
     }
 ```
+
+#### WeakReference Class
+The [WeakReference](https://learn.microsoft.com/en-us/dotnet/api/system.weakreference) class references an object while still allowing it to be collected by garbage collection under memory pressure. This can be useful for caching.
+[IMemoryCache](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory#use-imemorycache) uses `WeakReference`.
+
 #### Memory and ASP.NET Core
 When an **ASP.NET Core** app starts, the GC allocates heap segments where each segment is a contiguous range of memory.
 **Transient** objects that are referenced during the life of a web request are short lived and remain in gen 0. Application level **singletons** will migrate to generation 2.
@@ -263,14 +269,41 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 > 
 > *...When multiple containerized apps are running on one machine, Workstation GC might be more performant than Server GC.*
 
-#### WeakReference Class
-The [WeakReference](https://learn.microsoft.com/en-us/dotnet/api/system.weakreference) class references an object while still allowing it to be collected by garbage collection under memory pressure. This can be useful for caching.
-[IMemoryCache](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory#use-imemorycache) uses `WeakReference`.
-
-#### HttpClient
+##### HttpClient
 Incorrectly using `HttpClient` can result in a resource leak. `HttpClient` implements `IDisposable`, but should not be disposed on every invocation. Rather, `HttpClient` should be reused.
 
-Even when an `HttpClient` instances is disposed, the actual network connection takes some time to be released by the operating system. By continuously creating new connections, ports exhaustion occurs. Each client connection requires its own client port. One way to prevent port exhaustion is to reuse the same `HttpClient` instance.
+Even when an `HttpClient` instances is disposed, the actual network connection takes some time to be released by the operating system. By continuously creating new connections, socket exhaustion can occur as each client connection requires its own client socket. 
+
+One way to prevent socket exhaustion is to reuse the same `HttpClient` instance, however, this exposes another issue, stale DNS. This is where the DNS record still points to the old IP address of a device. HttpClient only resolves DNS entries when the connection is created, and doesn't track any time to live, specified by the DNS server.
+
+To get around both socket exhaustion and stale DNS, create a singleton (or static) HttpClient instance and set the `PooledConnectionLifetime ` to the desired interval, which will recycle the connection.
+
+```C#
+var handler = new SocketsHttpHandler
+{
+    PooledConnectionLifetime = TimeSpan.FromMinutes(15) // Recreate every 15 minutes
+};
+
+HttpClient sharedClient = new HttpClient(handler);
+```
+
+##### IHttpClientFactory
+IHttpClientFactory creates HttpClient instances and manages the pooling and lifetime of underlying HttpClientHandler instances. Automatic management avoids common DNS problems that occur when manually managing HttpClient lifetimes, including socket exhaustion and stale DNS.
+
+IHttpClientFactory manages the lifetime of HttpClientHandler instances separately from instances of HttpClient that it creates. The HttpClientHandler instances are cached, defaulted to 2 mins, before being recycled.
+
+Pooling HttpClientHandler'S helps reduce the risk of socket exhaustion and the refreshing process solve the DNS update problem by ensuring we don’t have long lived instances of HttpClientHandlers and connections hanging around. 
+
+When you call any of the AddHttpClient extension methods, you're adding the IHttpClientFactory and related services to the IServiceCollection.
+
+```C#
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpClient("name-client", httpClient =>
+{
+    httpClient.BaseAddress = new Uri("my-base_uri");
+});
+```
 
 #### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
