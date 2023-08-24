@@ -971,7 +971,9 @@ The behavior for closing over loop variables is the same for `for` loops and `wh
 
 The examples below show the generated [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for the `for` loop and the `foreach` loop for comparison.
 
-> **Note** the container class `<>c__DisplayClass0_0` generated for the `for` loop, `while` loop and `foreach` loop is identical. 
+> **Note**
+> 
+> the container class `<>c__DisplayClass0_0` generated for the `for` loop, `while` loop and `foreach` loop is identical. 
 
 ##### for loop
 The loop variable of a `for` loop will be logically outside the loop, and therefore closures will close over the same copy of the variable. In the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) we can see in line `IL_000e:` an instance of the container class `<>c__DisplayClass0_0` is created outside the loop and the same instance is referenced inside the loop with each iteration.
