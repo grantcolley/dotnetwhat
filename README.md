@@ -905,9 +905,13 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 #### Captured Variable
 [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expressions can refer to variables declared outside of it's scope e.g. the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expression can refer to a variable that is outside the lambda expression but local to the method that contains the lambda expression. These outer variables consumed by a lambda expression are called captured variables. [Captured variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) won't be garbage-collected until the delegate that references it becomes eligible for garbage collection.
 
->  **Warning** A lambda expression can't directly capture a parameter that has been passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref).
+>  **Warning**
+> 
+> A lambda expression can't directly capture a parameter that has been passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref).
 
-> **Note** Captured variables is the same as "closed" variables. When a function references a variable that is declared externally to it, the variable is "closed over" when the function is formed i.e. the variable is bound to the function so it remains accessible to the function. When the C# compiler detects a closure it creates a compiler generated class containing the delegate and the associated local variables.
+> **Note**
+> 
+> Captured variables is the same as "closed" variables. When a function references a variable that is declared externally to it, the variable is "closed over" when the function is formed i.e. the variable is bound to the function so it remains accessible to the function. When the C# compiler detects a closure it creates a compiler generated class containing the delegate and the associated local variables.
 
 Key points to note:
 - Closures close over variables, not over values.
