@@ -6,7 +6,8 @@
 - [Overview](#overview)
   - [CLR](#clr)
   - [CTS and CLS](#cts-and-cls)
-  - [SDK and BCL](#sdk-and-bcl)
+  - [.NET SDK](#net-sdk)
+  - [BCL](#bcl)
   - [CIL](#cil)
   - [Running an Application](#running-an-application)
   - [GUI Message Loop](#gui-message-loop)
@@ -64,8 +65,11 @@ The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system
 The **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** also includes rules for inheritance, interfaces, and virtual methods etc. that enables an object-oriented programming model.
 The **[CLS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** is a subset of the **[CTS](https://learn.microsoft.com/en-us/dotnet/standard/common-type-system)** and defines a set of common features needed by applications.
 
-### SDK and BCL
-The **[.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)** is a set of libraries and tools for developing .NET applications. .NET also has a large set of libraries called the **Base Class Library ([BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries))**, which provides implementation for many general types, algorithms, and utility functionality.
+### .NET SDK
+The **[.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/sdk)** (*software development kit*), is a set of libraries and tools for developing .NET applications.
+
+### BCL
+.NET has a large set of libraries called the **Base Class Library ([BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries))**, which provides implementation for many general types, algorithms, and utility functionality.
 
 ### CIL
 Code is compiled into **Common Intermediate language ([CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language))**, in the form of Portable Executable files such as *.exe* and *.dll* files. **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** is CPU-independent [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for loading, storing, initializing, and calling methods on objects, arithmetic and logical operations, control flow, direct memory access, exception handling etc. **[CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)** is **[JIT](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compiling_msil_to_native_code)** compiled to native (CPU-specific) code by the **[CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr)** as runtime.
