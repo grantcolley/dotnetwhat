@@ -127,7 +127,7 @@ When value type variables are assigned from one variable to another, or as an ar
 >  
 >  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by [Jon Skeet](https://codeblog.jonskeet.uk/category/csharp/) on [**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
 >
-> ### A piece of paper has the address of a house written on it.
+> ### A piece of paper with the address of a house written on it.
 > 
 > The house is a reference type object in memory. The address is the reference pointing to where that object is located in memory. The piece of paper is the variable containing the address pointing to the object in memory. 
 > 
