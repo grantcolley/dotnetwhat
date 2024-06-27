@@ -435,6 +435,9 @@ Threads can run concurrently. Physical concurrency is when multiple threads are 
 
 > **Note**
 > 
+> By default, there is no persistent relation between threads and specific CPU cores. The operating system's scheduler is responsible for managing which core a thread runs on, and it typically moves threads between cores to balance the workload and optimize performance.
+>
+> 
 > Read [About Processes and Threads](https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads)
 > 
 > *...A thread is the entity within a process that can be scheduled for execution. All threads of a process share its virtual address space and system resources. In addition, each thread maintains exception handlers, a scheduling priority, thread local storage, a unique thread identifier, and a set of structures the system will use to save the thread context until it is scheduled. The thread context includes the thread's set of machine registers, the kernel stack, a thread environment block, and a user stack in the address space of the thread's process. Threads can also have their own security context, which can be used for impersonating clients....*
