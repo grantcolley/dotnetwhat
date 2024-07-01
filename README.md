@@ -635,8 +635,7 @@ awaiter.OnCompleted(() =>
 > * **Sockets**: The `Socket` class provides methods like `ReceiveAsync` and `SendAsync`, which are built on top of the underlying network APIs provided by the OS.
 > * **HttpClient**: The `HttpClient` class for HTTP operations uses asynchronous methods for network I/O, relying on the lower-level HTTP stack provided by the OS.
 >
-> These lower-level APIs allow .NET to provide a high-level, easy-to-use abstraction for performing efficient asynchronous I/O operations.
-> 
+> These lower-level APIs allow .NET to provide a high-level, easy-to-use abstraction for performing efficient asynchronous I/O operations e.g. using `async/await`
 
 
 ## What's in the CIL
