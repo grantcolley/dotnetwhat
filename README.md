@@ -626,6 +626,19 @@ awaiter.OnCompleted(() =>
 
 ```
 
+> **Note**
+>
+> In .NET, asynchronous I/O operations are built on top of lower-level system APIs that handle the actual I/O operations in a non-blocking manner. These system APIs are often part of the operating system and are exposed through various mechanisms depending on the platform (Windows, Linux, macOS, etc.).
+>
+> .NET abstracts these lower-level APIs through its own asynchronous I/O APIs, which are part of the Base Class Library (BCL). Here are some examples:
+> * **FileStream**: The `FileStream` class in .NET provides methods like `ReadAsync` and `WriteAsync` that internally use platform-specific asynchronous I/O mechanisms.
+> * **Sockets**: The `Socket` class provides methods like `ReceiveAsync` and `SendAsync`, which are built on top of the underlying network APIs provided by the OS.
+> * **HttpClient**: The `HttpClient` class for HTTP operations uses asynchronous methods for network I/O, relying on the lower-level HTTP stack provided by the OS.
+>
+> These lower-level APIs allow .NET to provide a high-level, easy-to-use abstraction for performing efficient asynchronous I/O operations.
+> 
+
+
 ## What's in the CIL
 
 #### Method Parameters
