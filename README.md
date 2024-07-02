@@ -643,6 +643,19 @@ awaiter.OnCompleted(() =>
 ##### Locks and Mutex
 Mutex, or "mutual exclusion" is synchronizing access to shared state from competing threads by first locking it, then releasing the lock when it is finished. Competing threads must wait for the lock to be release, before accessing the shared state.
 
+```C#
+private object _lockObj = new object();
+private int _counter = 0;
+
+public void Multithread_Increment()
+{
+    lock(_lockObj)
+    {
+        _counter++;
+    }
+}
+```
+
 
 ## What's in the CIL
 
