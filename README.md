@@ -33,6 +33,8 @@
   - [Task and Task\<T>](#task-and-taskt)
   - [ValueTask\<T>](#value-taskt)
   - [Async Await](#async-await)
+  - [Thread Safety](thread-safety)
+      - [Locks and Mutex](#locks-and-mutex)   
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -636,6 +638,10 @@ awaiter.OnCompleted(() =>
 > * **HttpClient**: The `HttpClient` class for HTTP operations uses asynchronous methods for network I/O, relying on the lower-level HTTP stack provided by the OS.
 >
 > These lower-level APIs allow .NET to provide a high-level, easy-to-use abstraction for performing efficient asynchronous I/O operations e.g. using `async/await`
+
+#### Thread Safety
+##### Locks and Mutex
+Mutex, or "mutual exclusion" is synchronizing access to shared state from competing threads by first locking it, then releasing the lock when it is finished. Competing threads must wait for the lock to be release, before accessing the shared state.
 
 
 ## What's in the CIL
