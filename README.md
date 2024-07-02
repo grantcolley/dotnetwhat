@@ -33,7 +33,7 @@
   - [Task and Task\<T>](#task-and-taskt)
   - [ValueTask\<T>](#value-taskt)
   - [Async Await](#async-await)
-  - [Thread Safety](thread-safety)
+  - [Thread Safety](#thread-safety)
       - [Locks and Mutex](#locks-and-mutex)   
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
