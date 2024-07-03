@@ -627,13 +627,15 @@ awaiter.OnCompleted(() =>
 });
 ```
 
-If `await` is called on the UI thread, code that runs after the await will continue on the UI thread. By default, awaiting a task will capture the scheduler from `SynchronisationContext.Current` or `TaskScheduler.Current`. When the callback is ready to be invoked, it’ll use the captured scheduler if available. 
+By default, awaiting a task will attempt to capture the scheduler from `SynchronisationContext.Current` or `TaskScheduler.Current`. When the callback is ready to be invoked, it’ll use the captured scheduler if available. 
 `ConfigureAwait(continueOnCapturedContext: false)` avoids forcing the callback to be invoked on the original context or scheduler. ConfigureAwait(continueOnCapturedContext: true)
 `ConfigureAwait(true)` does nothing meaninglful, except to explicitly show not using `ConfigureAwait(false)` is inentional e.g. to silence static analysis warnings.
 
 > **Note**
 >
-> Code after the await is not guaranteed to run on the same thread. Therefore `async/await` cannot run inside a `lock` statement. 
+> Code after the `await` is not guaranteed to always run on the same thread `await` was called.
+>
+> Calling `await` on a UI thread is a special case. If `await` is called on the UI thread, code that runs after the await will continue on the UI thread.  
 
 > **Note**
 >
