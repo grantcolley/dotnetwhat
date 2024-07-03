@@ -626,7 +626,7 @@ awaiter.OnCompleted(() =>
     Console.WriteLine(message);
 });
 
-```
+If `await` is called on the UI thread, code that runs after the await will continue on the UI thread.
 
 > **Note**
 >
