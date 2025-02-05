@@ -527,6 +527,8 @@ A **Task** is a data structure that represents the eventual completion of an asy
 >
 > *...At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”)....*
 
+![async/await flowchart](/readme-images/async-await-flowchart.png?raw=true "async/await flowchart")
+
 Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). A task exposes a `GetAwaiter` method, which gets an awaiter to await the task i.e. let the caller know when the task is finished. The `awaiter` also lets the caller attach a *Continuation*, which tells what needs to be executed next. 
 Ultimately, the task is able to tell you if a thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) has completed executing the method, if an exception occurred and, crucially, because a task supports a continuation, it can tell what needs to be called on completion. 
 The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) executes the method while task synchronises everything to ensure the continuation is invoked.
