@@ -27,6 +27,7 @@
       - [unsafe and fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
+- [Atomicity of Variables, Volatility and Interlocking](atomicity-of-variables-volatility-and-interlocking)
 - [Concurrency](#concurrency)
   - [Threads](#threads)
   - [ThreadPool](#threadpool)
@@ -114,7 +115,7 @@ No additional type information is stored with a value type, as the type informat
 
 When value type variables are assigned from one variable to another, or as an argument to a method, the value is copied. The new variable will have its own copy of the value and changing the value of one variable will not impact the value of the other variable.
 
->  **Note**
+>  [!Note]
 > 
 >  **[**Value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) live where they are created.**
 >
@@ -125,7 +126,7 @@ When value type variables are assigned from one variable to another, or as an ar
 [**Reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) objects come in two parts: the object stored in memory and a reference pointing to that object e.g. like an address to a house. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Unlike variables for [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), multiple variables can point to the same [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object therefore operations on one variable can affect the object referenced by the other variable.
 <br>
 
->  **Note** 
+>  [!Note] 
 >  
 >  *A pimped up version of an analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by [Jon Skeet](https://codeblog.jonskeet.uk/category/csharp/) on [**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
 >
@@ -191,7 +192,7 @@ The `protected virtual void Dispose(bool disposing)` method executes in two dist
 
 If you use unmanaged resources you should implement the [**dispose pattern**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose) to free memory used by unmanaged resources. The `Dispose()` method should not be virtual as it musn't be overriden by a derived class. When disposing is finished it should call `GC.SuppressFinalize` to take the object off the finalization queue and prevents finalization code from executing a second time.
 
->  **Warning** 
+>  [!Warning]
 >
 >  Finalizers are dangerous. Objects with finalizers get placed on a queue after a collection and a single thread works the queue one at a time. Any blocking code in a finalizer will block the queue. 
 
@@ -271,7 +272,7 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 </PropertyGroup>
 ```
 
-> **Note**
+>  [!Note]
 >
 > **Server GC** `gen0` collections are less frequent than **Workstation GC**.
 > 
@@ -330,7 +331,7 @@ A [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/str
 
 [Unsafe code](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) isn't necessarily dangerous; it's just code whose safety cannot be verified.
 
->  **Note**
+>  [!Note]
 > 
 >  In order to use the `unsafe` block you must set [AllowUnsafeBlocks](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/language#allowunsafeblocks) in the project file to `true`.
 >  ```XML
@@ -338,8 +339,9 @@ A [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/str
 >  ```
 
 In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L46) an immutable string is mutated by directly accessing it's values in memory using `unsafe` and `fixed`. The `unsafe` keyword allows us to create a [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) `char* ptr` using the `fixed` statement, which gives us direct access to the value in the variable `source`, allowing us to directly replace each character in memory with a character from the variable `target`.
->  **Warning** this example works because the number of characters in `source` and `target` are equal.
-```C#
+>  [!Warning]
+> This example works because the number of characters in `source` and `target` are equal.
+ ```C#
         [TestMethod]
         public void Unsafe()
         {
@@ -404,7 +406,7 @@ The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf
 #### Manually Allocating Memory on the Stack
 [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc) allocates a block of memory on the stack. Because the memory is allocated on the stack it is not [garbage collected](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/) so it doesn't have to be pinned with the `fixed` statement and is automatically discarded when the method returns.
 
->  **Warning** 
+>  [!Warning]
 >
 >  Allocating too much memory on the stack can result in a [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception) being thrown when the execution stack exceeds the stack size.
 
@@ -430,12 +432,33 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
                 numbers[i] = i;
             }
 ```
+## Atomicity of Variables, Volatility and Interlocking
+
+Atomic simply means a read from memory, or a write to memory will be done in one single step. So, when you assign a variable, the assignment happens in a single step, and likewise with reading a variable.
+
+>  [!Note]
+>
+> The C# Language Specification states:
+>
+> [9.6 Atomicity of variable references]( https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables#96-atomicity-of-variable-references)
+>
+>*…Reads and writes of the following data types shall be atomic: bool, char, byte, sbyte, short, ushort, uint, int, float, and reference types. In addition, reads and writes of enum types with an underlying type in the previous list shall also be atomic. Reads and writes of other types, including long, ulong, double, and decimal, as well as user-defined types, need not be atomic….*
+
+> [!Warning]
+>
+> **Atomic reads and writes and thread safety**
+>
+>Atomic reads and writes do not mean the variable is thread safe. It is entirely possible for one thread on a CPU to read a variable, while another is concurrently writing to it, resulting in the value returned in a corrupted state. As a result i.e. a reading thread could observe a torn value consisting of pieces of different values.
+>
+>Also, in the case of reference types, the atomicity is only on the reading of the reference, not the object itself, which can be accessed and modified by other threads.
+>
+>Locking limits access to a variable to a single thread at a time and is the safest way to prevent 
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
 Threads can run concurrently. Physical concurrency is when multiple threads are run in parallel on multiple CPU's. Logical concurrency is when multiple threads are interleaved on a single CPU.
 
-> **Note**
+>  [!Note]
 > 
 > By default, there is no persistent relation between threads and specific CPU cores. The operating system's scheduler is responsible for managing which core a thread runs on, and it typically moves threads between cores to balance the workload and optimize performance.
 >
@@ -448,7 +471,7 @@ Threads can run concurrently. Physical concurrency is when multiple threads are 
 #### Threads
 When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread), pass into it's constructor a callback to the code to execute. The [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) can then be configured e.g. set its `thread.IsBackground = true`. Start running a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) by calling `thread.Start()`, optionally passing into it a parameter of type `object`.
 
-> **Note**
+>  [!Note]
 >
 > *Threads don't return values. You can call a method that has parameter of type `object` e.g. `object stateInfo`
 > but the return type of the method must be void.*
@@ -474,11 +497,11 @@ When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.thr
 #### ThreadPool
 The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. Unlike when you create a new thread, you can't change the properties of an existing thread from the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool).
 
-> **Note**
+>  [!Note]
 >
 > If the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is used for long running code then the thread is taken out of rotation.
 
->  **Warning**
+>  [!Warning]
 > 
 > *When [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) threads are rotated they do not clear local storage or fields marked with the [ThreadStaticAttribute](https://learn.microsoft.com/en-us/dotnet/api/system.threadstaticattribute). Therefore, if a method examines thread local storage or fields marked with the ThreadStaticAttribute it may find values left over from previous use of the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) thread.*
 >
@@ -521,7 +544,7 @@ A **Task** is a data structure that represents the eventual completion of an asy
 
 [Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) represents an asynchronous operation while [Task\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) represents and asynchronous operation that returns a value of type `T`.
 
-> **Note**
+>  [!Note]
 > 
 > Read [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
 >
@@ -539,7 +562,7 @@ The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.t
 
 A [Task Scheduler]( https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler) ensures that the work of a task is eventually executed. The default task scheduler uses the ThreadPool. 
 
-> **Note**
+>  [!Note]
 > 
 > Read [Task.Run vs Task.Factory.StartNew](https://devblogs.microsoft.com/pfxteam/task-run-vs-task-factory-startnew/)
 >
@@ -633,13 +656,13 @@ By default, awaiting a task will attempt to capture the scheduler from `Synchron
 `ConfigureAwait(continueOnCapturedContext: false)` avoids forcing the callback to be invoked on the original context or scheduler. ConfigureAwait(continueOnCapturedContext: true)
 `ConfigureAwait(true)` does nothing meaninglful, except to explicitly show not using `ConfigureAwait(false)` is inentional e.g. to silence static analysis warnings.
 
-> **Note**
+>  [!Note]
 >
 > Code after the `await` is not guaranteed to always run on the same thread `await` was called.
 >
 > Calling `await` on a UI thread is a special case. If `await` is called on the UI thread, code that runs after the await will continue on the UI thread.  
 
-> **Note**
+>  [!Note]
 >
 > In .NET, asynchronous I/O operations are built on top of lower-level system APIs that handle the actual I/O operations in a non-blocking manner. These system APIs are often part of the operating system and are exposed through various mechanisms depending on the platform (Windows, Linux, macOS, etc.).
 >
@@ -674,7 +697,7 @@ public void Multithread_Increment()
 Arguments can be passed to [**method parameters**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) by value or by reference.
 **Passing by value**, which is the default for both [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), means the argument passes a copy of the variable into the method. **Passing by reference**, using the [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref) keyword, means the argument passes the address of the variable into the method.
 
->  **Note**
+>  [!Note]
 >
 > Parameters can also be passed using the [**out**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/out-parameter-modifier) keyword and the [**in**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/in-parameter-modifier) keyword. Both pass by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref), however each has slightly different behavior.  
 >
@@ -958,11 +981,11 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
 #### Captured Variable
 [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expressions can refer to variables declared outside of it's scope e.g. the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) expression can refer to a variable that is outside the lambda expression but local to the method that contains the lambda expression. These outer variables consumed by a lambda expression are called captured variables. [Captured variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#capture-of-outer-variables-and-variable-scope-in-lambda-expressions) won't be garbage-collected until the delegate that references it becomes eligible for garbage collection.
 
->  **Warning**
+>  [!Warning]
 > 
 > A lambda expression can't directly capture a parameter that has been passed by [ref](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/ref).
 
-> **Note**
+>  [!Note]
 > 
 > Captured variables is the same as "closed" variables. When a function references a variable that is declared externally to it, the variable is "closed over" when the function is formed i.e. the variable is bound to the function so it remains accessible to the function. When the C# compiler detects a closure it creates a compiler generated class containing the delegate and the associated local variables.
 
@@ -1024,7 +1047,7 @@ The behavior for closing over loop variables is the same for `for` loops and `wh
 
 The examples below show the generated [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) for the `for` loop and the `foreach` loop for comparison.
 
-> **Note**
+>  [!Note]
 > 
 > the container class `<>c__DisplayClass0_0` generated for the `for` loop, `while` loop and `foreach` loop is identical. 
 
@@ -1255,7 +1278,7 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
 #### Span\<T>
 [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) is a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) that provides type-safe access to a contiguous region of memory. [Ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can only be allocated on the stack and not the heap. [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) can, however, point to heap memory, stack memory and unmanaged memory. [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) can wrap an entire contiguous block of memory or it can point to any contiguous range within it, using [slicing](https://learn.microsoft.com/en-us/dotnet/api/system.span-1?view=net-7.0#spant-and-slices).
 
->  **Note**
+>  [!Note]
 >
 >Because [ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can only be allocated on the stack and not the heap they can't do anything that may cause them to be allocated on the heap. For example, [ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can't be a field of a class, implement an interface or be boxed. [Ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) variables also can't be captured by a [lambda expression](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions), [local function](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/local-functions) or [async methods](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/async) or be used in [iterators](https://learn.microsoft.com/en-us/dotnet/csharp/iterators). 
 
