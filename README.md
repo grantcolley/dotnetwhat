@@ -440,7 +440,6 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 > [!IMPORTANT]
 >
 > * [.NET memory model](https://github.com/dotnet/runtime/blob/main/docs/design/specs/Memory-model.md)
-> * [The C# Memory Model in Theory and Practice](https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/december/csharp-the-csharp-memory-model-in-theory-and-practice)
 
 ### Atomicity of Variables, Volatility and Interlocking
 
