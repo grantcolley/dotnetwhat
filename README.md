@@ -27,7 +27,8 @@
       - [unsafe and fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
-- [Atomicity of Variables, Volatility and Interlocking](#atomicity-of-variables-volatility-and-interlocking)
+- [The Memory Model](#the-memory-model) 
+  - [Atomicity of Variables, Volatility and Interlocking](#atomicity-of-variables-volatility-and-interlocking)
 - [Concurrency](#concurrency)
   - [Threads](#threads)
   - [ThreadPool](#threadpool)
@@ -432,7 +433,16 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
                 numbers[i] = i;
             }
 ```
-## Atomicity of Variables, Volatility and Interlocking
+
+
+## The Memory Model
+
+> [!IMPORTANT]
+>
+> * [.NET memory model](https://github.com/dotnet/runtime/blob/main/docs/design/specs/Memory-model.md)
+> * [The C# Memory Model in Theory and Practice](https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/december/csharp-the-csharp-memory-model-in-theory-and-practice)
+
+### Atomicity of Variables, Volatility and Interlocking
 
 Atomic simply means a read from memory, or a write to memory will be done in one single step. So, when you assign a variable, the assignment happens in a single step, and likewise with reading a variable.
 
