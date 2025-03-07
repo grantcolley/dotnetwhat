@@ -432,7 +432,7 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
                 numbers[i] = i;
             }
 ```
-## Atomicity of Variables, Volatility and Interlocking
+## Atomicity of Variables\, Volatility and Interlocking
 
 Atomic simply means a read from memory, or a write to memory will be done in one single step. So, when you assign a variable, the assignment happens in a single step, and likewise with reading a variable.
 
