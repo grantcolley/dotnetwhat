@@ -459,7 +459,7 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 > [!Note]
 > 
 > Architecture Matters
-> 
+> https://ericlippert.com/2011/05/31/atomicity-volatility-and-immutability-are-different-part-two/
 
 ##### Atomicity and Thread Safety
 > [!Warning]
