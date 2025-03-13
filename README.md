@@ -464,7 +464,7 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 > <br>
 > Read *[Atomicity, volatility and immutability are different, part two](https://ericlippert.com/2011/05/31/atomicity-volatility-and-immutability-are-different-part-two/) by Eric Lippert*
 > 
-> Read operations of a 64-bit `long` on 64-bit systems are already atomic; however, on a 32-bit system a 64-bit `long` is usually stored as two 32-bit chunks, so read operations are typically done in two 32-bit steps.
+> So, read operations of a 64-bit `long` on 64-bit systems are already atomic; however, on a 32-bit system a 64-bit `long` is usually stored as two 32-bit chunks, so read operations are typically done in two 32-bit steps.
 
 ##### Atomicity and Thread Safety
 > [!Warning]
