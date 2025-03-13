@@ -29,6 +29,8 @@
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
 - [The Memory Model](#the-memory-model) 
   - [Atomicity of Variables, Volatility and Interlocking](#atomicity-of-variables-volatility-and-interlocking)
+      - [Atomic](#atomic)
+      - [Atomicity and Thread Safety](#atomicity-and-thread-safety)
 - [Concurrency](#concurrency)
   - [Threads](#threads)
   - [ThreadPool](#threadpool)
@@ -443,7 +445,8 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 
 ### Atomicity of Variables, Volatility and Interlocking
 
-Atomic simply means a read from memory, or a write to memory will be done in one single step. So, when you assign a variable, the assignment happens in a single step, and likewise with reading a variable.
+##### Atomic
+Atomic simply means a read from memory, or a write to memory will be done in one single step. So, when you assign a variable, the assignment happens in a single step, and likewise with reading a variable i.e. assigning only half a variable value in one step is not atomic, and likewise with reading only half a variable.
 
 >  [!Note]
 >
@@ -453,6 +456,12 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 >
 >*…Reads and writes of the following data types shall be atomic: bool, char, byte, sbyte, short, ushort, uint, int, float, and reference types. In addition, reads and writes of enum types with an underlying type in the previous list shall also be atomic. Reads and writes of other types, including long, ulong, double, and decimal, as well as user-defined types, need not be atomic….*
 
+> [!Note]
+> 
+> Architecture Matters
+> 
+
+##### Atomicity and Thread Safety
 > [!Warning]
 >
 > **Atomic reads and writes and thread safety**
