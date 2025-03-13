@@ -460,6 +460,7 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 > 
 > Architecture Matters
 > https://ericlippert.com/2011/05/31/atomicity-volatility-and-immutability-are-different-part-two/
+> https://learn.microsoft.com/en-us/answers/questions/1610861/whats-the-difference-between-32-bit-and-64-bit
 
 ##### Atomicity and Thread Safety
 > [!Warning]
