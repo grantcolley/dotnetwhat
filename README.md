@@ -461,7 +461,7 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 > Why Architecture Matters
 >
 > *"The CLI guarantees that reads and writes of variables of value types that are the size (or smaller) of the processor’s natural pointer size are atomic."*
-> - Eric Lippert](https://ericlippert.com/2011/05/31/atomicity-volatility-and-immutability-are-different-part-two/)
+> - [Eric Lippert](https://ericlippert.com/2011/05/31/atomicity-volatility-and-immutability-are-different-part-two/)
 > 
 > So, read operations of a 64-bit `long` on 64-bit systems are already atomic; however, read operations of a 64-bit `long` on a 32-bit system are done in two 32-bit steps.
 > 
