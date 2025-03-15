@@ -441,15 +441,11 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 
 > [!IMPORTANT]
 >
-> * [.NET memory model](https://github.com/dotnet/runtime/blob/main/docs/design/specs/Memory-model.md#atomic-memory-accesses)
->
-> **Atomic memory accesses**
+> The following is an extract from [**Atomic memory accesses**](https://github.com/dotnet/runtime/blob/main/docs/design/specs/Memory-model.md#atomic-memory-accesses)
 > 
 > Memory accesses to properly aligned data of primitive and Enum types with size with sizes up to the platform pointer size are always atomic. The value that is observed is always a result of complete read and write operations.
 >
-> Primitive types: bool, char, int8, uint8, int16, uint16, int32, uint32, int64, uint64, float32, float64, native int, native unsigned int.
->
-> Values of unmanaged pointers are treated as native integer primitive types. Memory accesses to properly aligned values of unmanaged pointers are atomic.
+> Primitive types: `bool`, `char`, `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `float32`, `float64`, native `int`, native unsigned `int`.
 >
 > Managed references are always aligned to their size on the given platform and accesses are atomic.
 >
@@ -458,7 +454,6 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 > - `System.Threading.Volatile` methods
 > 
 > Example: `Volatile.Read<double>(ref location)` on a 32 bit platform is atomic, while an ordinary read of location may not be.
-
 
 ### Atomicity of Variables, Volatility and Interlocking
 
