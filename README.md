@@ -443,7 +443,7 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 >
 > * [.NET memory model](https://github.com/dotnet/runtime/blob/main/docs/design/specs/Memory-model.md#atomic-memory-accesses)
 >
-> *Atomic memory accesses*
+> **Atomic memory accesses**
 > 
 > Memory accesses to properly aligned data of primitive and Enum types with size with sizes up to the platform pointer size are always atomic. The value that is observed is always a result of complete read and write operations.
 >
