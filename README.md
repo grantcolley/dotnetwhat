@@ -2,6 +2,9 @@
 
 *Programming is communicating instructions. Semantics matter.*
 
+> [!IMPORTANT]
+> This is a collection of notes about **.NET**. The purpose of this `readme` is simply to consolidate content I found important or useful to me in some way, and condense them into a single page for my own personal reference.
+
 ### Table of Contents
 - [Overview](#overview)
   - [CLR](#clr)
