@@ -129,7 +129,7 @@ When value type variables are assigned from one variable to another, or as an ar
 <br>
 
 ### Reference Types
-[**Reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) objects come in two parts: the object stored in memory and a reference pointing to that object e.g. like an address to a house. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Unlike variables for [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), multiple variables can point to the same [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object therefore operations on one variable can affect the object referenced by the other variable.
+[**Reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) objects come in two parts: the object stored in heap memory and a reference pointing to that object in heap memory. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Unlike variables for [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), multiple variables can point to the same [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object in heap memory and therefore operations on the object via one variable is visible the other variable because it's the same object.
 <br>
 
 >  [!Note] 
