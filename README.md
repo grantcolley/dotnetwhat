@@ -114,7 +114,7 @@ The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windo
 [**Variables**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables) are simply named storage locations in memory. C# is a type-safe language and variables store [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types). The main difference between them are the way they are handled in memory.
 
 ### Value Types
-[**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) objects numeric types (`int`, `decimal` etc.), `char`, `bool`, `enum` and `DateTime`. Custom value types can be created using a [struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct).
+[**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) objects include numeric types (`int`, `decimal` etc.), `char`, `bool`, `enum` and `DateTime`. Custom value types can be created using a [struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct).
 
 [**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) variables store the actual value of the type in the variable e.g. `Int32 abc = 5;` will create a storage location named `abc` that can store a 32 bit `integer`, and then assign `abc` the value `5`. 
 No additional type information is stored with a value type, as the type information is known at compile-time and embedded in the generated IL code.
