@@ -129,7 +129,7 @@ When value type variables are assigned from one variable to another, or as an ar
 <br>
 
 ### Reference Types
-[**Reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) objects come in two parts: the object stored in heap memory and a reference pointing to that object in heap memory. When the reference is assigned from one variable to another the reference is copied and both variables will point to the same object. Unlike variables for [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), multiple variables can point to the same [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object in heap memory and therefore operations on the object via one variable is visible the other variable because it's the same object.
+[**Reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) objects come in two parts: an object which is stored in heap memory, and a reference pointing to that object. When the reference is assigned from one variable to another, the reference is copied and both variables will point to the same object. Therefore, unlike variables for [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), multiple variables can point to the same [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) object in heap memory. Operations to properties on the object via one variable is visible the other variable, because it's the same object that is modified.
 <br>
 
 >  [!Note] 
@@ -138,13 +138,13 @@ When value type variables are assigned from one variable to another, or as an ar
 >
 > ### A piece of paper with the address of a house written on it.
 > 
-> The house is a reference type object in memory. The address is the reference pointing to where that object is located in memory. The piece of paper is the variable containing the address pointing to the object in memory. 
+> The house is a reference type object in heap memory. The address is the reference pointing to where that object is located in heap memory. The piece of paper is the variable containing the address pointing to the object in heap memory. 
 > 
-> If you copy the same address to another piece of paper (another variable), you now have two variables pointing to the same object in memory. If you were to paint the door of the house green, both pieces of paper still point to the same house which now has a green door.
+> If you copy the same address to another piece of paper (another variable), you now have two variables pointing to the same object in heap memory. If you were to paint the door of the house green, both pieces of paper still point to the same house, which now has a green door.
 > 
-> You cross out the address on the first piece of paper and replace it with the address of another house. Now each piece of paper (variables) have different addresses (references) each pointing to different houses (objects). 
+> You cross out the address on the first piece of paper and replace it with the address of another house. Now each piece of paper (variables) have different addresses (references), each pointing to different houses (objects). 
 > 
-> You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). If the garbage collector came along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to make space for a new object e.g. an array of flats.
+> You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). When the garbage collector comes along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to free up the memory allocated for it on the heap.
 <br>
 
 #### Memory Allocation
