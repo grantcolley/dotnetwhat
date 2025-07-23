@@ -307,13 +307,13 @@ HttpClient sharedClient = new HttpClient(handler);
 ```
 
 ##### IHttpClientFactory
-IHttpClientFactory creates HttpClient instances and manages the pooling and lifetime of underlying HttpClientHandler instances. Automatic management avoids common DNS problems that occur when manually managing HttpClient lifetimes, including socket exhaustion and stale DNS.
+`IHttpClientFactory` creates `HttpClient` instances and manages the pooling and lifetime of underlying `HttpClientHandler` instances. Automatic management avoids common DNS problems that occur when manually managing `HttpClient` lifetimes, including socket exhaustion and stale DNS.
 
-IHttpClientFactory manages the lifetime of HttpClientHandler instances separately from instances of HttpClient that it creates. The HttpClientHandler instances are cached, defaulted to 2 mins, before being recycled.
+`IHttpClientFactory` manages the lifetime of `HttpClientHandler` instances separately from instances of `HttpClient` that it creates. The `HttpClientHandler` instances are cached, defaulted to 2 mins, before being recycled.
 
-Pooling HttpClientHandler'S helps reduce the risk of socket exhaustion and the refreshing process solve the DNS update problem by ensuring we don’t have long lived instances of HttpClientHandlers and connections hanging around. 
+Pooling `HttpClientHandler` helps reduce the risk of socket exhaustion and the refreshing process solve the DNS update problem by ensuring we don’t have long lived instances of `HttpClientHandler` and connections hanging around. 
 
-When you call any of the AddHttpClient extension methods, you're adding the IHttpClientFactory and related services to the IServiceCollection.
+When you call any of the `AddHttpClient` extension methods, you're adding the `IHttpClientFactory` and related services to the `IServiceCollection`.
 
 ```C#
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
