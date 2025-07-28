@@ -52,7 +52,9 @@
   - [Captured Variable](#captured-variable)
   - [Closing Over a Loop Variable](#closing-over-a-loop-variable)
      - [for loop](#for-loop)
-     - [foreach loop](#foreach-loop)     
+     - [foreach loop](#foreach-loop)
+- [How it Works](#how-it-works)
+  - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)  
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -1306,6 +1308,9 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
 
 
 ```
+
+## How it Works
+#### Dictionary\<TKey,TValue>
 
 ## Performance
 <!--
