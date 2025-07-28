@@ -54,7 +54,8 @@
      - [for loop](#for-loop)
      - [foreach loop](#foreach-loop)
 - [How it Works](#how-it-works)
-  - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)  
+  - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)
+  - [List\<T>](#listt)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -1311,6 +1312,8 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
 
 ## How it Works
 #### Dictionary\<TKey,TValue>
+
+#### List\<T>
 
 ## Performance
 <!--
