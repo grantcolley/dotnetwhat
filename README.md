@@ -1312,6 +1312,42 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
 
 ## How it Works - Internal Structure
 #### Dictionary\<TKey,TValue>
+The `Dictionary<TKey, TValue>` class remains a hash table-based implementation. `Dictionary<TKey, TValue>` uses `Buckets` and `Entries`. Each bucket contains the index of the first `entry` in the `entries` array that belongs to that `hash bucket`. Objects that share the same `hash bucket` form a linked list using the `next` field, linking to the next entry (like a singly-linked list).
+- **Buckets (int[] or Span<int>)** – An array of indexes into the entries array.
+- **Entries (Entry<TKey, TValue>[])** – An array of structs that contain:
+	- **int hashCode**
+	- **int next** (index of the next entry in case of collision, forming a linked list)
+	- **TKey** key
+	- **TValue** value
+
+Each bucket contains the index of the first entry in the entries array that belongs to that hash bucket. If there are collisions, the next field links to the next entry (like a singly-linked list).
+
+In .NET 9.0 `Dictionary<TKey, TValue>` uses a hash table with chaining (linked list). It is optimized for `O(1)` average-time complexity on lookup, insert, and remove.
+
+The `Entry` structure:
+```C#
+struct Entry<TKey, TValue>
+{
+    public int hashCode;    // Lower 31 bits of hash code, -1 if unused
+    public int next;        // Index of next entry, -1 if last
+    public TKey key;        // Key of entry
+    public TValue value;    // Value of entry
+}
+```
+Here is a step-by-step example of how `Hash Codes` Work in Dictionary.
+```C# 
+var dict = new Dictionary<string, int>();
+dict["apple"] = 42;
+
+// step 1 - generate a hashcode from the key
+int hashCode = "apple".GetHashCode();
+
+// step 2 - enure the hashcode is non-negative
+hashCode = -123456789 & 0x7FFFFFFF
+
+// step 3 - the hash code is then modulo'd by the number of buckets to find the right one
+int bucketIndex = hashCode % buckets.Length;
+```
 
 #### List\<T>
 
