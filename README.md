@@ -490,7 +490,7 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 >
 >Also, in the case of reference types, the atomicity is only on the reading of the reference, not the object itself, which can be accessed and modified by other threads.
 >
->Locking limits access to a variable to a single thread at a time and is the safest way to prevent 
+>Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
