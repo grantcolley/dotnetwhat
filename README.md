@@ -53,7 +53,7 @@
   - [Closing Over a Loop Variable](#closing-over-a-loop-variable)
      - [for loop](#for-loop)
      - [foreach loop](#foreach-loop)
-- [How it Works](#how-it-works)
+- [How it Works - Internal Structure](#how-it-works---internal-structure)
   - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)
   - [List\<T>](#listt)
 - [Performance](#performance)
@@ -1310,7 +1310,7 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
 
 ```
 
-## How it Works
+## How it Works - Internal Structure
 #### Dictionary\<TKey,TValue>
 
 #### List\<T>
