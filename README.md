@@ -1334,7 +1334,7 @@ struct Entry<TKey, TValue>
     public TValue value;    // Value of entry
 }
 ```
-Here is a step-by-step example of how `Hash Codes` Work in Dictionary.
+Here is a step-by-step example of how `Hash Codes` works in Dictionary.
 ```C# 
 var dict = new Dictionary<string, int>();
 dict["apple"] = 42;
