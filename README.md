@@ -1384,6 +1384,16 @@ int bucketIndex = hashCode % buckets.Length;
 ```
 
 #### List\<T>
+The `List<T>` class is a generic dynamic array — it stores its elements in a contiguous block of memory and resizes as needed.
+
+`List<T>` is initialized with a default capacity or a user-specified capacity. When elements are added beyond the current capacity, it resizes the array (usually doubling its capacity).
+
+Key Internal Fields:
+```C#
+private T[] _items;    // Underlying array buffer
+private int _size;     // Current number of elements in the list
+private int _version;  // Used to track changes for enumerator safety
+```
 
 ## Performance
 <!--
