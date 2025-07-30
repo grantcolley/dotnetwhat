@@ -34,6 +34,7 @@
   - [Atomicity of Variables, Volatility and Interlocking](#atomicity-of-variables-volatility-and-interlocking)
       - [Atomic](#atomic)
       - [Atomicity and Thread Safety](#atomicity-and-thread-safety)
+- [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats) 
 - [Concurrency](#concurrency)
   - [Threads](#threads)
   - [ThreadPool](#threadpool)
@@ -494,6 +495,22 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 >Also, in the case of reference types, the atomicity is only on the reading of the reference, not the object itself, which can be accessed and modified by other threads.
 >
 >Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
+
+## Stack Memory is Thread-safe (with caveats)
+Stack memory is thread-safe per thread because each thread has its own call stack that no other thread can access. This means that local variables, method call frames, and arguments passed to methods are stored in a stack that's private to the thread.
+
+There are caveats to be aware of:
+- **Captured variables in closures:** local variable captured by a lambda or anonymous method might get hoisted to the heap, and not remain stack-allocated.
+- **Ref/out parameters and unsafe code:** passing references (e.g., `ref`, `out`, or pointers) from the stack to another thread, breaks thread-safety.
+- **Async/await:** local variables declared before an `await` might be moved to the heap, invalidating stack-safety.
+```C#
+async Task Demo()
+{
+    int counter = 0;
+    await Task.Delay(100); // 'counter' may now be on the heap
+    counter++;
+}
+```
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
