@@ -38,7 +38,7 @@
       - [Atomicity and Thread Safety](#atomicity-and-thread-safety)
 - [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats) 
 - [Concurrency](#concurrency)
-  - [Parallelism vs Concurrency vs Asynchronous](#)
+  - [Parallelism vs Concurrency vs Asynchronous](#parallelism-vs-concurrency-vs-asynchronous)
   - [Threads](#threads)
   - [ThreadPool](#threadpool)
   - [Task and Task\<T>](#task-and-taskt)
