@@ -26,6 +26,7 @@
       - [HttpClient](#httpclient)
       - [IHttpClientFactory](#ihttpclientfactory)
   - [OutOfMemoryException](#outofmemoryexception)
+  - [StackOverflowException](#stackoverflowexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
       - [unsafe and fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
