@@ -19,6 +19,7 @@
   - [Value Types](#value-types) 
   - [Reference Types](#reference-types) 
   - [Memory Allocation](#memory-allocation)
+  - [Stack vs Heap](#stack-vs-heap)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [WeakReference Class](#weakreference-class)
@@ -179,6 +180,11 @@ To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-
 
 The initial size of the heap 2GB-4GB for 32-bit systems, and slightly larger for 64-bit systems. The heap can grow (and shrink) according to the demands of the application. The size the heap can grow to is limited by the available system memory and any restrictions imposed by the operating system and hardware.
 
+#### Stack vs Heap
+- **Stack:** fast, fixed-size, thread-local
+- **Heap:** slower, dynamically sized, shared among threads
+If you need large memory allocation or recursive data structures, prefer heap allocation (`class` or `new`), not large `struct` or `Span<T>` on the stack.
+
 #### Releasing Memory
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0. The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap#loh-performance-implications) and Gen 2 are collected together, if either one's threshold is exceeded, a generation 2 collection is triggered.
 
@@ -334,6 +340,10 @@ builder.Services.AddHttpClient("name-client", httpClient =>
 
 #### StackOverflowException
 In .NET, each thread has a stack of a fixed size, which can vary dependening on the platform, or be configured manually. Once a thread is created, the stack size is not resized. If you exceed it, you get a `StackOverflowException`, which is fatal and cannot be caught in .NET.
+
+The most common reason for `StackOverflowException`:
+- Deep or infinite recursion
+- Large local (stack-allocated) arrays or structs
 
 #### Accessing Memory underlying a Variable 
 C# code is called "verifiably safe code" because .NET tools can verify that the code is safe. Safe code creates managed objects and doesn't allow you to access memory directly. C# does, however, still allow direct memory access. `.NET Core 2.1` introduced `Memory<T>` and `Span<T>` which provide a type safe way to work with a contiguous block of memory. Prior to that, memory could be directly accessed by writing unsafe code using `unsafe` and `fixed`. The examples below show how, despite being [immutable](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#immutability-of-strings), a [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) can be modified by directly accessing the memory storing it. The first example uses [unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code with the `unsafe` and `fixed` keywords. The second example uses `Memory<T>` and `Span<T>`.
