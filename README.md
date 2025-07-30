@@ -164,16 +164,16 @@ Local variables and method parameters are pushed onto the **stack** in the order
 
 Local variables and method parameters that are [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) push the reference, or "pointer" to the object, onto the stack however, the object itself is always stored on the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). While each thread has it's own stack memory, all threads share the same [**heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) memory. This allows multiple variables across different threads to reference the same object in the shared managed heap.
 
-The [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) consists of two heaps, the small object heap and the [**large object heap (LOH)**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) for objects that are 85,000 bytes and larger, which are usually arrays.
-The small object heap is divided into three generations, 0, 1, and 2, so it can handle short-lived and long-lived objects separately lfor optimization reasons.
+The [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) consists of two heaps, the small object heap and the [**large object heap (LOH)**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) for objects that are 85,000 bytes (85kb) and larger, which are usually arrays.
+The small object heap is divided into three generations, 0, 1, and 2, so it can handle short-lived and long-lived objects separately for optimization reasons.
 - Gen 0 - newly allocated objects that are short lived. Garbage collection is most frequent on Gen 0. 
 - Gen 1 - objects that survive a collection of Gen 0 are promoted to Gen 1, which serves as a buffer between short-lived objects and long-lived objects.
 - Gen 2 - objects that survive a collection of Gen 1 are considered long-lived objects and promoted to Gen 2.
 
-The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes in size, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
+The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes (85kb) in size, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
 
 To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap), 85,000 bytes is the equivalent of the following:
-|Type|85,000 bytes|
+|Type|85,000 bytes (85kb)|
 |:--------|:-------------------------------|
 |string|A string with 42,500 16bit characters, equivalent to approx. 9 x A4 pages of text|
 |32 bit object reference|An array containing 21,250 references to objects on a 32 bit system|
