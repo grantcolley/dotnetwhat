@@ -503,14 +503,31 @@ There are caveats to be aware of:
 - **Captured variables in closures:** local variable captured by a lambda or anonymous method might get hoisted to the heap, and not remain stack-allocated.
 - **Ref/out parameters and unsafe code:** passing references (e.g., `ref`, `out`, or pointers) from the stack to another thread, breaks thread-safety.
 - **Async/await:** local variables declared before an `await` might be moved to the heap, invalidating stack-safety.
-```C#
-async Task Demo()
-{
-    int counter = 0;
-    await Task.Delay(100); // 'counter' may now be on the heap
-    counter++;
-}
-```
+
+> [!WARNING]
+>
+> Stack memory is thread-local and not shared by design. However, you can break this isolation by doing something like:
+>
+> async/await
+> ```C#
+> async Task Demo()
+> {
+>     int counter = 0;
+>     await Task.Delay(100); // 'counter' may now be on the heap
+>     counter++;
+> }
+> ```
+>
+> Ref/out
+> ```C#
+> void Dangerous(ref int x)
+> {
+>    Task.Run(() =>
+>    {
+>        x = 42; // Accessing another thread's stack memory
+>    });
+>}
+> ```
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
