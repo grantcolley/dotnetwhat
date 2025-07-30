@@ -38,6 +38,7 @@
       - [Atomicity and Thread Safety](#atomicity-and-thread-safety)
 - [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats) 
 - [Concurrency](#concurrency)
+  - [Parallelism vs Concurrency vs Asynchronous](#)
   - [Threads](#threads)
   - [ThreadPool](#threadpool)
   - [Task and Task\<T>](#task-and-taskt)
@@ -556,6 +557,39 @@ Threads can run concurrently. Physical concurrency is when multiple threads are 
 > 
 > *...A thread is the entity within a process that can be scheduled for execution. All threads of a process share its virtual address space and system resources. In addition, each thread maintains exception handlers, a scheduling priority, thread local storage, a unique thread identifier, and a set of structures the system will use to save the thread context until it is scheduled. The thread context includes the thread's set of machine registers, the kernel stack, a thread environment block, and a user stack in the address space of the thread's process. Threads can also have their own security context, which can be used for impersonating clients....*
 > 
+
+#### Parallelism vs Concurrency vs Asynchronous
+**Concurrency** is about dealing with multiple tasks at once, but not necessarily simultaneously, typically by switching between them. Concurrency is achieved through multithreading. You might have multiple threads interleaving execution on a single CPU core.
+
+Key Point: Tasks are in progress at the same time, but may not run literally at the same moment.
+```C#
+Thread t1 = new Thread(SomeWork);
+Thread t2 = new Thread(SomeOtherWork);
+t1.Start();
+t2.Start();
+```
+
+**Parallelism** is a type of concurrency where multiple tasks run at the same time, often on multiple cores. It’s about doing multiple things simultaneously to speed up computation. Parallelism is used for data processing or CPU-bound operations.
+
+Key Point: Tasks are executed in true simultaneous fashion (especially on multicore CPUs) to improve performance.
+```C#
+Parallel.For(0, 100, i =>
+{
+    // This work happens in parallel
+    DoWork(i);
+});
+```
+
+**Asynchronous** programming is about non-blocking operations — your code can perform work while waiting for I/O-bound operations (like file `I/O`, `HTTP` requests, or database queries) to complete.
+
+Key Point: It’s not necessarily multithreaded or parallel — it's about allowing other work to continue while waiting.
+```C#
+public async Task GetDataAsync()
+{
+    var result = await httpClient.GetStringAsync("https://example.com");
+    Console.WriteLine(result);
+}
+```
 
 #### Threads
 When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread), pass into it's constructor a callback to the code to execute. The [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) can then be configured e.g. set its `thread.IsBackground = true`. Start running a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.threading.thread) by calling `thread.Start()`, optionally passing into it a parameter of type `object`.
