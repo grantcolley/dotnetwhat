@@ -64,6 +64,9 @@
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
   - [Mark Members Static](#mark-members-static)
+- [Big *O*](#big-o)
+  - [Common Big *O* Examples (with C# context)](#common-big-o-examples-with-c-context)
+  - [Big *O* Code Examples](#big-o-code-examples)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -1576,6 +1579,60 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 Mark those members that do not reference instance data or call instance methods can be marked as static. This will prevent a runtime check to see if the object pointer is not null resulting in a performance gain.
 
 See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1822)
+
+## Big *O*
+Big *O* notation is a way to describe how fast or slow your code runs as the input size grows. It gives you a basic idea of your code's performance and scalability.
+
+It doesn't measure actual time (like milliseconds); it measures how the number of operations grows relative to the input size.
+
+#### Common Big *O* Examples (with C# context)
+| Big O          | Meaning                                                  | C# Example                                                      |
+| -------------- | -------------------------------------------------------- | --------------------------------------------------------------- |
+| **O(1)**       | Constant time – super fast, doesn’t depend on input size | `list[0];` or `dictionary.ContainsKey("foo")`                   |
+| **O(n)**       | Linear – time grows with input size                      | `foreach (var item in list) { ... }`                            |
+| **O(n²)**      | Quadratic – nested loops, gets slow fast                 | `foreach (var a in list) foreach (var b in list) { ... }`       |
+| **O(log n)**   | Logarithmic – very efficient                             | Binary search: `list.BinarySearch(item);`                       |
+| **O(n log n)** | Typical of efficient sorts                               | `list.Sort();` (uses TimSort in .NET)                           |
+| **O(2ⁿ)**      | Exponential – extremely slow for large inputs            | Recursive solutions like solving the Fibonacci sequence naively |
+
+**TL;DR Rules of Thumb:**
+- Favor O(1) and O(log n) when you can.
+- Be cautious with O(n²) and worse – especially with nested loops.
+
+#### Big *O* Code Examples
+Linear: O(n) - Time grows linearly with the size of numbers.
+```C#
+bool Contains(int[] numbers, int target)
+{
+    foreach (var num in numbers)
+    {
+        if (num == target) return true;
+    }
+    return false;
+}
+```
+
+Constant: O(1) - Fast, no matter how big the dictionary is.
+```C#
+bool HasValue(Dictionary<int, string> dict, int key)
+{
+    return dict.ContainsKey(key);
+}
+```
+
+Quadratic: O(n²) - Gets very slow as numbers grows.
+```C#
+void PrintAllPairs(int[] numbers)
+{
+    foreach (var a in numbers)
+    {
+        foreach (var b in numbers)
+        {
+            Console.WriteLine($"{a}, {b}");
+        }
+    }
+}
+```
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
