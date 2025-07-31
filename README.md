@@ -1658,6 +1658,8 @@ int BinarySearch(int[] sortedArray, int target)
 
 ##### Quadratic
 Quadratic: O(n²) - Gets very slow as numbers grows.
+- If `numbers = 10`, it prints 100 lines.
+- If `numbers = 100`, it prints 10,000 lines!
 ```C#
 void PrintAllPairs(int[] numbers)
 {
