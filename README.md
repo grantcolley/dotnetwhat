@@ -1641,6 +1641,28 @@ void PrintAllPairs(int[] numbers)
 }
 ```
 
+Logarithmic: O(log n) - each loop cuts the array size in half
+```C#
+int BinarySearch(int[] sortedArray, int target)
+{
+    int left = 0, right = sortedArray.Length - 1;
+
+    while (left <= right)
+    {
+        int mid = (left + right) / 2;
+
+        if (sortedArray[mid] == target)
+            return mid;
+        else if (sortedArray[mid] < target)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1;
+}
+```
+
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
