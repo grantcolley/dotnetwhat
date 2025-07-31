@@ -68,6 +68,10 @@
   - [Key Terms](#key-terms)
   - [Common Big *O* Examples (with C# context)](#common-big-o-examples-with-c-context)
   - [Big *O* Code Examples](#big-o-code-examples)
+    - [Constant](#constant)
+    - [Linear](#linear)
+    - [Logarithmic](#logarithmic)
+    - [Quadratic](#quadratic) 
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -1607,6 +1611,16 @@ It doesn't measure actual time (like milliseconds); it measures how the number o
 - Be cautious with O(n²) and worse – especially with nested loops.
 
 #### Big *O* Code Examples
+##### Constant
+Constant: O(1) - Fast, no matter how big the dictionary is.
+```C#
+bool HasValue(Dictionary<int, string> dict, int key)
+{
+    return dict.ContainsKey(key);
+}
+```
+
+##### Linear
 Linear: O(n) - Time grows linearly with the size of numbers.
 ```C#
 bool Contains(int[] numbers, int target)
@@ -1619,28 +1633,7 @@ bool Contains(int[] numbers, int target)
 }
 ```
 
-Constant: O(1) - Fast, no matter how big the dictionary is.
-```C#
-bool HasValue(Dictionary<int, string> dict, int key)
-{
-    return dict.ContainsKey(key);
-}
-```
-
-Quadratic: O(n²) - Gets very slow as numbers grows.
-```C#
-void PrintAllPairs(int[] numbers)
-{
-    foreach (var a in numbers)
-    {
-        foreach (var b in numbers)
-        {
-            Console.WriteLine($"{a}, {b}");
-        }
-    }
-}
-```
-
+##### Logarithmic
 Logarithmic: O(log n) - each loop cuts the array size in half
 ```C#
 int BinarySearch(int[] sortedArray, int target)
@@ -1662,6 +1655,23 @@ int BinarySearch(int[] sortedArray, int target)
     return -1;
 }
 ```
+
+##### Quadratic
+Quadratic: O(n²) - Gets very slow as numbers grows.
+```C#
+void PrintAllPairs(int[] numbers)
+{
+    foreach (var a in numbers)
+    {
+        foreach (var b in numbers)
+        {
+            Console.WriteLine($"{a}, {b}");
+        }
+    }
+}
+```
+
+
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
