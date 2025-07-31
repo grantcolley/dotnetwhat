@@ -1611,8 +1611,8 @@ It doesn't measure actual time (like milliseconds); it measures how the number o
 - Be cautious with O(n²) and worse – especially with nested loops.
 
 #### Big *O* Code Examples
-##### Constant
-Constant: O(1) - Fast, no matter how big the dictionary is.
+##### Constant `O(1)`
+Fast, no matter how big the dictionary is.
 ```C#
 bool HasValue(Dictionary<int, string> dict, int key)
 {
@@ -1620,8 +1620,8 @@ bool HasValue(Dictionary<int, string> dict, int key)
 }
 ```
 
-##### Linear
-Linear: O(n) - Time grows linearly with the size of numbers.
+##### Linear `O(n)`
+Time grows linearly with the size of numbers.
 ```C#
 bool Contains(int[] numbers, int target)
 {
@@ -1633,8 +1633,8 @@ bool Contains(int[] numbers, int target)
 }
 ```
 
-##### Logarithmic
-Logarithmic: O(log n) - each loop cuts the array size in half
+##### Logarithmic `O(log n)`
+Each loop cuts the array size in half
 ```C#
 int BinarySearch(int[] sortedArray, int target)
 {
@@ -1656,8 +1656,8 @@ int BinarySearch(int[] sortedArray, int target)
 }
 ```
 
-##### Quadratic
-Quadratic: O(n²) - Gets very slow as numbers grows.
+##### Quadratic `O(n²)`
+Gets very slow as numbers grows.
 - If `numbers = 10`, it prints 100 lines.
 - If `numbers = 100`, it prints 10,000 lines!
 ```C#
