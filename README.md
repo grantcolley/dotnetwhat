@@ -65,6 +65,7 @@
   - [StringBuilder](#stringbuilder)
   - [Mark Members Static](#mark-members-static)
 - [Big *O*](#big-o)
+  - [Key Terms](#key-terms)
   - [Common Big *O* Examples (with C# context)](#common-big-o-examples-with-c-context)
   - [Big *O* Code Examples](#big-o-code-examples)
 - [Glossary](#glossary)
@@ -1584,6 +1585,12 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
 Big *O* notation is a way to describe how fast or slow your code runs as the input size grows. It gives you a basic idea of your code's performance and scalability.
 
 It doesn't measure actual time (like milliseconds); it measures how the number of operations grows relative to the input size.
+
+#### Key Terms
+| Term          | Meaning                                                  |
+| -------------- | -------------------------------------------------------- |
+|logarithmic time `O(log n)`|Logarithmic time means that every step of the algorithm cuts the problem in half. So instead of checking every item, you’re skipping a big chunk with each move. Super fast even with big input sizes. Typical used in binary search|
+|Quadratic time `O(n²)`|Quadratic time means the work your code does grows a lot faster than the input size. Specifically, if you double the input, the work grows four times. If you triple it, it grows nine times — like squaring the size. Typically used in some sorting algorithms like bubble sort or selection sort|
 
 #### Common Big *O* Examples (with C# context)
 | Big O          | Meaning                                                  | C# Example                                                      |
