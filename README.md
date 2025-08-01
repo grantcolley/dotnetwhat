@@ -65,9 +65,8 @@
   - [StringBuilder](#stringbuilder)
   - [Mark Members Static](#mark-members-static)
 - [Big *O*](#big-o)
-  - [Key Terms](#key-terms)
-  - [Common Big *O* Examples (with C# context)](#common-big-o-examples-with-c-context)
-  - [Big *O* Code Examples](#big-o-code-examples)
+  - [Big *O* Examples (with C# context)](#big-o-examples-with-c-context)
+  - [Big *O* With Code Examples](#big-o-with-code-examples)
     - [Constant Time `O(1)`](#constant-time-o1)
     - [Linear Time `O(n)`](#linear-time-on)
     - [Logarithmic Time `O(log n)`](#logarithmic-time-olog-n)
@@ -1602,29 +1601,25 @@ Big *O* notation is a way to describe how fast or slow your code runs as the inp
 
 It doesn't measure actual time (like milliseconds); it measures how the number of operations grows relative to the input size.
 
-#### Key Terms
-| Term                            | Meaning                                                  |
-| ------------------------------- | -------------------------------------------------------- |
-| logarithmic time `O(log n)`     |Logarithmic time means that every step of the algorithm cuts the problem in half. So instead of checking every item, you’re skipping a big chunk with each move. Super fast even with big input sizes. Typical used in binary search|
-| Quadratic time `O(n²)`          |Quadratic time means the work your code does grows a lot faster than the input size. Specifically, if you double the input, the work grows four times. If you triple it, it grows nine times — like squaring the size. Typically used in some sorting algorithms like bubble sort or selection sort|
-
-#### Common Big *O* Examples (with C# context)
-| Big O          | Meaning                                                  | C# Example                                                      |
+#### TL;DR
+| Big O          | Meaning                                                  | Example                                                         |
 | -------------- | -------------------------------------------------------- | --------------------------------------------------------------- |
 | **O(1)**       | Constant time – super fast, doesn’t depend on input size | `list[0];` or `dictionary.ContainsKey("foo")`                   |
 | **O(n)**       | Linear – time grows with input size                      | `foreach (var item in list) { ... }`                            |
 | **O(n²)**      | Quadratic – nested loops, gets slow fast                 | `foreach (var a in list) foreach (var b in list) { ... }`       |
-| **O(log n)**   | Logarithmic – very efficient                             | Binary search: `list.BinarySearch(item);`                       |
+| **O(log n)**   | Logarithmic – very efficient, divide and conquer         | Binary search: `list.BinarySearch(item);`                       |
 | **O(n log n)** | Typical of efficient sorts                               | `list.Sort();` (uses TimSort in .NET)                           |
 | **O(2ⁿ)**      | Exponential – extremely slow for large inputs            | Recursive solutions like solving the Fibonacci sequence naively |
 
-**TL;DR Rules of Thumb:**
-- Favor O(1) and O(log n) when you can.
-- Be cautious with O(n²) and worse – especially with nested loops.
+#### Rules of Thumb:
+- Favor `O(1)` and `O(log n)` when you can.
+- Be cautious with `O(n²)` and worse – especially with nested loops.
 
-#### Big *O* Code Examples
+#### Big *O* with Code Examples
 ##### Constant Time `O(1)`
-e.g. Accessing an element in an array by index. Fast, no matter how big the array is.
+Doesn’t depend on input size. You know exactly where the item is so go straight to it.
+
+e.g. Accessing an element in an array by index. Fast, no matter how big the array is. You know exactly where the item is so go straight to it.
 ```C#
 int[] array = {1, 2, 3, 4, 5};
 
@@ -1635,7 +1630,9 @@ int GetValue(int index)
 ```
 
 ##### Linear Time `O(n)`
-e.g. Looping through a list or array. Time grows linearly with the size of numbers.
+Time grows linearly with input size. Items are not sorted so check one by one from start to finish.
+
+e.g. Looping through a list or array, checking each item one by one from start to finish.
 ```C#
 int[] array = {1, 2, 3, 4, 5};
 
@@ -1651,6 +1648,8 @@ bool Contains(int value)
 ```
 
 ##### Logarithmic Time `O(log n)`
+Every step of the algorithm cuts the problem in half so instead of checking every item, you’re skipping a big chunk with each move. Super fast even with big input sizes. Typical used in binary search.
+
 e.g. Binary search in a sorted array. Each loop cuts the array size in half
 ```C#
 int[] sortedArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -1677,6 +1676,8 @@ int BinarySearch(int value)
 ```
 
 ##### Quadratic Time `O(n²)`
+The work your code does grows a lot faster than the input size grows. Specifically, if you double the input, the work grows four times. If you triple it, it grows nine times — like squaring the size. Typically used in some sorting algorithms like bubble sort or selection sort
+
 e.g. Nested loops over the same data set. Gets much slower as numbers grows.
 - If `numbers = 10`, it prints 100 lines.
 - If `numbers = 100`, it prints 10,000 lines!
