@@ -73,7 +73,8 @@
     - [Logarithmic Time `O(log n)`](#logarithmic-time-olog-n)
     - [Quadratic Time `O(n²)`](#quadratic-time-on)
     - [Exponential Time `O(2n)`](#exponential-time-O-2n)
-  - [Big O Growth Comparison Table](#big-o-growth-comparison-table)
+  - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
+  - [Big *O* Summary](#big-o-summary)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -1740,6 +1741,12 @@ int Fibonacci(int n)
 | **O(n²)**    | Quadratic   | Compare every pair     | Nested loops                 | 100, 400, 900                 |
 | **O(2ⁿ)**    | Exponential | Try all combinations   | Recursive brute-force        | 1,024; 1,048,576; >1 billion  |
 
+#### Big *O* Summary
+- `O(1)`: Super fast, doesn't care about size
+- `O(log n)`: Excellent, scales well
+- `O(n)`: Grows steadily
+- `O(n²)`: Slows down fast with large input
+- `O(2ⁿ)`: Unusable beyond ~20 items
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
