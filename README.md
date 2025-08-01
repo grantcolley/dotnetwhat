@@ -1696,7 +1696,9 @@ void PrintAllPairs(int[] numbers)
 ```
 
 ##### Exponential Time `O(2n)`
-e.g. Recursive Fibonacci. Extremely slow for large inputs.
+Time doubles with each extra input, resulting in explosive growth, making it extremely slow.
+
+e.g. Recursive Fibonacci, where each call creates two more calls, like a tree branching rapidly.
 ```C#
 int Fibonacci(int n)
 {
@@ -1704,6 +1706,11 @@ int Fibonacci(int n)
     return Fibonacci(n - 1) + Fibonacci(n - 2);
 }
 ```
+> [!TIP]
+> 
+> The Fibonacci sequence is the series of numbers where each number is the sum of the two preceding numbers.
+>
+> e.g. `0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610`
 
 
 ## Glossary
