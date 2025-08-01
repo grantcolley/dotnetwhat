@@ -71,7 +71,8 @@
     - [Constant Time `O(1)`](#constant-time-o1)
     - [Linear Time `O(n)`](#linear-time-on)
     - [Logarithmic Time `O(log n)`](#logarithmic-time-olog-n)
-    - [Quadratic Time `O(n²)`](#quadratic-time-on) 
+    - [Quadratic Time `O(n²)`](#quadratic-time-on)
+    - [Exponential Time `O(2n)`](#exponential-time-O-2n)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -1681,6 +1682,15 @@ void PrintAllPairs(int[] numbers)
 }
 ```
 
+##### Exponential Time `O(2n)`
+e.g. Recursive Fibonacci. Extremely slow for large inputs.
+```C#
+int Fibonacci(int n)
+{
+    if (n <= 1) return n;
+    return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+```
 
 
 ## Glossary
