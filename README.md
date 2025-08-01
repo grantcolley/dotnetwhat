@@ -1711,6 +1711,24 @@ int Fibonacci(int n)
 > The Fibonacci sequence is the series of numbers where each number is the sum of the two preceding numbers.
 >
 > e.g. `0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610`
+> 
+> Here is a more efficient implementation of Fibonacci which can be called like this `foreach (int i in Fib())`
+> ```C#
+> public static IEnumerable<int> Fibonacci()
+> {
+>    int prev = 0, next = 1;
+>     yield return prev;
+>     yield return next;
+> 
+>     while (true)
+>     {
+>         int sum = prev + next;
+>         yield return sum;
+>         prev = next;
+>         next = sum;
+>     }
+> }
+> ```
 
 
 ## Glossary
