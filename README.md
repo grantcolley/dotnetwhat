@@ -68,10 +68,10 @@
   - [Key Terms](#key-terms)
   - [Common Big *O* Examples (with C# context)](#common-big-o-examples-with-c-context)
   - [Big *O* Code Examples](#big-o-code-examples)
-    - [Constant `O(1)`](#constant-o1)
-    - [Linear `O(n)`](#linear-on)
-    - [Logarithmic `O(log n)`](#logarithmic-olog-n)
-    - [Quadratic `O(n²)`](#quadratic-on) 
+    - [Constant Time `O(1)`](#constant-time-o1)
+    - [Linear Time `O(n)`](#linear-time-on)
+    - [Logarithmic Time `O(log n)`](#logarithmic-time-olog-n)
+    - [Quadratic Time `O(n²)`](#quadratic-time-on) 
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -1611,42 +1611,50 @@ It doesn't measure actual time (like milliseconds); it measures how the number o
 - Be cautious with O(n²) and worse – especially with nested loops.
 
 #### Big *O* Code Examples
-##### Constant `O(1)`
-Fast, no matter how big the dictionary is.
+##### Constant Time `O(1)`
+e.g. Accessing an element in an array by index. Fast, no matter how big the array is.
 ```C#
-bool HasValue(Dictionary<int, string> dict, int key)
+int[] array = {1, 2, 3, 4, 5};
+
+int GetValue(int index)
 {
-    return dict.ContainsKey(key);
+    return array[index]; // Always takes the same amount of time
 }
 ```
 
-##### Linear `O(n)`
-Time grows linearly with the size of numbers.
+##### Linear Time `O(n)`
+e.g. Looping through a list or array. Time grows linearly with the size of numbers.
 ```C#
-bool Contains(int[] numbers, int target)
+int[] array = {1, 2, 3, 4, 5};
+
+bool Contains(int value)
 {
-    foreach (var num in numbers)
+    foreach (var item in array)
     {
-        if (num == target) return true;
+        if (item == value) return true;
     }
+
     return false;
 }
 ```
 
-##### Logarithmic `O(log n)`
-Each loop cuts the array size in half
+##### Logarithmic Time `O(log n)`
+e.g. Binary search in a sorted array. Each loop cuts the array size in half
 ```C#
-int BinarySearch(int[] sortedArray, int target)
+int[] sortedArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+int BinarySearch(int value)
 {
-    int left = 0, right = sortedArray.Length - 1;
+    int left = 0;
+    int right = sortedArray.Length - 1;
 
     while (left <= right)
     {
         int mid = (left + right) / 2;
 
-        if (sortedArray[mid] == target)
+        if (sortedArray[mid] == value)
             return mid;
-        else if (sortedArray[mid] < target)
+        else if (sortedArray[mid] < value)
             left = mid + 1;
         else
             right = mid - 1;
@@ -1656,8 +1664,8 @@ int BinarySearch(int[] sortedArray, int target)
 }
 ```
 
-##### Quadratic `O(n²)`
-Gets very slow as numbers grows.
+##### Quadratic Time `O(n²)`
+e.g. Nested loops over the same data set. Gets much slower as numbers grows.
 - If `numbers = 10`, it prints 100 lines.
 - If `numbers = 100`, it prints 10,000 lines!
 ```C#
