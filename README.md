@@ -73,6 +73,7 @@
     - [Logarithmic Time `O(log n)`](#logarithmic-time-olog-n)
     - [Quadratic Time `O(n²)`](#quadratic-time-on)
     - [Exponential Time `O(2n)`](#exponential-time-O-2n)
+  - [Big O Growth Comparison Table](#big-o-growth-comparison-table)
 - [Glossary](#glossary)
 - [References](#references)
 
@@ -1729,6 +1730,15 @@ int Fibonacci(int n)
 >     }
 > }
 > ```
+
+#### Big O Growth Comparison Table
+| **Big O**    | **Name**    | **Example** in English | **C# Code Pattern**          | **Growth for n = 10, 20, 30** |
+| ------------ | ----------- | ---------------------- | ---------------------------- | ----------------------------- |
+| **O(1)**     | Constant    | Always takes same time | `dict.ContainsKey(key)`      | 1, 1, 1                       |
+| **O(log n)** | Logarithmic | Cuts problem in half   | Binary Search                | \~4, \~5, \~6                 |
+| **O(n)**     | Linear      | One step per item      | `foreach (var item in list)` | 10, 20, 30                    |
+| **O(n²)**    | Quadratic   | Compare every pair     | Nested loops                 | 100, 400, 900                 |
+| **O(2ⁿ)**    | Exponential | Try all combinations   | Recursive brute-force        | 1,024; 1,048,576; >1 billion  |
 
 
 ## Glossary
