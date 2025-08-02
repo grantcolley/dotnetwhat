@@ -57,9 +57,10 @@
   - [Closing Over a Loop Variable](#closing-over-a-loop-variable)
      - [for loop](#for-loop)
      - [foreach loop](#foreach-loop)
-- [How it Works - Internal Structure](#how-it-works---internal-structure)
-  - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)
+- [How it Works Internally](#how-it-works-internally)
+  - [Array](#array)
   - [List\<T>](#listt)
+  - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -1414,7 +1415,46 @@ The loop variable of a `foreach` will be logically inside the loop, and therefor
 
 ```
 
-## How it Works - Internal Structure
+## How it Works Internally
+#### Array
+An array is a contiguous block of memory that stores elements of the same type.
+
+Internally, an array in .NET includes:
+- A header with metadata (including type info, length, etc.)
+- The actual element data, stored in a flat, contiguous memory region
+```
+[ Object Header | Length | Element0 | Element1 | ... ]
+```
+Arrays are zero-based and have fixed length.
+\
+Indexing is `O(1)` because of the fixed-size element type and contiguous layout.
+\
+The JIT compiler can apply bounds-checking optimizations for performance in safe code.
+```C#
+int[] numbers = new int[3] { 10, 20, 30 };
+```
+```
++------------------------+--------------------+------------+------------+------------+
+| Object Header (12–16B) | Length (Int32 = 3) | Value[0]   | Value[1]   | Value[2]   |
++------------------------+--------------------+------------+------------+------------+
+|     Type pointer       |         3          |    10      |    20      |    30      |
++------------------------+--------------------+------------+------------+------------+
+
+```
+
+
+#### List\<T>
+The `List<T>` class is a generic dynamic array — it stores its elements in a contiguous block of memory and resizes as needed.
+
+`List<T>` is initialized with a default capacity or a user-specified capacity. When elements are added beyond the current capacity, it resizes the array (usually doubling its capacity).
+
+Key Internal Fields:
+```C#
+private T[] _items;    // Underlying array buffer
+private int _size;     // Current number of elements in the list
+private int _version;  // Used to track changes for enumerator safety
+```
+
 #### Dictionary\<TKey,TValue>
 The `Dictionary<TKey, TValue>` class remains a hash table-based implementation. `Dictionary<TKey, TValue>` uses `Buckets` and `Entries`. Each bucket contains the index of the first `entry` in the `entries` array that belongs to that `hash bucket`. Objects that share the same `hash bucket` form a linked list using the `next` field, linking to the next entry (like a singly-linked list).
 - **Buckets (int[] or Span<int>)** – An array of indexes into the entries array.
@@ -1451,18 +1491,6 @@ hashCode = -123456789 & 0x7FFFFFFF
 
 // step 3 - the hash code is then modulo'd by the number of buckets to find the right one
 int bucketIndex = hashCode % buckets.Length;
-```
-
-#### List\<T>
-The `List<T>` class is a generic dynamic array — it stores its elements in a contiguous block of memory and resizes as needed.
-
-`List<T>` is initialized with a default capacity or a user-specified capacity. When elements are added beyond the current capacity, it resizes the array (usually doubling its capacity).
-
-Key Internal Fields:
-```C#
-private T[] _items;    // Underlying array buffer
-private int _size;     // Current number of elements in the list
-private int _version;  // Used to track changes for enumerator safety
 ```
 
 ## Performance
