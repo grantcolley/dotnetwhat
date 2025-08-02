@@ -1466,6 +1466,26 @@ The `Dictionary<TKey, TValue>` class remains a hash table-based implementation. 
 
 Each bucket contains the index of the first entry in the entries array that belongs to that hash bucket. If there are collisions, the next field links to the next entry (like a singly-linked list).
 
+A collision happens when two different keys produce the same bucket index (after hashing and modulo). Each bucket in the hash table doesn't just hold one entry, it points to a linked list (chain) of entries that hash to that same bucket.
+
+**Internally:**
+- There's a `buckets[]` array, where each element holds an index into the `entries[]` array.
+- The `entries[]` array contains key-value pairs and a next field (like a linked list pointer).
+
+**When a collision happens:**
+- The new entry is added to `entries[]`.
+- The previous entry’s next field is updated to point to the new one.
+
+**Add an Entry**:
+- Compute hash code from `TKey` (via `GetHashCode()`).
+- Map it to a bucket index.
+- Insert into `entries[]`, update bucket, and manage collision via chaining.
+
+**TryGetValue / ContainsKey**:
+- Compute hash code from `TKey` (via `GetHashCode()`).
+- Map it to a bucket index.
+- Traverse the linked list in entries (via next) to find the key.
+  
 In .NET 9.0 `Dictionary<TKey, TValue>` uses a hash table with chaining (linked list). It is optimized for `O(1)` average-time complexity on lookup, insert, and remove.
 
 The `Entry` structure:
