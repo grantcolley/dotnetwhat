@@ -233,19 +233,23 @@ The `protected virtual void Dispose(bool disposing)` method executes in two dist
 
 If you use unmanaged resources you should implement the [**dispose pattern**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose) to free memory used by unmanaged resources. The `Dispose()` method should not be virtual as it musn't be overriden by a derived class. When disposing is finished it should call `GC.SuppressFinalize` to take the object off the finalization queue and prevents finalization code from executing a second time.
 
-> [!TIP]
+> [!WARNING]
 >
+> Finalizers are dangerous. Objects with finalizers get placed on a queue after a collection and a single thread works the queue one at a time. Any blocking code in a finalizer will block the queue.
+> 
 > Use finalizers sparingly and only when absolutely necessary. You should only explicitly provide a finalizer (destructor) when your class directly uses unmanaged resources (like file handles, native memory pointers, OS handles) that need to be cleaned up if the consumer forgets to call `Dispose()`.
 >
 > Only Provide a finalizer if:
 > 1. Your class directly owns unmanaged resources, and
 > 2. You want to ensure cleanup happens even if `Dispose()` is never called.
 
-You want to ensure cleanup happens even if Dispose() is never called.
-
-> [!Warning]
+> [!NOTE]
 >
-> Finalizers are dangerous. Objects with finalizers get placed on a queue after a collection and a single thread works the queue one at a time. Any blocking code in a finalizer will block the queue. 
+> Why `Dispose()` should NOT be virtual:
+> - It's part of the IDisposable interface, which defines void `Dispose()` as the method signature.
+> - Consumers of your class or framework code expect a non-overridable, predictable behavior.
+> - Making it virtual would allow derived classes to override and forget to call `base.Dispose()`, breaking the cleanup chain.
+> - The correct extensibility point is `Dispose(bool disposing)`, which safely allows subclasses to add their own cleanup logic while preserving the disposal sequence.
 
 ```C#
     public class Foo: IDisposable
@@ -307,6 +311,7 @@ You want to ensure cleanup happens even if Dispose() is never called.
         }
     }
 ```
+
 
 #### WeakReference Class
 The [WeakReference](https://learn.microsoft.com/en-us/dotnet/api/system.weakreference) class references an object while still allowing it to be collected by garbage collection under memory pressure. This can be useful for caching.
