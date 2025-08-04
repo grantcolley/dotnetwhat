@@ -233,9 +233,19 @@ The `protected virtual void Dispose(bool disposing)` method executes in two dist
 
 If you use unmanaged resources you should implement the [**dispose pattern**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-dispose) to free memory used by unmanaged resources. The `Dispose()` method should not be virtual as it musn't be overriden by a derived class. When disposing is finished it should call `GC.SuppressFinalize` to take the object off the finalization queue and prevents finalization code from executing a second time.
 
->  [!Warning]
+> [!TIP]
 >
->  Finalizers are dangerous. Objects with finalizers get placed on a queue after a collection and a single thread works the queue one at a time. Any blocking code in a finalizer will block the queue. 
+> Use finalizers sparingly and only when absolutely necessary. You should only explicitly provide a finalizer (destructor) when your class directly uses unmanaged resources (like file handles, native memory pointers, OS handles) that need to be cleaned up if the consumer forgets to call `Dispose()`.
+>
+> Only Provide a finalizer if:
+> 1. Your class directly owns unmanaged resources, and
+> 2. You want to ensure cleanup happens even if `Dispose()` is never called.
+
+You want to ensure cleanup happens even if Dispose() is never called.
+
+> [!Warning]
+>
+> Finalizers are dangerous. Objects with finalizers get placed on a queue after a collection and a single thread works the queue one at a time. Any blocking code in a finalizer will block the queue. 
 
 ```C#
     public class Foo: IDisposable
