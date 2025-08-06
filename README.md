@@ -25,8 +25,9 @@
   - [WeakReference Class](#weakreference-class)
   - [Memory and ASP.NET Core](#memory-and-aspnet-core)
   - [Memory Leaks and Exceptions](#memory-leaks-and-exceptions)
-      - [HttpClient](#httpclient)
-      - [IHttpClientFactory](#ihttpclientfactory)
+      - [HttpClient and IHttpClientFactory](#httpclient-and-ihttpclientfactory)
+        - [HttpClient](#httpclient)
+        - [IHttpClientFactory](#ihttpclientfactory)
       - [OutOfMemoryException](#outofmemoryexception)
       - [StackOverflowException](#stackoverflowexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
@@ -340,7 +341,8 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 > *...When multiple containerized apps are running on one machine, Workstation GC might be more performant than Server GC.*
 
 #### Memory Leaks and Exceptions
-##### HttpClient
+##### HttpClient and IHttpClientFactory
+###### HttpClient
 Incorrectly using `HttpClient` can result in a resource leak. `HttpClient` implements `IDisposable`, but should not be disposed on every invocation. Rather, `HttpClient` should be reused.
 
 Even when an `HttpClient` instances is disposed, the actual network connection takes some time to be released by the operating system. By continuously creating new connections, socket exhaustion can occur as each client connection requires its own client socket. 
@@ -358,7 +360,7 @@ var handler = new SocketsHttpHandler
 HttpClient sharedClient = new HttpClient(handler);
 ```
 
-##### IHttpClientFactory
+###### IHttpClientFactory
 `IHttpClientFactory` creates `HttpClient` instances and manages the pooling and lifetime of underlying `HttpClientHandler` instances. Automatic management avoids common DNS problems that occur when manually managing `HttpClient` lifetimes, including socket exhaustion and stale DNS.
 
 `IHttpClientFactory` manages the lifetime of `HttpClientHandler` instances separately from instances of `HttpClient` that it creates. The `HttpClientHandler` instances are cached, defaulted to 2 mins, before being recycled.
