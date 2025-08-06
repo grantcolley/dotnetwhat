@@ -24,7 +24,7 @@
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [WeakReference Class](#weakreference-class)
   - [Memory and ASP.NET Core](#memory-and-aspnet-core)
-  - [Memory Leaks and Exceptions](#memory-leaks-and-exceptions)
+  - [Memory Leaks and Memory Exceptions](#memory-leaks-and-memory-exceptions)
       - [HttpClient and IHttpClientFactory](#httpclient-and-ihttpclientfactory)
         - [HttpClient](#httpclient)
         - [IHttpClientFactory](#ihttpclientfactory)
@@ -340,7 +340,7 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 > 
 > *...When multiple containerized apps are running on one machine, Workstation GC might be more performant than Server GC.*
 
-#### Memory Leaks and Exceptions
+#### Memory Leaks and Memory Exceptions
 ##### HttpClient and IHttpClientFactory
 ###### HttpClient
 Incorrectly using `HttpClient` can result in a resource leak. `HttpClient` implements `IDisposable`, but should not be disposed on every invocation. Rather, `HttpClient` should be reused.
