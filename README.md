@@ -24,10 +24,11 @@
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [WeakReference Class](#weakreference-class)
   - [Memory and ASP.NET Core](#memory-and-aspnet-core)
+  - [Memory Leaks and Exceptions](#memory-leaks-and-exceptions)
       - [HttpClient](#httpclient)
       - [IHttpClientFactory](#ihttpclientfactory)
-  - [OutOfMemoryException](#outofmemoryexception)
-  - [StackOverflowException](#stackoverflowexception)
+      - [OutOfMemoryException](#outofmemoryexception)
+      - [StackOverflowException](#stackoverflowexception)
   - [Accessing Memory underlying a Variable](#accessing-memory-underlying-a-variable)  
       - [unsafe and fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
@@ -338,6 +339,7 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 > 
 > *...When multiple containerized apps are running on one machine, Workstation GC might be more performant than Server GC.*
 
+#### Memory Leaks and Exceptions
 ##### HttpClient
 Incorrectly using `HttpClient` can result in a resource leak. `HttpClient` implements `IDisposable`, but should not be disposed on every invocation. Rather, `HttpClient` should be reused.
 
@@ -374,10 +376,10 @@ builder.Services.AddHttpClient("name-client", httpClient =>
 });
 ```
 
-#### OutOfMemoryException
+##### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
-#### StackOverflowException
+##### StackOverflowException
 In .NET, each thread has a stack of a fixed size, which can vary dependening on the platform, or be configured manually. Once a thread is created, the stack size is not resized. If you exceed it, you get a `StackOverflowException`, which is fatal and cannot be caught in .NET.
 
 The most common reason for `StackOverflowException`:
