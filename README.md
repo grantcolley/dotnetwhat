@@ -507,7 +507,7 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 >
 > The following is an extract from [**Atomic memory accesses**](https://github.com/dotnet/runtime/blob/main/docs/design/specs/Memory-model.md#atomic-memory-accesses)
 > 
-> Memory accesses to properly aligned data of primitive and Enum types with size with sizes up to the platform pointer size are always atomic. The value that is observed is always a result of complete read and write operations.
+> Memory accesses to properly aligned data of primitive and Enum types with sizes up to the platform pointer size are always atomic. The value that is observed is always a result of complete read and write operations.
 >
 > Primitive types: `bool`, `char`, `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `float32`, `float64`, native `int`, native unsigned `int`.
 >
