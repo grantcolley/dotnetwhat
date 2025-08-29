@@ -155,7 +155,7 @@ When value type variables are assigned from one variable to another, or as an ar
 
 >  [!Note] 
 >  
->  *An analogy about [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) by [Jon Skeet](https://codeblog.jonskeet.uk/category/csharp/) on [**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
+>  *[**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
 >
 > ### A piece of paper with the address of a house written on it.
 > 
