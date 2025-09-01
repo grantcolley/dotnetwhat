@@ -14,6 +14,7 @@
   - [CIL](#cil)
   - [Running an Application](#running-an-application)
       - [The Message Loop](#the-message-loop)
+- [CPU Architecture](#cpu-architecture)
 - [Memory](#memory)
   - [Variables](#variables) 
   - [Value Types](#value-types) 
@@ -128,6 +129,21 @@ while (GetMessage(&msg, NULL, 0, 0))
 ```
 
 The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows) calls `GetMessage(&msg, NULL, 0, 0)`, to check the message queue. If there is no message the thread is blocked until one arrives e.g. a mouse move, mouse click or key press etc. When a message is placed in the queue the thread picks it off and calls `TranslateMessage(&msg);` to translate it into something meaningful. The message is then passed into `DispatchMessage(&msg);`, which routes it to the applicable even handler for processing e.g. `Button1_Click(object sender, EventArgs e)`. When the event has finished processing `GetMessage(&msg, NULL, 0, 0)` and the process is repeated until the application shuts down.
+
+## CPU Architecture
+`x86` and `x64` refers to the CPU architecture, and by extension the instruction set and operating system/process model.
+
+`x86` is shorthand for `32-bit` processors and memory addresses (pointers) are **4 bytes (32 bits)** long.
+
+`x64` is shorthand for `64-bit` processors and memory addresses (pointers) are **8 bytes (64 bits)** long.
+
+> [!NOTE]
+>
+> Every process runs in its own ***virtual address space***. A reference (pointer) in your code is just an address in that space. How large that space is depends on whether the process is `32 bit (x86)` or `64 bit (x64)`.
+> 
+> `x86` uses `32-bit` addresses (`4 bytes`), meaning the maximum directly addressable memory it can "see" at once = `2³²` = `4GB`.
+>
+> `x64` uses `64-bit` addresses (`8 bytes`), meaning the theoretical maximum directly addressable memory it can "see" at once = `2⁶⁴` = `16 exabytes`!.
 
 ## Memory
 
