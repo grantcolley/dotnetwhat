@@ -133,9 +133,9 @@ The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windo
 ## CPU Architecture
 `x86` and `x64` refers to the CPU architecture, and by extension the instruction set and operating system/process model.
 
-`x86` is shorthand for `32-bit` processors and memory addresses (pointers) are **4 bytes (32 bits)** long.
+`x86` is shorthand for `32-bit` processors and memory addresses (pointers) are `4 bytes` (`32 bits`) long.
 
-`x64` is shorthand for `64-bit` processors and memory addresses (pointers) are **8 bytes (64 bits)** long.
+`x64` is shorthand for `64-bit` processors and memory addresses (pointers) are `8 bytes` (`64 bits`) long.
 
 > [!NOTE]
 >
