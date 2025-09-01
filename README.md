@@ -151,7 +151,7 @@ The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windo
 >
 > A database server like **SQL Server** can benifit from `x64` because it may want to cache hundreds of `GB` of data in memory.
 >
->  A small desktop app with no big memory needs may perform better on `x86`, because its objects are smaller, and therefore has less memory overhead per object.
+>  A small desktop app with no big memory needs may perform better on `x86`, because its objects are smaller with less memory overhead per object.
 
 ## Memory
 
