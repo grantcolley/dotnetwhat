@@ -145,6 +145,14 @@ The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windo
 >
 > `x64` uses `64-bit` addresses (`8 bytes`), meaning the theoretical maximum directly addressable memory it can "see" at once = `2⁶⁴` = `16 exabytes`!.
 
+> [!TIP]
+>
+> **Why this matters?**
+>
+> A database server like **SQL Server** can benifit from `x64` because it may want to cache hundreds of `GB` of data in memory.
+>
+>  A small desktop app with no big memory needs may perform better on `x86`, because its objects are smaller, and therefore has less memory overhead per object.
+
 ## Memory
 
 ### Variables
