@@ -196,11 +196,6 @@ When value type variables are assigned from one variable to another, or as an ar
 > The house is a reference type object in heap memory. The address is the reference pointing to where that object is located in heap memory. The piece of paper is the variable containing the address pointing to the object in heap memory. 
 > 
 > If you copy the same address to another piece of paper (another variable), you now have two variables pointing to the same object in heap memory. If you were to paint the door of the house green, both pieces of paper still point to the same house, which now has a green door.
-> 
-> You cross out the address on the first piece of paper and replace it with the address of another house. Now each piece of paper (variables) have different addresses (references), each pointing to different houses (objects). 
-> 
-> You throw away the second piece of paper with the address to the original house. Now no piece of paper (variable) points to the original house (object). When the garbage collector comes along and finds a house (object) with no piece of paper (variable) pointing to it, the house is torn down to free up the memory allocated for it on the heap.
-<br>
 
 #### Memory Allocation
 When code execution enters a method, both the parameters passed into the method and the local variables declared in the method, are allocated on the threads **stack** memory. For [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) local variables, the actual value of the type is stored in **stack** memory. For [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) local variables, only the reference to the object is stored in the **stack** memory, while the object itself is stored in the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
