@@ -131,27 +131,37 @@ while (GetMessage(&msg, NULL, 0, 0))
 The [message loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows) calls `GetMessage(&msg, NULL, 0, 0)`, to check the message queue. If there is no message the thread is blocked until one arrives e.g. a mouse move, mouse click or key press etc. When a message is placed in the queue the thread picks it off and calls `TranslateMessage(&msg);` to translate it into something meaningful. The message is then passed into `DispatchMessage(&msg);`, which routes it to the applicable even handler for processing e.g. `Button1_Click(object sender, EventArgs e)`. When the event has finished processing `GetMessage(&msg, NULL, 0, 0)` and the process is repeated until the application shuts down.
 
 ## CPU Architecture
-`x86` and `x64` refers to the CPU architecture, and by extension the instruction set and operating system/process model.
+`x86` and `x64` refers to the CPU architecture, and by extension the instruction set and operating system/process model. 
 
-`x86` is shorthand for `32-bit` processors and memory addresses (pointers) are `4 bytes` (`32 bits`) long.
+Every process runs in its own ***virtual address space***. A reference (pointer) in your code is just an address in that space. How large that total space is depends on whether the process is `32 bit (x86)` or `64 bit (x64)`. The entire ***virtual address space*** of the process (stack, heap, code, OS mappings, etc.) must fit inside the available space.
 
-`x64` is shorthand for `64-bit` processors and memory addresses (pointers) are `8 bytes` (`64 bits`) long.
+`x86` is shorthand for `32-bit` processors and memory addresses (pointers) are `4 bytes` (`32 bits`) long. This means the maximum number of unique memory addresses `32-bit` processors (`x86`) can access = `2³²` = `4GB`.
+
+`x64` is shorthand for `64-bit` processors and memory addresses (pointers) are `8 bytes` (`64 bits`) long. This means the theoretical maximum directly addressable memory `64-bit` processors (`x64`) can access = `2⁶⁴` = `16 exabytes`!.
 
 > [!NOTE]
 >
-> Every process runs in its own ***virtual address space***. A reference (pointer) in your code is just an address in that space. How large that space is depends on whether the process is `32 bit (x86)` or `64 bit (x64)`.
+> A memory address is just a binary number. 
 > 
-> `x86` uses `32-bit` addresses (`4 bytes`), meaning the maximum directly addressable memory it can "see" at once = `2³²` = `4GB`.
+> On a `32-bit` CPU (`x86`), addresses are `32 bits` wide, meaning the CPU can generate numbers from 0 to 2³² - 1.
 >
-> `x64` uses `64-bit` addresses (`8 bytes`), meaning the theoretical maximum directly addressable memory it can "see" at once = `2⁶⁴` = `16 exabytes`!.
+> This is exactly `4,294,967,296` unique addresses = `4GB` of **byte** addressable space.
+>
+> Each unique address corresponds to `1 byte` of memory. So `2³²` addresses = `4GB`
+>
+> This is a hardware design limitation of a `32-bit` system. The CPU simply cannot generate addresses larger than `32-bits`. If you try access memory beyond the highest `32-bit` number, it "wraps around".
+
+Both Windows and Linux `32-bit` are limited to 4GB total address space.
+- Windows default split is `2GB` user (process memory, heap, stack, code etc.) allocation and `2GB` kernel allocation.
+- Linux default split is `3GB` user (process memory, heap, stack, code etc.) allocation and `1GB` kernel allocation.
 
 > [!TIP]
 >
 > **Why this matters?**
 >
-> A database server like **SQL Server** can benifit from `x64` because it may want to cache hundreds of `GB` of data in memory.
+> A database server like **SQL Server** can benifit from `x64` because it may want to cache hundreds of `GB` of data in memory. References are `16 bytes`, and `x64` objects are larger, requiring more bytes of memory because of object and header alignment (padding). On the other hand, because there is more available memory there are less GC collections. 
 >
->  A small desktop app with no big memory needs may perform better on `x86`, because its objects are smaller with less memory overhead per object.
+>  A small desktop app with no big memory needs may perform better on `x86`, because its objects are smaller with less memory overhead per object. References are `4 bytes`, and objects require less bytes of memory because of object and header alignment (padding). On the other hand, because address space is capped at ~2GB the GC must work in a tighter space, which can lead to more fragmentation, and more frequent collections.
 
 ## Memory
 
