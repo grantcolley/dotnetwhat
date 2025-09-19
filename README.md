@@ -18,9 +18,14 @@
 - [Memory](#memory)
   - [Variables](#variables) 
   - [Value Types](#value-types) 
-  - [Reference Types](#reference-types) 
+  - [Reference Types](#reference-types)
   - [Memory Allocation](#memory-allocation)
-  - [Stack vs Heap](#stack-vs-heap)
+  	- [Stack Memory](#stack-memory)
+  	- [Heap Memory](#heap-memory)
+  		- [Small Object Heap](#small-object-heap)
+  		- [Large Object Heap (LOH)](#large-object-heap-loh)
+  		- [Putting Heap Allocation Into Context](#putting-heap-allocation-into-context) 
+  	- [Stack vs Heap](#stack-vs-heap)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [WeakReference Class](#weakreference-class)
@@ -197,21 +202,26 @@ When value type variables are assigned from one variable to another, or as an ar
 > 
 > If you copy the same address to another piece of paper (another variable), you now have two variables pointing to the same object in heap memory. If you were to paint the door of the house green, both pieces of paper still point to the same house, which now has a green door.
 
-#### Memory Allocation
+### Memory Allocation
+#### Stack Memory
 When code execution enters a method, both the parameters passed into the method and the local variables declared in the method, are allocated on the threads **stack** memory. For [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) local variables, the actual value of the type is stored in **stack** memory. For [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) local variables, only the reference to the object is stored in the **stack** memory, while the object itself is stored in the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
 
 Local variables and method parameters are pushed onto the **stack** in the order they are created and popped off the **stack** on a last in first out (LIFO) basis. Local variables and parameters are scoped to the method in which they are created and when the executing code leaves the method they are popped off the **stack**, therefore the **stack** is self-maintaining.
 
+#### Heap Memory
 Local variables and method parameters that are [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) push the reference, or "pointer" to the object, onto the stack however, the object itself is always stored on the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). While each thread has it's own stack memory, all threads share the same [**heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) memory. This allows multiple variables across different threads to reference the same object in the shared managed heap.
 
+##### Small Object Heap
 The [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) consists of two heaps, the small object heap and the [**large object heap (LOH)**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) for objects that are 85,000 bytes (85kb) and larger, which are usually arrays.
 The small object heap is divided into three generations, 0, 1, and 2, so it can handle short-lived and long-lived objects separately for optimization reasons.
 - Gen 0 - newly allocated objects that are short lived. Garbage collection is most frequent on Gen 0. 
 - Gen 1 - objects that survive a collection of Gen 0 are promoted to Gen 1, which serves as a buffer between short-lived objects and long-lived objects.
 - Gen 2 - objects that survive a collection of Gen 1 are considered long-lived objects and promoted to Gen 2.
 
+##### Large Object Heap (LOH)
 The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes (85kb) in size, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
 
+##### Putting Heap Allocation Into Context
 To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap), 85,000 bytes is the equivalent of the following:
 |Type|85,000 bytes (85kb)|
 |:--------|:-------------------------------|
@@ -240,7 +250,7 @@ The initial size of the heap 2GB-4GB for 32-bit systems, and slightly larger for
 
 If you need large memory allocation or recursive data structures, prefer heap allocation (`class` or `new`), not large `struct` or `Span<T>` on the stack.
 
-#### Releasing Memory
+### Releasing Memory
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0. The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap#loh-performance-implications) and Gen 2 are collected together, if either one's threshold is exceeded, a generation 2 collection is triggered.
 
 Both Gen0 and Gen2 collections compact the memory, however, the large object heap (LOH) isn't compacted unless you use the [GCSettings.LargeObjectHeapCompactionMode](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.gcsettings.largeobjectheapcompactionmode) property to compact the large object heap on demand.
@@ -257,7 +267,7 @@ Both Gen0 and Gen2 collections compact the memory, however, the large object hea
 
 [**Background GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/background-gc) applies only to generation 2 collections and is enabled by default. Gen 0 and 1 are collected as needed while a Gen 2 collection is in progress. Background garbage collection is performed on one or more dedicated threads, depending on whether it's workstation or server GC.
 
-#### Releasing Unmanaged Resources
+### Releasing Unmanaged Resources
 The most common types of [**unmanaged resources**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/unmanaged) are objects that wrap operating system resources, such as files, windows, network connections, or database connections. Although the garbage collector is able to track the lifetime of an object that encapsulates an unmanaged resource, it doesn't know how to release and clean up the unmanaged resource.
 
 The `protected virtual void Dispose(bool disposing)` method executes in two distinct scenarios. If disposing equals true, the method has been called by a user's code and both managed and unmanaged resources can be disposed. If disposing equals false, the method has been called from inside the finalizer and you should not reference other managed objects as only unmanaged resources can be disposed in this scenario.
@@ -344,7 +354,7 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
 ```
 
 
-#### WeakReference Class
+### WeakReference Class
 The [WeakReference](https://learn.microsoft.com/en-us/dotnet/api/system.weakreference) class references an object while still allowing it to be collected by garbage collection under memory pressure. This can be useful for caching.
 [IMemoryCache](https://learn.microsoft.com/en-us/aspnet/core/performance/caching/memory#use-imemorycache) uses `WeakReference`.
 
@@ -369,9 +379,9 @@ When an **ASP.NET Core** app starts, the GC allocates heap segments where each s
 > 
 > *...When multiple containerized apps are running on one machine, Workstation GC might be more performant than Server GC.*
 
-#### Memory Leaks and Memory Exceptions
-##### HttpClient and IHttpClientFactory
-###### HttpClient
+### Memory Leaks and Memory Exceptions
+#### HttpClient and IHttpClientFactory
+##### HttpClient
 Incorrectly using `HttpClient` can result in a resource leak. `HttpClient` implements `IDisposable`, but should not be disposed on every invocation. Rather, `HttpClient` should be reused.
 
 Even when an `HttpClient` instances is disposed, the actual network connection takes some time to be released by the operating system. By continuously creating new connections, socket exhaustion can occur as each client connection requires its own client socket. 
@@ -389,7 +399,7 @@ var handler = new SocketsHttpHandler
 HttpClient sharedClient = new HttpClient(handler);
 ```
 
-###### IHttpClientFactory
+##### IHttpClientFactory
 `IHttpClientFactory` creates `HttpClient` instances and manages the pooling and lifetime of underlying `HttpClientHandler` instances. Automatic management avoids common DNS problems that occur when manually managing `HttpClient` lifetimes, including socket exhaustion and stale DNS.
 
 `IHttpClientFactory` manages the lifetime of `HttpClientHandler` instances separately from instances of `HttpClient` that it creates. The `HttpClientHandler` instances are cached, defaulted to 2 mins, before being recycled.
@@ -407,22 +417,22 @@ builder.Services.AddHttpClient("name-client", httpClient =>
 });
 ```
 
-##### OutOfMemoryException
+#### OutOfMemoryException
 [**OutOfMemoryException**](https://learn.microsoft.com/en-us/dotnet/api/system.outofmemoryexception) is thrown when there isn't enough memory to continue the execution of a program. [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory). The most common reason is there isn't a contiguous block of memory large enough for the required allocation size. Another common reason is attempting to expand a `StringBuilder` object beyond the length defined by its `StringBuilder.MaxCapacity` property.
 
-##### StackOverflowException
+#### StackOverflowException
 In .NET, each thread has a stack of a fixed size, which can vary dependening on the platform, or be configured manually. Once a thread is created, the stack size is not resized. If you exceed it, you get a `StackOverflowException`, which is fatal and cannot be caught in .NET.
 
 The most common reason for `StackOverflowException`:
 - Deep or infinite recursion
 - Large local (stack-allocated) arrays or structs
 
-#### Accessing Memory underlying a Variable 
+### Accessing Memory underlying a Variable 
 C# code is called "verifiably safe code" because .NET tools can verify that the code is safe. Safe code creates managed objects and doesn't allow you to access memory directly. C# does, however, still allow direct memory access. `.NET Core 2.1` introduced `Memory<T>` and `Span<T>` which provide a type safe way to work with a contiguous block of memory. Prior to that, memory could be directly accessed by writing unsafe code using `unsafe` and `fixed`. The examples below show how, despite being [immutable](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#immutability-of-strings), a [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) can be modified by directly accessing the memory storing it. The first example uses [unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code with the `unsafe` and `fixed` keywords. The second example uses `Memory<T>` and `Span<T>`.
 
 A [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) is a reference type with value type semantics. [Strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) store text as a readonly collection of [char](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/char) objects. [Strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) are [immutable](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#immutability-of-strings) i.e. once created they cannot be modified. If a [strings](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) variable is updated, a new [string](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/strings) is created and the original is released for disposal by the garabage collector. 
 
-##### unsafe and fixed
+#### unsafe and fixed
 [Unsafe](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) code is written with the `unsafe` keyword, where you can directly access memory using [pointers](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types). A [pointer](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code#pointer-types) is simply a variable that holds the memory address of another type or variable. The variable also needs to be [fixed](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/fixed) or "pinned", so the garbage collector can't move it while compacting the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). 
 
 [Unsafe code](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/unsafe-code) isn't necessarily dangerous; it's just code whose safety cannot be verified.
@@ -467,7 +477,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618
         }
 ```
 
-##### Memory\<T> and Span\<T>
+#### Memory\<T> and Span\<T>
 [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) is a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) that provides a type-safe representation of a contiguous region of memory. [Memory\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.memory-1) is similar to [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) in that it provides a type-safe representation of a contiguous region of memory, however, it is not a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) so can be placed on the managed heap. This means it doesn't share the same restrictions as [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) and can be a field in a class or used across `await` and `yield` boundaries.
 
 The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L60) shows how an immutable string, can be mutated by directly accessing it in memory using `Memory<T>` and `Span<T>`.
@@ -499,7 +509,7 @@ The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf
         }
 ```
 
-#### Manually Allocating Memory on the Stack
+### Manually Allocating Memory on the Stack
 [stackalloc](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/stackalloc) allocates a block of memory on the stack. Because the memory is allocated on the stack it is not [garbage collected](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/) so it doesn't have to be pinned with the `fixed` statement and is automatically discarded when the method returns.
 
 >  [!Warning]
