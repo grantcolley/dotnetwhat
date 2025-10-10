@@ -650,6 +650,10 @@ You can create a nullable Value type using a special struct `Nullable<T>` e.g. `
 > Console.WriteLine(n.Value);    // 5
 > ```
 
+> [!Tip]
+>
+> `Nullable<T>` value types are particularly useful when working with databases and nullable data types.
+
 ```C#
 namespace System
 {
