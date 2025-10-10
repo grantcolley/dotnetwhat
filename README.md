@@ -629,9 +629,26 @@ There are caveats to be aware of:
 ## Types and Nullability
 Reference types can be assigned the literal `null`, meaning it doesn't point to any object on the heap.
 
-Value types on the other hand must contain a value, and so a bitwise zeroing occurs when it is default-initialized - which basically means the runtime sets all its bits in memory to zero.
+Value types on the other hand must contain a value, and so a bitwise zeroing occurs when it is default-initialized - which basically means the runtime sets all its bits in memory to zero. So the default for both `int` and `bool` is effectively `0`, which in the case of `bool` is the same as `false`.
 
-You can create a nullable Value type using a special struct `Nullable<T>` e.g. `Nullable<int>`. A bitwise zeroing occurs when a `Nullable<T>` is default-initialized, setting both `value` and `hasFlag` to zero. While the value is still defaulted to a bitwise zeroing, it gives the appearance of being `null` because it isn't accessible.
+You can create a nullable Value type using a special struct `Nullable<T>` e.g. `Nullable<int>`. A bitwise zeroing occurs when a `Nullable<T>` is default-initialized, setting both `value` and `hasFlag` to zero. While the default for `value` is still a bitwise zeroing, it gives the appearance of being `null` because it isn't accessible.
+
+> [!Note]
+>
+> Local variables that are `Nullable<T>` are still allocated on the stack.
+
+> [!Important]
+>
+> When the variable is set to another value a new instance of `Nullable<T>` is created.
+>
+> ```C#
+> int? n = default;
+> Console.WriteLine(n.HasValue); // False
+> 
+> n = 5;
+> Console.WriteLine(n.HasValue); // True
+> Console.WriteLine(n.Value);    // 5
+> ```
 
 ```C#
 namespace System
@@ -670,23 +687,6 @@ namespace System
     }
 }
 ```
-
-> [!Note]
->
-> Local variables that are Nullable<T> are still allocated on the stack.
-
-> [!Important]
->
-> When the variable is set to another value a new instance of `Nullable<T>` is created.
->
-> ```C#
-> int? n = default;
-> Console.WriteLine(n.HasValue); // False
-> 
-> n = 5;
-> Console.WriteLine(n.HasValue); // True
-> Console.WriteLine(n.Value);    // 5
-> ```
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
