@@ -44,7 +44,8 @@
   - [Atomicity of Variables, Volatility and Interlocking](#atomicity-of-variables-volatility-and-interlocking)
       - [Atomic](#atomic)
       - [Atomicity and Thread Safety](#atomicity-and-thread-safety)
-- [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats) 
+- [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats)
+- [Types and Nullability](#types-and-nullability)
 - [Concurrency](#concurrency)
   - [Parallelism vs Concurrency vs Asynchronous](#parallelism-vs-concurrency-vs-asynchronous)
   - [Threads](#threads)
@@ -623,6 +624,68 @@ There are caveats to be aware of:
 >        x = 42; // Accessing another thread's stack memory
 >    });
 >}
+> ```
+
+## Types and Nullability
+Reference types can be assigned the literal `null`, meaning it doesn't point to any object on the heap.
+
+Value types on the other hand must contain a value, and so a bitwise zeroing occurs when it is default-initialized - which basically means the runtime sets all its bits in memory to zero.
+
+You can create a nullable Value type using a special struct `Nullable<T>` e.g. `Nullable<int>`. A bitwise zeroing occurs when a `Nullable<T>` is default-initialized, setting both `value` and `hasFlag` to zero. While the value is still defaulted to a bitwise zeroing, it gives the appearance of being `null` because it isn't accessible.
+
+```C#
+namespace System
+{
+    [Serializable]
+    public struct Nullable<T> where T : struct
+    {
+        private bool hasValue;
+        internal T value;
+
+        public Nullable(T value)
+        {
+            this.value = value;
+            this.hasValue = true;
+        }
+
+        public bool HasValue
+        {
+            get { return hasValue; }
+        }
+
+        public T Value
+        {
+            get
+            {
+                if (!hasValue)
+                    throw new InvalidOperationException("Nullable object must have a value.");
+                return value;
+            }
+        }
+
+        public static implicit operator Nullable<T>(T value)
+        {
+            return new Nullable<T>(value); // changing the value creates a new instance
+        }
+    }
+}
+```
+
+> [!Note]
+>
+> Local variables that are Nullable<T> are still allocated on the stack.
+
+> [!Important]
+>
+> When the variable is set to another value a new instance of `Nullable<T>` is created.
+>
+> ```C#
+> int? n = default;
+> Console.WriteLine(n.HasValue); // False
+> 
+> n = 5;
+> Console.WriteLine(n.HasValue); // True
+> Console.WriteLine(n.Value);    // 5
 > ```
 
 ## Concurrency
