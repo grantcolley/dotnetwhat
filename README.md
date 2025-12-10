@@ -964,6 +964,26 @@ By default, awaiting a task will attempt to capture the scheduler from `Synchron
 > Code after the `await` is not guaranteed to always run on the same thread `await` was called.
 >
 > Calling `await` on a UI thread is a special case. If `await` is called on the UI thread, code that runs after the await will continue on the UI thread.  
+>
+> Async methods do NOT stay on one stack.
+> When an await happens:
+> - The current stack frame is unwound
+> - State is stored on the heap
+> - When resumed, execution may continue on:
+> 	- A different thread
+> 	- A different stack
+> 
+> When an await completes, the runtime decides where to resume based on:
+> - Is there a `SynchronizationContext`?
+> - Did you use `ConfigureAwait(false)`?
+> 
+> `ConfigureAwait(false)` is the default behavior when there is no `SynchronizationContext`, and explicitly tells .NET “I do not care about resuming on the original context.” and will:
+> - Skip context capture,
+> - Always resume on a ThreadPool thread
+> - Never resume on the UI thread
+> 
+> `ConfigureAwait(true)` is the default behavior on the UI thread because it has `SynchronizationContext`. UI apps have a `SynchronizationContext` because UI components can only be accessed on the UI thread and the context forces the continuation back to that thread.
+
 
 >  [!Note]
 >
