@@ -204,13 +204,45 @@ When value type variables are assigned from one variable to another, or as an ar
 > If you copy the same address to another piece of paper (another variable), you now have two variables pointing to the same object in heap memory. If you were to paint the door of the house green, both pieces of paper still point to the same house, which now has a green door.
 
 ### Memory Allocation
+.NET uses both stack and heap because it needs fast automatic memory for execution (stack) and flexible shared memory for objects and data structures (heap).
+
 #### Stack Memory
+> The Stack: Fast, Automatic, Short-Lived Memory
+> - The stack is used for method call frames, local variables, and method parameters
+> - Extremely fast (just moves a pointer)
+> - Automatically cleaned up when a method exits
+> - Thread-local (each thread has its own stack)
+> - Limited in size (1MB)
+
+There is one Stack per Thread because each thread needs its own independent execution context
+
 When code execution enters a method, both the parameters passed into the method and the local variables declared in the method, are allocated on the threads **stack** memory. For [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) local variables, the actual value of the type is stored in **stack** memory. For [**reference type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) local variables, only the reference to the object is stored in the **stack** memory, while the object itself is stored in the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#memory-allocation). 
 
 Local variables and method parameters are pushed onto the **stack** in the order they are created and popped off the **stack** on a last in first out (LIFO) basis. Local variables and parameters are scoped to the method in which they are created and when the executing code leaves the method they are popped off the **stack**, therefore the **stack** is self-maintaining.
 
+> Why .NET Needs the Stack
+> - High performance
+> - Deterministic lifetime
+> - Cheap memory management
+> - Safe multi-threading by default
+
 #### Heap Memory
+> The Heap: Flexible, Shared, Long-Lived Memory
+> - Reference types (class, object, array, string)
+> - Objects that outlive a single method
+> - Shared data between methods and threads
+> - Dynamically sized
+> - Slower to allocate than stack
+> - Requires garbage collection
+
 Local variables and method parameters that are [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types) push the reference, or "pointer" to the object, onto the stack however, the object itself is always stored on the [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap). While each thread has it's own stack memory, all threads share the same [**heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) memory. This allows multiple variables across different threads to reference the same object in the shared managed heap.
+
+> Why .NET Needs the Heap
+> - Dynamic lifetimes
+> - Build complex object graphs
+> - Share objects across threads
+> - Polymorphism (Use OOP properly)
+> - Large data support
 
 ##### Small Object Heap
 The [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) consists of two heaps, the small object heap and the [**large object heap (LOH)**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) for objects that are 85,000 bytes (85kb) and larger, which are usually arrays.
