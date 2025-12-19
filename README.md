@@ -1098,9 +1098,24 @@ In **C#** the [Type System](https://learn.microsoft.com/en-us/dotnet/standard/co
 
 [**Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) is the explicit conversion of the value of the `object`, or interface type, to a value type.
 
+> [!IMPORTANT]
+>
+> Boxing is not about where the data lives, it’s about:
+> - Treating a value type as a reference type
+>   
+> Value types can live:
+> - On the stack
+> - Inline inside heap objects
+> - Inline inside arrays
+> - Inline inside other structs
+>   
+> All without boxing.
+
 [**Boxing and Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) can be expensive. [**Boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) involves creating and allocating a new object on the heap, and casting when setting it's value. [**Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) involves first checking the value of the `object` is a boxed value of the [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), then copying the value from the instance into the [**value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types).
 
-Examples of unintentional [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) can occur when working with `strings` e.g. when using `String.Format()` and `String.Concat()` etc. Ways around this is to use string interpolation instead, or always call `.ToString()` of the value type.
+> [!NOTE]
+> 
+> Examples of unintentional [**boxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing) can occur when working with `strings` e.g. when using `String.Format()` and `String.Concat()` etc. Ways around this is to use string interpolation instead, or always call `.ToString()` of the value type. In both cases boxing doesn't happen.
 
 Example [C# code](https://github.com/grantcolley/dotnetwhat/blob/810ce35178fffb9ec70ad3e29a93e76c8c7754c8/tests/TestCases.cs#L25) comparing writing the value of an integer to a string, both with and without calling `Int32.ToString()` and using string interpolation, and the compiled [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions):
 ```C#
