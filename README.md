@@ -52,7 +52,8 @@
   - [ThreadPool](#threadpool)
   - [Task and Task\<T>](#task-and-taskt)
   - [ValueTask\<T>](#value-taskt)
-  - [Async Await](#async-await)
+  - [asyncawait](#asyncawait)
+      - [`async/await` Scheduling](#asyncawait-scheduling)
   - [Thread Safety](#thread-safety)
       - [Locks and Mutex](#locks-and-mutex)   
 - [What's in the CIL](#whats-in-the-cil)
@@ -853,8 +854,6 @@ A **Task** is a data structure that represents the eventual completion of an asy
 >
 > *...At its heart, a Task is just a data structure that represents the eventual completion of some asynchronous operation (other frameworks call a similar type a “promise” or a “future”)....*
 
-![async/await flowchart](/readme-images/async-await-flowchart.png?raw=true "async/await flowchart")
-
 Calling [Task.Run](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run) or [Task.Factory.StartNew](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskfactory.startnew) will execute a method on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool). A task exposes a `GetAwaiter` method, which gets an awaiter to await the task i.e. let the caller know when the task is finished. The `awaiter` also lets the caller attach a *Continuation*, which tells what needs to be executed next. 
 Ultimately, the task is able to tell you if a thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) has completed executing the method, if an exception occurred and, crucially, because a task supports a continuation, it can tell what needs to be called on completion. 
 The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) executes the method while task synchronises everything to ensure the continuation is invoked.
@@ -924,7 +923,7 @@ catch (AggregateException ae)
 #### Value Task\<T>
 [Value Task\<T>](https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/) is the struct equivalent of Task\<T>, altough much more limited than Task\<T>. It was created to help improve asynchronous performance where decreased allocation overhead is important.
 
-#### Async Await
+#### `async/await`
 A [Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) exposes a `GetAwaiter` method to which the caller can attach a *Continuation*.
 
 The `await` keyword simplifies attaching the continuation.
@@ -955,9 +954,32 @@ awaiter.OnCompleted(() =>
 });
 ```
 
+![async/await flowchart](/readme-images/async-await-flowchart.png?raw=true "async/await flowchart")
+
 By default, awaiting a task will attempt to capture the scheduler from `SynchronisationContext.Current` or `TaskScheduler.Current`. When the callback is ready to be invoked, it’ll use the captured scheduler if available. 
 `ConfigureAwait(continueOnCapturedContext: false)` avoids forcing the callback to be invoked on the original context or scheduler. ConfigureAwait(continueOnCapturedContext: true)
 `ConfigureAwait(true)` does nothing meaninglful, except to explicitly show not using `ConfigureAwait(false)` is inentional e.g. to silence static analysis warnings.
+
+##### `async/await` Scheduling
+Three core concepts involved in async/await scheduling in .NET:
+- `SynchronizationContext` — “After an `await`, do I need to resume on a specific thread?”
+- `TaskScheduler` — “Who schedules my continuation?”
+- **ThreadPool / Threads** — “Where does code actually execute?”
+
+Understanding how these three interact fully explains where your async code runs and why.
+
+`SynchronizationContext` — “After an `await`, do I need to resume on a specific thread?”
+If a `SynchronizationContext.Current` exists the runtime captures it and resumes the continuation through that context.
+
+`TaskScheduler` — “Who schedules my continuation?”
+If no `SynchronizationContext` exists `await` falls back to the `TaskScheduler.Default` and continuation runs on a ThreadPool thread.
+
+**ThreadPool / Threads** — “Where does code actually execute?”
+- **Threads** are the physical execution units of your program which includes:
+	 - Stack
+	 - CPU core
+	 - Instruction execution.
+- **ThreadPool** is a shared pool of worker threads, dynamically sized and optimized for short-lived work, and esed by `Async` continuations and `Task.Run`.
 
 >  [!Note]
 >
@@ -983,7 +1005,6 @@ By default, awaiting a task will attempt to capture the scheduler from `Synchron
 > - Never resume on the UI thread
 > 
 > `ConfigureAwait(true)` is the default behavior on the UI thread because it has `SynchronizationContext`. UI apps have a `SynchronizationContext` because UI components can only be accessed on the UI thread and the context forces the continuation back to that thread.
-
 
 >  [!Note]
 >
