@@ -64,6 +64,7 @@
   - [Ref Returns](#ref-returns)
   - [Lambda](#lambda)
   - [Captured Variable](#captured-variable)
+  - [More on Captured Variables](#more-on-captured-variables)
   - [Closing Over a Loop Variable](#closing-over-a-loop-variable)
      - [for loop](#for-loop)
      - [foreach loop](#foreach-loop)
@@ -1403,6 +1404,55 @@ In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/s
   IL_002c:  ret
 } // end of method CapturedVariable::IncrementLocalVariable
 ```
+
+#### More on Captured Variables
+Consider the following example where `seed` is captured by a closure, not re-created on each call to `natural()`.
+
+```C#
+Func<int> natural = Natural();
+Console.WriteLine (natural()); // 0
+Console.WriteLine (natural()); // 1
+
+static Func<int> Natural()
+{
+	int seed = 0;
+	return () => seed++; // Returns a closure
+}
+```
+
+**What’s happening step by step**
+```C#
+Func<int> natural = Natural();
+```
+- `Natural()` is called once.
+- Inside `Natural`, the local variable `seed` is created and initialized to 0.
+- The method returns a lambda: `() => seed++`.
+- That lambda captures `seed`.
+
+At this point, `seed` does not live on the stack anymore. The C# compiler lifts it into a hidden object (often called a *closure object*) on the heap.
+
+**Each call to `natural()`**
+```C#
+Console.WriteLine(natural()); // 0
+Console.WriteLine(natural()); // 1
+```
+- You are invoking the same delegate instance each time.
+- That delegate holds a reference to the same captured `seed` variable.
+- `seed++` increments the value stored in that closure object.
+ 
+So:
+
+- First call → returns 0, then increments to 1
+- Second call → returns 1, then increments to 2
+
+`seed` is not reset because `Natural()` is not being called again.
+
+> [TIP!]
+> 
+> **Key idea**
+> - Closures capture variables, not values.
+> - Only if you called `Natural()` again, a new closure would be created in which `seed` is set to 0.
+
 
 #### Closing Over a Loop Variable
 The behavior for closing over loop variables is the same for `for` loops and `while` loops, where the loop variable is logically outside the loop, and therefore closures will close over the same copy of the variable. However, it is different for `foreach` loops, where the loop variable of a `foreach` will be logically inside the loop, and therefore closures will close over a fresh copy of the variable each time.
