@@ -1447,9 +1447,8 @@ So:
 
 `seed` is not reset because `Natural()` is not being called again.
 
-> [TIP!]
+> [!TIP]
 > 
-> **Key idea**
 > - Closures capture variables, not values.
 > - Only if you called `Natural()` again, a new closure would be created in which `seed` is set to 0.
 
