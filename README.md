@@ -89,6 +89,9 @@
   - [Big *O* Summary](#big-o-summary)
 - [Glossary](#glossary)
 - [References](#references)
+  - [.NET Blogs](#net-blogs)
+  - [Microsoft](#microsoft)
+  - [Wikipedia](#wikipedia)
 
 ## Overview
 
@@ -2110,14 +2113,14 @@ int Fibonacci(int n)
 * **Variables** *- represent storage locations*
 
 ## References
-* **.NET Blogs**
+### **.NET Blogs**
   * [About Processes and Threads](https://learn.microsoft.com/en-us/windows/win32/procthread/about-processes-and-threads)
   * [All About Span: Exploring a New .NET Mainstay](https://learn.microsoft.com/en-us/archive/msdn-magazine/2018/january/csharp-all-about-span-exploring-a-new-net-mainstay)
   * [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
   * [“Out Of Memory” Does Not Refer to Physical Memory](https://learn.microsoft.com/en-us/archive/blogs/ericlippert/out-of-memory-does-not-refer-to-physical-memory)
   * [What is .NET, and why should you choose it?](https://devblogs.microsoft.com/dotnet/why-dotnet/)
 
-* **Microsoft**
+### **Microsoft**
   * [Background GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/background-gc)
   * [**Boxing and Unboxing**](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/types/boxing-and-unboxing)
   * [BCL](https://learn.microsoft.com/en-us/dotnet/standard/framework-libraries)
@@ -2168,7 +2171,7 @@ int Fibonacci(int n)
   * [Variables](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables)
   * [Workstation GC](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc)
 
-* **Wikipedia**
+### **Wikipedia**
   * [CIL](https://en.wikipedia.org/wiki/Common_Intermediate_Language)
   * [CIL Instructions](https://en.wikipedia.org/wiki/List_of_CIL_instructions)
   * [Message Loop](https://en.wikipedia.org/wiki/Message_loop_in_Microsoft_Windows)
