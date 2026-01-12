@@ -77,6 +77,7 @@
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
   - [Mark Members Static](#mark-members-static)
+- [Linq](#linq) 
 - [Big *O*](#big-o)
   - [TL;DR](#tldr)
   - [Rules of Thumb](#rules-of-thumb)
@@ -1924,6 +1925,20 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/main/s
 Mark those members that do not reference instance data or call instance methods can be marked as static. This will prevent a runtime check to see if the object pointer is not null resulting in a performance gain.
 
 See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1822)
+
+## Language Integrated Query (Linq)
+Linq enables you to query any collection (sequence) that implements `IEnumerable<T>`. The standard query operators are implemented as extension methods on `IEnumerable<T>`.
+
+Query operators
+- Aggregation operators: `Count()`, `Min()`, `Max()`, `Average()` etc...
+- Element operators: `First()`, `Last()`, `FirstOrDefault()`, `LastOrDefault` etc...
+- Quantifiers: `Contains()`, `Any()`, `All()` etc...
+- Set operators: `Concat()`, `Union()`, `Intersect()`, `Except()` etc...
+- Conversion operators: `ToList()`, `ToDictionary()`, `ToHashSet()`  etc...
+
+Most query operators execute when enumerated, not when constructed. This is known as deferred execution. All standard query operators provide deferred execution with the exception of:
+- Operators that return a single element or scalar value like aggregation operators, element operators and quantifiers e.g. `First()` and `Count()`
+- Conversion operators e.g. `ToList()`
 
 ## Big *O*
 Big *O* notation is a way to describe how fast or slow your code runs as the input size grows. It gives you a basic idea of your code's performance and scalability.
