@@ -72,6 +72,7 @@
   - [Array](#array)
   - [List\<T>](#listt)
   - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)
+  - [Records>](#records)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -1779,6 +1780,15 @@ hashCode = -123456789 & 0x7FFFFFFF
 
 // step 3 - the hash code is then modulo'd by the number of buckets to find the right one
 int bucketIndex = hashCode % buckets.Length;
+```
+
+#### Records
+Record is a compile time contruct that represent a class or struct that works with immutable (read-only) data, and has structural equality semantics i.e. if the values are erqual, the object is equal. At runtime records are treated as classes or structs with additional rules enforcing immutability and structural equality semantics. Records are useful for simply storing and passing read-only values. Records can implement intrerfaces and in the case of class Records, can inherit from another base class Record.
+
+```C#
+public record Point{}; // Point is a class
+
+public struct record Point{}; // Point is a struct
 ```
 
 ## Performance
