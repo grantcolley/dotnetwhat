@@ -77,7 +77,7 @@
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
   - [Mark Members Static](#mark-members-static)
-- [Linq](#linq) 
+- [Language Integrated Query (Linq)](#language-integrated-query-linq) 
 - [Big *O*](#big-o)
   - [TL;DR](#tldr)
   - [Rules of Thumb](#rules-of-thumb)
