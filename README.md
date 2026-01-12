@@ -72,7 +72,7 @@
   - [Array](#array)
   - [List\<T>](#listt)
   - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)
-  - [Records>](#records)
+  - [Records](#records)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
