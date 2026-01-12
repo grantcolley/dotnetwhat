@@ -1788,7 +1788,7 @@ Record is a compile time contruct that represent a class or struct that works wi
 ```C#
 public record Point{}; // Point is a class
 
-public struct record Point{}; // Point is a struct
+public record struct Point{}; // Point is a struct
 ```
 
 ## Performance
