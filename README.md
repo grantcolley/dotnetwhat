@@ -1947,11 +1947,11 @@ Linq enables you to query any collection (sequence) that implements `IEnumerable
 
 #### Deferred Execution
 Most query operators execute when enumerated, not when constructed. This is known as deferred execution. All standard query operators provide deferred execution with the exception of:
-- Operators that return a single element or scalar value like aggregation operators, element operators and quantifiers e.g. `First()` and `Count()`
+- Operators that return a single element or scalar value like quantifiers, element, and aggregation operators  e.g. `Contains()`, `First()` and `Count()`
 - Conversion operators e.g. `ToList()`
 
 #### Fluent Syntax vs Query Expressions
-Fluent syntax is extension methods on `IEnumerable<T>` and allows you to chain query operators to build complex queries. A query expression is special language support that starts with `from` and ends with either a `select` or `group` clause.
+Fluent syntax are extension methods on `IEnumerable<T>` which allows you to chain query operators to build complex queries. A query expression is special language support that starts with `from` and ends with either a `select` or `group` clause.
 
 > [!NOTE]
 > 
