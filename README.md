@@ -77,7 +77,10 @@
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
   - [Mark Members Static](#mark-members-static)
-- [Language Integrated Query (Linq)](#language-integrated-query-linq) 
+- [Language Integrated Query (Linq)](#language-integrated-query-linq)
+  - [Query Operators](#query-operators)
+  - [Deferred Execution](#deferred-execution)
+  - [Fluent Syntax vs Query Expressions](#fluent-syntax-vs-query-expressions)
 - [Big *O*](#big-o)
   - [TL;DR](#tldr)
   - [Rules of Thumb](#rules-of-thumb)
@@ -1929,16 +1932,43 @@ See [CA1822: Mark members as static](https://learn.microsoft.com/en-us/dotnet/fu
 ## Language Integrated Query (Linq)
 Linq enables you to query any collection (sequence) that implements `IEnumerable<T>`. The standard query operators are implemented as extension methods on `IEnumerable<T>`.
 
-Query operators
+#### Query Operators
+- Filtering operators: `Where()`, `Take()`, `Skip()` etc...
+- Projecting operators: `Select()`, `SelectMany()` etc...
+- Joining operators: `Join()`, `GroupJoin()`, `Zip()` etc...
+- Grouping operators: `GroupBy()`, `Chunk()` etc...
+- Ordering operators:  `OrderBy()`, `ThenBy()`, `OrderByDescending()` ect...
 - Aggregation operators: `Count()`, `Min()`, `Max()`, `Average()` etc...
 - Element operators: `First()`, `Last()`, `FirstOrDefault()`, `LastOrDefault` etc...
 - Quantifiers: `Contains()`, `Any()`, `All()` etc...
 - Set operators: `Concat()`, `Union()`, `Intersect()`, `Except()` etc...
-- Conversion operators: `ToList()`, `ToDictionary()`, `ToHashSet()`  etc...
+- Conversion operators (export): `ToList()`, `ToDictionary()`, `ToHashSet()`  etc...
+- Conversion operators (import): `OfTYype<T>()`, `Cast<T>()`  etc...
 
+#### Deferred Execution
 Most query operators execute when enumerated, not when constructed. This is known as deferred execution. All standard query operators provide deferred execution with the exception of:
 - Operators that return a single element or scalar value like aggregation operators, element operators and quantifiers e.g. `First()` and `Count()`
 - Conversion operators e.g. `ToList()`
+
+#### Fluent Syntax vs Query Expressions
+Fluent syntax is extension methods on `IEnumerable<T>` and allows you to chain query operators to build complex queries. A query expression is special language support that starts with `from` and ends with either a `select` or `group` clause.
+
+> [!NOTE]
+> 
+> The compiler translates query expressions into fluent syntax.
+
+```C#
+// Fluent syntax
+IEnumerable<string> query = names.Where (n = > n.Contains ("a"))
+								 .OrderBy (n = > n.Length)
+								 .Select (n = > n.ToUpper());
+
+// Query expression
+IEnumerable<string> query = from n in names
+							where n.Contains("a")
+							orderby n.Length
+							select n.ToUpper();
+```
 
 ## Big *O*
 Big *O* notation is a way to describe how fast or slow your code runs as the input size grows. It gives you a basic idea of your code's performance and scalability.
