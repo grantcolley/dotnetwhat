@@ -73,6 +73,7 @@
   - [List\<T>](#listt)
   - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)
   - [Records](#records)
+  - [Enums](#enums)
 - [Performance](#performance)
   - [Span\<T>](#spant)
   - [StringBuilder](#stringbuilder)
@@ -1793,6 +1794,45 @@ Record is a compile time contruct that represent a class or struct that works wi
 public record Point{}; // Point is a class
 
 public record struct Point{}; // Point is a struct
+```
+
+#### Enums
+Enums are value type where you specify a group of named numeric constants. Enums are stored in memory exactly as its underlying integral type, with no extra metadata per value. Adding the The `[Flags]` attribute does not change memory layout at all.
+
+How it works
+- Every enum has an underlying integral type
+- If you don’t specify one, the default is int (System.Int32)
+- At runtime and in memory, the enum value is just that integral value
+
+```C#
+[Flags]
+enum Permissions : int
+{
+    Read = 1,
+    Write = 2,
+    Execute = 4
+}
+
+// The enum above is the equivalent in memory to:
+int permission = 1;
+
+// Enums can be boxed
+object o = Permissions.Read;
+```
+
+> [!Note]
+>
+> An enum variable can hold a value that is not one of its named constants. This is intentional and follows directly from how enums work.
+
+```C#
+enum Status
+{
+    None = 0,
+    Started = 1,
+    Finished = 2
+}
+
+Status s = (Status)42;   // perfectly legal
 ```
 
 ## Performance
