@@ -221,7 +221,7 @@ When value type variables are assigned from one variable to another, or as an ar
 > The Stack: Fast, Automatic, Short-Lived Memory
 > - The stack is used for method call frames, local variables, and method parameters
 > - Extremely fast (just moves a pointer)
-> - Automatically cleaned up when a method exits
+> - Automatically cleaned up when a method exits (no garbage collection)
 > - Thread-local (each thread has its own stack)
 > - Limited in size (1MB)
 
