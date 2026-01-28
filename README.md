@@ -279,7 +279,9 @@ To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-
 The initial size of the heap 2GB-4GB for 32-bit systems, and slightly larger for 64-bit systems. The heap can grow (and shrink) according to the demands of the application. 
 
 > [!IMPORTANT]
-> The size the heap can grow to is limited by the available system memory and any restrictions imposed by the operating system and hardware.
+> Stack memory is limited to 1MB.
+>
+> he size the heap can grow to is limited by the available system memory and any restrictions imposed by the operating system and hardware.
 
 #### Stack vs Heap
 - **Stack:**
