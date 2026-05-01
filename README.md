@@ -352,7 +352,8 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
         public void Dispose()
         {
             Dispose(true);
-            
+
+			// Only call GC.SuppressFinalize if explicitly implementing a finaliser.
             // GC.SuppressFinalize takes this object off the finalization queue
             // and prevents finalization code from executing a second time.
             GC.SuppressFinalize(this);
