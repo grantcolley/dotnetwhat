@@ -332,7 +332,7 @@ Workstation GC = 1 Application = 1 process = 1 managed heap
 - Typically 1 managed heap per process
 
 ##### Server GC
-Server GC = multiple heaps per process
+Server GC = 1 Application = 1 process = multiple heaps (1 per logical processor)
 - If you have 8 logical processors → 8 heaps in that process
 - Dedicated GC threads handle collection, in parallel
 
