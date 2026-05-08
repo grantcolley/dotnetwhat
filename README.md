@@ -24,7 +24,7 @@
   	- [Heap Memory](#heap-memory)
   		- [Small Object Heap](#small-object-heap)
   		- [Large Object Heap (LOH)](#large-object-heap-loh)
-  		- [Pinned Object Heap (POH)](#pinned-object-heap-loh)
+  		- [Pinned Object Heap (POH)](#pinned-object-heap-poh)
   		- [Putting Heap Allocation Into Context](#putting-heap-allocation-into-context) 
   	- [Stack vs Heap](#stack-vs-heap)
   - [Releasing Memory](#releasing-memory)
