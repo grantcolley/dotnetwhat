@@ -24,6 +24,7 @@
   	- [Heap Memory](#heap-memory)
   		- [Small Object Heap](#small-object-heap)
   		- [Large Object Heap (LOH)](#large-object-heap-loh)
+  		- [Pinned Object Heap (POH)](#pinned-object-heap-loh)
   		- [Putting Heap Allocation Into Context](#putting-heap-allocation-into-context) 
   	- [Stack vs Heap](#stack-vs-heap)
   - [Releasing Memory](#releasing-memory)
@@ -264,6 +265,26 @@ The small object heap is divided into three generations, 0, 1, and 2, so it can 
 
 ##### Large Object Heap (LOH)
 The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes (85kb) in size, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
+
+##### Pinned Object Heap (POH)
+The **Pinned Object Heap (POH)** is a special heap introduced in `.NET 5` for objects that are intentionally pinned for long periods of time.
+Normally, the .NET GC moves objects around in memory during collection/compaction.
+Pinned means: “GC is not allowed to move this object.”
+During a GC collection pinned objects become obstacles. Because the GC cannot move the pinned object, so holes/fragments develop around it.
+Instead of pinning objects in the normal GC heap, the POH isolates long-lived pinned objects into a separate heap.
+- pinned allocations can live in the POH
+- fragmentation is contained there
+- normal heaps compact more efficiently
+
+The POH is managed by the GC and collected automatically, but it is:
+- not compacted
+- designed specifically for pinned allocations
+- separate from the normal SOH/LOH layout
+
+Example pinning an object in the POH
+```C#
+byte[] buffer = GC.AllocateArray<byte>(4096, pinned: true);
+```
 
 ##### Putting Heap Allocation Into Context
 To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap), 85,000 bytes is the equivalent of the following:
