@@ -27,6 +27,14 @@
   		- [Pinned Object Heap (POH)](#pinned-object-heap-poh)
   		- [Putting Heap Allocation Into Context](#putting-heap-allocation-into-context) 
   	- [Stack vs Heap](#stack-vs-heap)
+    - [Workstation Heap vs Server Heaps](#workstation-heap-vs-server-heaps)
+    	- [Workstation GC](#)
+     	- [Server GC](#)
+      	- [What about IIS / ASP.NET?](#)
+      	- [Physical vs Logical processors](#)
+      	- [Do AppDomains still exist?](#)
+      		- [.NET Framework](#)
+      	 	- [In modern .NET](#)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [WeakReference Class](#weakreference-class)
@@ -317,6 +325,78 @@ To put into context what goes onto the [**LOH**](https://learn.microsoft.com/en-
  	- not thread-safe as memory is shared among threads
 
 If you need large memory allocation or recursive data structures, prefer heap allocation (`class` or `new`), not large `struct` or `Span<T>` on the stack.
+
+#### Workstation Heap vs Server Heaps
+##### Workstation GC
+Workstation GC = 1 Application = 1 process = 1 managed heap
+- Typically 1 managed heap per process
+
+##### Server GC
+Server GC = multiple heaps per process
+- If you have 8 logical processors → 8 heaps in that process
+- Dedicated GC threads handle collection, in parallel
+
+##### What about IIS / ASP.NET?
+- Under Internet Information Services (IIS), each application pool runs in its own worker process (`w3wp.exe`)
+- Each worker process gets its own GC + heaps
+- Multiple apps can share a pool → then they share the same GC/heaps
+
+##### Physical vs Logical processors
+- A physical processor (core) is an actual hardware core on the CPU.
+- A logical processor is what the OS exposes for scheduling threads.
+- The OS schedules threads on logical processors
+- With technologies like hyper-threading (Simultaneous Multithreading), one physical core can present multiple logical processors.
+
+Example:
+- 4 physical cores, no hyper-threading → 4 logical processors
+- 4 physical cores with hyper-threading → 8 logical processors
+
+##### Do AppDomains still exist?
+Yes — but their role changed dramatically.
+
+> [!TIP]
+>
+> Heaps are per process, not per AppDomain. Applications have their own process. Inside that process, Server GC creates one heap per logical processor. Applications do not share heap(s).
+
+###### .NET Framework
+.NET Framework supported multiple AppDomains inside a single process.
+An **AppDomain** provided:
+- isolation between applications/plugins
+- separate assembly loading
+- unloading of code
+- some security boundaries
+
+A single process could host multiple AppDomains, each running different applications/components. This was common in ASP.NET on IIS.
+
+###### In modern .NET
+In modern .NET (.NET Core / .NET 5+ / .NET 8)
+From .NET 8, there is still technically an AppDomain type, but there is effectively one AppDomain per process.
+The modern replacements for the traditional `AppDomain` is:
+- AssemblyLoadContext → dynamic assembly loading/unloading
+- processes
+- containers
+
+So when discussing GC architecture today process boundaries matter much more than AppDomains.
+ 
+How many apps run in a process? Usually one application = one process
+
+Examples:
+- ASP.NET Core web app → one process
+- Windows service → one process
+- console app → one process
+
+Each process gets:
+- its own CLR/runtime instance
+- its own managed heaps
+- its own GC
+
+> [!TIP]
+> A “single heap” still contains:
+> - Gen 0
+> - Gen 1
+> - Gen 2
+> - LOH (Large Object Heap)
+> - POH (Pinned Object Heap in newer .NET versions)
 
 ### Releasing Memory
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0. The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap#loh-performance-implications) and Gen 2 are collected together, if either one's threshold is exceeded, a generation 2 collection is triggered.
