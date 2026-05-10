@@ -103,7 +103,7 @@
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
 - [S.O.L.I.D Principles](#solid-principles)
-- [CI/CD](#ci--icd)
+- [CI/CD](#cicd)
 - [AI Agents in the IDE](#ai-agents-in-the-ide)
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
