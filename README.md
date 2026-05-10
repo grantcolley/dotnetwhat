@@ -103,8 +103,8 @@
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
 - [AI Agents in the IDE](#ai-agents-in-the-ide)
-	- [GitHub Copilot](#github-copilot)
- 	- [Codex](#codex)
+	- [GitHub Copilot Chat](#github-copilot-chat)
+ 	- [OpenAI Codex](#openai-codex)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -2265,10 +2265,10 @@ int Fibonacci(int n)
 - `O(2ⁿ)`: Unusable beyond ~20 items
 
 ## AI Agents in the IDE
-#### Copilot Chat
-GitHub Copilot - In Visual Studio, use the Copilot free plan. GitHub Pro subscription does not include Copilot Pro.
+#### GitHub Copilot Chat
+GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscription does not include Copilot Pro.
 
-#### Codex
+#### OpenAI Codex
 Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
 
 ## Glossary
