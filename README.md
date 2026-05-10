@@ -102,6 +102,7 @@
     - [Exponential Time `O(2n)`](#exponential-time-O-2n)
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
+- [S.O.L.I.D Principles](#)
 - [AI Agents in the IDE](#ai-agents-in-the-ide)
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
@@ -2263,6 +2264,8 @@ int Fibonacci(int n)
 - `O(n)`: Grows steadily
 - `O(n²)`: Slows down fast with large input
 - `O(2ⁿ)`: Unusable beyond ~20 items
+
+## S.O.L.I.D Principles
 
 ## AI Agents in the IDE
 #### GitHub Copilot Chat
