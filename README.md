@@ -102,6 +102,9 @@
     - [Exponential Time `O(2n)`](#exponential-time-O-2n)
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
+- [AI Agents in the IDE](#ai-agents-in-the-ide)
+	- [GitHub Copilot](#github-copilot)
+ 	- [Codex](#codex)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -2260,6 +2263,13 @@ int Fibonacci(int n)
 - `O(n)`: Grows steadily
 - `O(n²)`: Slows down fast with large input
 - `O(2ⁿ)`: Unusable beyond ~20 items
+
+## AI Agents in the IDE
+#### Copilot Chat
+GitHub Copilot - In Visual Studio, use the Copilot free plan. GitHub Pro subscription does not include Copilot Pro.
+
+#### Codex
+Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
