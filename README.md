@@ -109,6 +109,7 @@
   - [I — Interface Segregation Principle](#i--interface-segregation-principle)
   - [D — Dependency Inversion Principle](#d--dependency-inversion-principle)
 - [CI/CD](#cicd)
+- [REST](#rest)
 - [AI Agents in the IDE](#ai-agents-in-the-ide)
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
@@ -2448,6 +2449,10 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 Then inject it into controllers or services.
 
 ## CI/CD
+
+## REST
+**REST (REpresentational State Transfer)** is a widely used architectural style for designing networked applications, particularly APIs, that allows client-server communication using HTTP methods like `GET`, `POST`, `PUT`, and `DELETE`. It was introduced by Roy Fielding in 2000 to improve web efficiency through constraints like statelessness, uniform interfaces, and cacheability. 
+
 
 ## AI Agents in the IDE
 #### GitHub Copilot Chat
