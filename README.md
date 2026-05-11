@@ -2267,6 +2267,180 @@ int Fibonacci(int n)
 - `O(2ⁿ)`: Unusable beyond ~20 items
 
 ## S.O.L.I.D Principles
+**SOLID** is a set of five object-oriented design principles that help make C# code easier to maintain, test, and extend.
+
+#### S — Single Responsibility Principle
+A class should have one reason to change.
+```C#
+public class Invoice
+{
+    public decimal Total { get; set; }
+}
+
+public class InvoicePrinter
+{
+    public void Print(Invoice invoice)
+    {
+        Console.WriteLine($"Total: {invoice.Total}");
+    }
+}
+
+public class InvoiceRepository
+{
+    public void Save(Invoice invoice)
+    {
+        // Save invoice to database
+    }
+}
+```
+Instead of one `Invoice` class printing, saving, and calculating everything, responsibilities are split.
+
+#### O — Open/Closed Principle
+Classes should be open for extension but closed for modification.
+```C#
+public interface IDiscount
+{
+    decimal Apply(decimal price);
+}
+
+public class StudentDiscount : IDiscount
+{
+    public decimal Apply(decimal price) => price * 0.9m;
+}
+
+public class SeniorDiscount : IDiscount
+{
+    public decimal Apply(decimal price) => price * 0.8m;
+}
+
+public class PriceCalculator
+{
+    public decimal Calculate(decimal price, IDiscount discount)
+    {
+        return discount.Apply(price);
+    }
+}
+```
+You can add new discounts without changing `PriceCalculator`.
+
+#### L — Liskov Substitution Principle
+A derived class should be usable wherever its base class is expected.
+
+Bad Example:
+```C#
+public class Bird
+{
+    public virtual void Fly() { }
+}
+
+public class Penguin : Bird
+{
+    public override void Fly()
+    {
+        throw new NotImplementedException();
+    }
+}
+```
+
+Good
+```C#
+public abstract class Bird { }
+
+public interface IFlyingBird
+{
+    void Fly();
+}
+
+public class Eagle : Bird, IFlyingBird
+{
+    public void Fly()
+    {
+        Console.WriteLine("Flying");
+    }
+}
+
+public class Penguin : Bird
+{
+    // Penguins do not fly
+}
+```
+`Penguin` is no longer forced to implement behavior it cannot support.
+
+#### I — Interface Segregation Principle
+Clients should not be forced to depend on methods they do not use.
+
+Bad Example.
+```C#
+public interface IWorker
+{
+    void Work();
+    void Eat();
+}
+```
+
+Good.
+```C#
+public interface IWorkable
+{
+    void Work();
+}
+
+public interface IEatable
+{
+    void Eat();
+}
+
+public class HumanWorker : IWorkable, IEatable
+{
+    public void Work() { }
+    public void Eat() { }
+}
+
+public class RobotWorker : IWorkable
+{
+    public void Work() { }
+}
+```
+A robot should not be forced to implement `Eat()`.
+
+#### D — Dependency Inversion Principle
+High-level code should depend on abstractions, not concrete classes.
+```C#
+public interface IEmailService
+{
+    void Send(string message);
+}
+
+public class EmailService : IEmailService
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Email sent: {message}");
+    }
+}
+
+public class NotificationService
+{
+    private readonly IEmailService _emailService;
+
+    public NotificationService(IEmailService emailService)
+    {
+        _emailService = emailService;
+    }
+
+    public void NotifyUser()
+    {
+        _emailService.Send("Hello!");
+    }
+}
+```
+`NotificationService` depends on `IEmailService`, not directly on `EmailService`.
+
+In ASP.NET Core, you would register it like this:
+```C#
+builder.Services.AddScoped<IEmailService, EmailService>();
+```
+Then inject it into controllers or services.
 
 ## CI/CD
 
