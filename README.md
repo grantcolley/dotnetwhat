@@ -2277,7 +2277,9 @@ int Fibonacci(int n)
 **SOLID** is a set of five object-oriented design principles that help make C# code easier to maintain, test, and extend.
 
 #### S — Single Responsibility Principle
-A class should have one reason to change.
+A class should have one reason to change. This means it should focus on a single, cohesive responsibility.
+
+Example - Instead of one `Invoice` class printing, saving, and calculating everything, responsibilities are split.
 ```C#
 public class Invoice
 {
@@ -2300,10 +2302,11 @@ public class InvoiceRepository
     }
 }
 ```
-Instead of one `Invoice` class printing, saving, and calculating everything, responsibilities are split.
 
 #### O — Open/Closed Principle
-Classes should be open for extension but closed for modification.
+Classes should be open for extension but closed for modification. This means you should be able to add new functionality to a system without changing existing, tested code. 
+
+Example - You can add new discounts without changing `PriceCalculator`.
 ```C#
 public interface IDiscount
 {
@@ -2328,7 +2331,6 @@ public class PriceCalculator
     }
 }
 ```
-You can add new discounts without changing `PriceCalculator`.
 
 #### L — Liskov Substitution Principle
 A subclass should be able to replace its base class without breaking the program. The issue is about correct behavior when substituting subclasses. It is better to avoid inheritance when the behavior does not truly match.
@@ -2464,7 +2466,9 @@ public class OfficePrinter : IPrinter, IScanner, IFaxMachine
 ```
 
 #### D — Dependency Inversion Principle
-High-level code should depend on abstractions, not concrete classes.
+High-level code should depend on abstractions (interfaces), not concrete classes. It ensures high-level business logic remains decoupled from low-level implementation details. Dependencies can be injected into a class.
+
+Example - `NotificationService` depends on `IEmailService`, not directly on `EmailService`.
 ```C#
 public interface IEmailService
 {
@@ -2494,13 +2498,6 @@ public class NotificationService
     }
 }
 ```
-`NotificationService` depends on `IEmailService`, not directly on `EmailService`.
-
-In ASP.NET Core, you would register it like this:
-```C#
-builder.Services.AddScoped<IEmailService, EmailService>();
-```
-Then inject it into controllers or services.
 
 #### Difference Between LSP and ISP
 **Liskov Substitution Principle (LSP)** and **Interface Segregation Principle (ISP)** are commonly confused because both often involve interfaces and inheritance.
