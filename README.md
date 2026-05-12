@@ -2330,9 +2330,9 @@ public class PriceCalculator
 You can add new discounts without changing `PriceCalculator`.
 
 #### L — Liskov Substitution Principle
-A subclass should be able to replace its base class without breaking the program. **LSP** is about correct behavior when substituting subclasses.
+A subclass should be able to replace its base class without breaking the program. The issue is about correct behavior when substituting subclasses. It is better to avoid inheritance when the behavior does not truly match.
 
-Bad Example - because setting width also changes height, changing the expected behaviour of the base class. 
+Bad Example - Setting width also changes height, thereby changing the expected behaviour of the base class. 
 ```C#
 public class Rectangle
 {
@@ -2364,7 +2364,7 @@ public class Square : Rectangle
 }
 ```
 
-Good Example - Avoid inheritance when the behavior does not truly match. Now each shape behaves correctly on its own.
+Better Example - Avoid inheritance when the behavior does not truly match. Now each shape behaves correctly on its own.
 ```C#
 public interface IShape
 {
@@ -2388,41 +2388,79 @@ public class Square : IShape
 ```
 
 #### I — Interface Segregation Principle
-Clients should not be forced to depend on methods they do not use.
+Clients should not be forced to depend on methods they do not use. The issue is fat interfaces. It is better to split interfaces into focused contracts.
 
-Bad Example.
+Bad Example - Fat interfaces. A modern printer might not support faxing.
 ```C#
-public interface IWorker
+public interface ISmartDevice
 {
-    void Work();
-    void Eat();
+    void Print();
+    void Scan();
+    void Fax();
+}
+
+public class BasicPrinter : ISmartDevice
+{
+    public void Print()
+    {
+        Console.WriteLine("Printing");
+    }
+
+    public void Scan()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Fax()
+    {
+        throw new NotImplementedException();
+    }
 }
 ```
 
-Good.
+Better Example - It is better to split interfaces into focused contracts. Now classes implement only what they need.
 ```C#
-public interface IWorkable
+public interface IPrinter
 {
-    void Work();
+    void Print();
 }
 
-public interface IEatable
+public interface IScanner
 {
-    void Eat();
+    void Scan();
 }
 
-public class HumanWorker : IWorkable, IEatable
+public interface IFaxMachine
 {
-    public void Work() { }
-    public void Eat() { }
+    void Fax();
 }
 
-public class RobotWorker : IWorkable
+public class BasicPrinter : IPrinter
 {
-    public void Work() { }
+    public void Print()
+    {
+        Console.WriteLine("Printing");
+    }
+}
+
+public class OfficePrinter : IPrinter, IScanner, IFaxMachine
+{
+    public void Print()
+    {
+        Console.WriteLine("Printing");
+    }
+
+    public void Scan()
+    {
+        Console.WriteLine("Scanning");
+    }
+
+    public void Fax()
+    {
+        Console.WriteLine("Faxing");
+    }
 }
 ```
-A robot should not be forced to implement `Eat()`.
 
 #### D — Dependency Inversion Principle
 High-level code should depend on abstractions, not concrete classes.
