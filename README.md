@@ -2330,47 +2330,62 @@ public class PriceCalculator
 You can add new discounts without changing `PriceCalculator`.
 
 #### L — Liskov Substitution Principle
-A derived class should be usable wherever its base class is expected.
+A subclass should be able to replace its base class without breaking the program. **LSP** is about correct behavior when substituting subclasses.
 
-Bad Example:
+Bad Example - because setting width also changes height, changing the expected behaviour of the base class. 
 ```C#
-public class Bird
+public class Rectangle
 {
-    public virtual void Fly() { }
+    public virtual int Width { get; set; }
+    public virtual int Height { get; set; }
+
+    public int Area => Width * Height;
 }
 
-public class Penguin : Bird
+public class Square : Rectangle
 {
-    public override void Fly()
+    public override int Width
     {
-        throw new NotImplementedException();
+        set
+        {
+            base.Width = value;
+            base.Height = value;
+        }
+    }
+
+    public override int Height
+    {
+        set
+        {
+            base.Width = value;
+            base.Height = value;
+        }
     }
 }
 ```
 
-Good
+Good Example - Avoid inheritance when the behavior does not truly match. Now each shape behaves correctly on its own.
 ```C#
-public abstract class Bird { }
-
-public interface IFlyingBird
+public interface IShape
 {
-    void Fly();
+    int Area { get; }
 }
 
-public class Eagle : Bird, IFlyingBird
+public class Rectangle : IShape
 {
-    public void Fly()
-    {
-        Console.WriteLine("Flying");
-    }
+    public int Width { get; set; }
+    public int Height { get; set; }
+
+    public int Area => Width * Height;
 }
 
-public class Penguin : Bird
+public class Square : IShape
 {
-    // Penguins do not fly
+    public int Side { get; set; }
+
+    public int Area => Side * Side;
 }
 ```
-`Penguin` is no longer forced to implement behavior it cannot support.
 
 #### I — Interface Segregation Principle
 Clients should not be forced to depend on methods they do not use.
