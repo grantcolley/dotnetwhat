@@ -108,6 +108,7 @@
   - [L — Liskov Substitution Principle](#l--liskov-substitution-principle)
   - [I — Interface Segregation Principle](#i--interface-segregation-principle)
   - [D — Dependency Inversion Principle](#d--dependency-inversion-principle)
+  - [Difference Between LSP and ISP](#difference-between-lsp-and-isp)
 - [CI/CD](#cicd)
 - [REST](#rest)
 - [AI Agents in the IDE](#ai-agents-in-the-ide)
@@ -2500,6 +2501,18 @@ In ASP.NET Core, you would register it like this:
 builder.Services.AddScoped<IEmailService, EmailService>();
 ```
 Then inject it into controllers or services.
+
+#### Difference Between LSP and ISP
+**Liskov Substitution Principle (LSP)** and **Interface Segregation Principle (ISP)** are commonly confused because both often involve interfaces and inheritance.
+The key difference is:
+- **LSP** is about correct behavior when substituting subclasses
+- **ISP** is about keeping interfaces small and focused
+
+| Principle | Focus                   | Problem                                    | Ask  														   |
+| --------- | ----------------------- | ------------------------------------------ | ------------------------------------------------------------- |
+| LSP       | Inheritance correctness | Subclass changes expected behavior         | “Can I safely use the child anywhere the parent is expected?” |
+| ISP       | Interface design        | Classes forced to implement unused methods | “Am I forcing classes to implement things they don’t need?”   |
+
 
 ## CI/CD
 
