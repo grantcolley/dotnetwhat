@@ -353,6 +353,12 @@ Server GC = 1 Application = 1 process = multiple heaps (1 per logical processor)
 - Each worker process gets its own GC + heaps
 - Multiple apps can share a pool → then they share the same GC/heaps
 
+> [!TIP]
+>
+> So with IIS, apps in the same pool can allocate objects into the same managed heap, and the GC collects across that whole worker process. However, they do not normally “share objects” directly in a safe application-level sense but the underlying memory belongs to the same process. A memory leak, high allocation rate, or crash in one app can affect the others in that pool.
+>
+> Practical takeaway: for isolation and predictable memory behavior, put important apps in separate application pools.
+
 ##### Physical vs Logical processors
 - A physical processor (core) is an actual hardware core on the CPU.
 - A logical processor is what the OS exposes for scheduling threads.
