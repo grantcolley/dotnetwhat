@@ -288,7 +288,7 @@ The small object heap is divided into three generations, 0, 1, and 2, so it can 
 The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes (85kb) in size, usually arrays, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
 
 ##### Pinned Object Heap (POH)
-The **Pinned Object Heap (POH)** is a special heap introduced in `.NET 5` for objects that are intentionally pinned for long periods of time.
+The [**Pinned Object Heap (POH)**](https://devblogs.microsoft.com/dotnet/internals-of-the-poh) is a special heap introduced in `.NET 5` for objects that are intentionally pinned for long periods of time.
 Normally, the .NET GC moves objects around in memory during collection/compaction.
 Pinned means: “GC is not allowed to move this object.”
 During a GC collection pinned objects become obstacles. Because the GC cannot move the pinned object, so holes/fragments develop around it.
