@@ -276,15 +276,16 @@ Local variables and method parameters that are [**reference types**](https://lea
 > - Polymorphism (Use OOP properly)
 > - Large data support
 
+The [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) consists of three heaps. The small object heap, the [**large object heap (LOH)**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) for objects that are 85,000 bytes (85kb) and larger, which are usually arrays, and the [**Pinned Object Heap (POH)**](https://devblogs.microsoft.com/dotnet/internals-of-the-poh).
+
 ##### Small Object Heap
-The [**managed heap**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) consists of two heaps, the small object heap and the [**large object heap (LOH)**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) for objects that are 85,000 bytes (85kb) and larger, which are usually arrays.
 The small object heap is divided into three generations, 0, 1, and 2, so it can handle short-lived and long-lived objects separately for optimization reasons.
 - Gen 0 - newly allocated objects that are short lived. Garbage collection is most frequent on Gen 0. 
 - Gen 1 - objects that survive a collection of Gen 0 are promoted to Gen 1, which serves as a buffer between short-lived objects and long-lived objects.
 - Gen 2 - objects that survive a collection of Gen 1 are considered long-lived objects and promoted to Gen 2.
 
 ##### Large Object Heap (LOH)
-The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes (85kb) in size, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
+The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap) is sometimes referred to as generation 3. If an object is greater than or equal to 85,000 bytes (85kb) in size, usually arrays, it's considered a large object and allocated on the [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap). This number was determined by performance tuning.
 
 ##### Pinned Object Heap (POH)
 The **Pinned Object Heap (POH)** is a special heap introduced in `.NET 5` for objects that are intentionally pinned for long periods of time.
