@@ -214,6 +214,18 @@ No additional type information is stored with a value type, as the type informat
 
 When value type variables are assigned from one variable to another, or as an argument to a method, the value is copied. The new variable will have its own copy of the value and changing the value of one variable will not impact the value of the other variable.
 
+> [!IMPORTANT]
+> 
+>  Built‑in C# primitives like `int`, `double`, `bool`, and `char` are immutable because the runtime and language design guarantee that their values can never change after creation. Any “change” you see is actually the creation of a new value.
+>
+> The .NET runtime (CLR) defines primitives as atomic value units.
+> Arithmetic produces new values, not mutations e.g.
+> ```CSharp
+> int x = 10;
+> int y = x * 2; // new value created
+> ```
+
+
 >  [!Note]
 > 
 >  **[**Value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) live where they are created.**
