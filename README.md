@@ -1327,7 +1327,11 @@ In this [C# code](https://github.com/grantcolley/dotnetwhat/blob/810ce35178fffb9
   int b = a;
   ref int c = ref a;
   c = 7;
-            
+
+Console.WriteLine("c: " + c); // Output: c: 7
+Console.WriteLine("a: " + a); // Output: a: 7
+Console.WriteLine("b: " + b); // Output: b: 5
+
   // Compiled into CIL 
   .locals init (int32 V_0,     // local variable `a`
            int32 V_1,          // local variable `b`           
