@@ -219,12 +219,12 @@ When value type variables are assigned from one variable to another, or as an ar
 >  Built‑in C# primitives like `int`, `double`, `bool`, and `char` are immutable because the runtime and language design guarantee that their values can never change after creation. Any “change” you see is actually the creation of a new value.
 >
 > The .NET runtime (CLR) defines primitives as atomic value units.
-> Arithmetic produces new values, not mutations e.g.
-> ```CSharp
-> int x = 10;
-> int y = x * 2; // new value created
-> ```
-
+>
+> Arithmetic produces new values, not mutations.
+>
+> > But remember: Immutability of the value ≠ immutability of the variable.
+> >
+> > This means while a new value is created, the variable is is an address in memory and simply updated to store the new value.
 
 >  [!Note]
 > 
