@@ -99,7 +99,7 @@
     - [Linear Time `O(n)`](#linear-time-on)
     - [Logarithmic Time `O(log n)`](#logarithmic-time-olog-n)
     - [Quadratic Time `O(n²)`](#quadratic-time-on)
-    - [Exponential Time `O(2n)`](#exponential-time-O-2n)
+    - [Exponential Time `O(2n)`](#exponential-time-o2n)
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
 - [S.O.L.I.D Principles](#solid-principles)
