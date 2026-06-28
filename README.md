@@ -1328,10 +1328,6 @@ In this [C# code](https://github.com/grantcolley/dotnetwhat/blob/810ce35178fffb9
   ref int c = ref a;
   c = 7;
 
-Console.WriteLine("c: " + c); // Output: c: 7
-Console.WriteLine("a: " + a); // Output: a: 7
-Console.WriteLine("b: " + b); // Output: b: 5
-
   // Compiled into CIL 
   .locals init (int32 V_0,     // local variable `a`
            int32 V_1,          // local variable `b`           
@@ -1347,6 +1343,10 @@ Console.WriteLine("b: " + b); // Output: b: 5
   IL_0009:  ldc.i4.7           // pushes 7 onto the stack
   IL_000a:  stind.i4           // pops the value 7 from the stack into the address of `c`
   IL_000b:  ret
+
+Console.WriteLine("c: " + c); // Output: c: 7
+Console.WriteLine("a: " + a); // Output: a: 7
+Console.WriteLine("b: " + b); // Output: b: 5
 ```
 
 #### Ref Returns
