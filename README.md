@@ -239,8 +239,6 @@ When value type variables are assigned from one variable to another, or as an ar
 
 >  [!Note] 
 >  
->  *[**.NET Rocks!**](https://www.dotnetrocks.com/details/881) (34m 42s)*
->
 > ### A piece of paper with the address of a house written on it.
 > 
 > The house is a reference type object in heap memory. The address is the reference pointing to where that object is located in heap memory. The piece of paper is the variable containing the address pointing to the object in heap memory. 
