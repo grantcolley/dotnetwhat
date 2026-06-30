@@ -114,6 +114,13 @@
 - [AI Agents in the IDE](#ai-agents-in-the-ide)
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
+- [Interview Q/A's](#interview-qas)
+	- [Rotate an array](#rotate-an-array)
+    - [Fibonnaci](#fibonnaci)
+    - [Sort algorithm](#sort-algorithm)
+    - [Search algorithm](#search-algorithm)
+    - [Refactor](#refactor)
+    	- [Currency Converter](#currency-converter) 
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -2544,6 +2551,161 @@ GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscript
 
 #### OpenAI Codex
 Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
+
+## Interview Q/A's
+### Rotate an array
+
+### Fibonnaci
+
+### Sort algorithm
+
+### Search algorithm
+
+### Refactor
+#### Currency Converter
+The following class has been written to convert an amount to USD.
+`IExchangeService` is an interface to a vendor supplied API for getting the spot rate for a currency.
+This class will be handed to other teams. Can it be written better?
+
+```C#
+    public interface IExchangeRateProvider
+    {
+        Task<decimal?> GetSpotRateAsync(string code);
+    }
+
+    public static class  ConvertToUSDService
+    {
+        public static decimal Convert(string currencyCode, decimal amount, IExchangeRateProvider exchangeRateProvider)
+        {
+            var rate = exchangeRateProvider.GetSpotRateAsync(currencyCode).Result;
+
+            var convertedAmount = amount * rate.Value;
+
+            return convertedAmount;
+        }
+    }
+```
+Key improvements:
+- Change static to instance class that implements an interace that can be injected, and mocked in unit tests.
+- Validate the `currencyCode` and `amount` to avoid unnecesary calls to the exchange rate provider.
+- Use await `_exchangeRateProvider.GetSpotRateAsync` without blocking (await all the way down).
+- Cache spot rates for a short time, to reduce calls to the exchange rate provider.
+- Use a `SemaphoreSlim` per currency to prevent multiple concurrent calls to the exchange rate provider for the same currency.
+- Introduce error handling.
+- Return a structured and meaningful response with `Response`.
+
+```C#
+    // Rather than use a static class for the service, create an interface that
+    // can be injected into consuming classes, and can be mocked in unit tests.
+    public interface IUSDConversionService
+    {
+        Task<Result> ConvertAsync(string currencyCode, decimal amount);
+    }
+
+    // Example cache interface with expiry
+    public interface ICache<T>
+    {
+        T Get(string key);
+        void Set(string key, T value, TimeSpan expiration);
+    }
+
+    // Return a structured response, including when unsuccessful.
+    public record Result (bool Success, decimal? ConvertedAmount = null, string Message = "");
+
+    public class USDConversionService : IUSDConversionService
+    {
+        private readonly IExchangeRateProvider _exchangeRateProvider;
+        private readonly ICache<decimal?> _cache;
+
+        private ConcurrentDictionary<string, SemaphoreSlim> _semaphore = [];
+
+        // Constructor injection of the exchange rate provider
+        public USDConversionService(IExchangeRateProvider exchangeRateProvider, ICache<decimal?> cache)
+        {
+            _exchangeRateProvider = exchangeRateProvider;
+            _cache = cache;
+        }
+
+        // Async method to convert currency to USD using the exchange rate provider
+        public async Task<Result> ConvertAsync(string currencyCode, decimal amount)
+        {
+            // Fail fast - add validation for currencyCode and amount
+            if (string.IsNullOrWhiteSpace(currencyCode) 
+                || currencyCode.Length != 3
+                || currencyCode.All(char.IsLetter) == false)
+            {
+                return new Result(false, Message: "Invalid currency code. Must be 3 letters.");
+            }
+
+            if (amount == 0)
+            {
+                return new Result(false, Message: "Amount cannot be 0");
+            }
+
+            try
+            {
+                decimal? rate = await GetRateAsync(currencyCode);
+
+                if (rate == null)
+                {   
+                    return new Result(false, Message: "Failed to retrieve exchange rate");
+                }
+
+                decimal convertedAmount = amount * rate.Value;
+
+                return new Result(true, convertedAmount);
+            }
+            catch(Exception ex)
+            {
+                return new Result(false, Message: ex.Message);
+            }
+        }
+
+        private async Task<decimal?> GetRateAsync(string currencyCode)
+        {
+            // First check the cache for the exchange rate before calling the provider.
+            decimal? cachedRate = _cache.Get(currencyCode);
+
+            if (cachedRate.HasValue)
+            {
+                // Return the cached rate if it exists, no
+                // need to call the exchange rate provider.
+                return cachedRate;
+            }
+
+            // Semaphore prevents multiple concurrent calls to the exchange rate provider for the same currency.
+            // Semaphore per currency code for better performance.
+            SemaphoreSlim semaphore = _semaphore.GetOrAdd(currencyCode, new SemaphoreSlim(1, 1));
+
+            // short timeout
+            bool access = await semaphore.WaitAsync(TimeSpan.FromSeconds(5));
+
+            if(access == false)
+            {
+                // If we can't get access to the semaphore within the timeout, throw an exception.
+                throw new OperationCanceledException("Request timed out");
+            }
+
+            try
+            {               
+                decimal? rate = await _exchangeRateProvider.GetSpotRateAsync(currencyCode);
+
+                if (rate != null)
+                {
+                    // Cache the rate for 5 minutes to reduce calls to the exchange rate provider.
+                    _cache.Set(currencyCode, rate, TimeSpan.FromMinutes(5));
+                }
+
+                return rate;
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+    }
+```
+
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
