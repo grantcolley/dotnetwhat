@@ -2747,7 +2747,17 @@ Key improvements:
             }
 
             try
-            {               
+            {
+                // Check the cache again after aquiring the lock, before calling the provider.
+                cachedRate = _cache.Get(currencyCode);
+
+                if (cachedRate.HasValue)
+                {
+                    // Return the cached rate if it exists, no
+                    // need to call the exchange rate provider.
+                    return cachedRate;
+                }
+
                 decimal? rate = await _exchangeRateProvider.GetSpotRateAsync(currencyCode);
 
                 if (rate != null)
