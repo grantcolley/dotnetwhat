@@ -63,6 +63,8 @@
   - [ValueTask\<T>](#value-taskt)
   - [`async/await`](#asyncawait)
       - [`async/await` Scheduling](#asyncawait-scheduling)
+      - [Iterating with `async` Enumerables](#iterating-with-async-enumerables)
+      - [Async Scenarios](#async-scenarios)
   - [Thread Safety](#thread-safety)
       - [Locks and Mutex](#locks-and-mutex)   
 - [What's in the CIL](#whats-in-the-cil)
@@ -999,7 +1001,7 @@ A **Task** is a data structure that represents the eventual completion of an asy
 
 [Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) represents an asynchronous operation while [Task\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) represents and asynchronous operation that returns a value of type `T`.
 
->  [!Note]
+>  [!TIP]
 > 
 > Read [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
 >
@@ -1167,6 +1169,18 @@ If no `SynchronizationContext` exists `await` falls back to the `TaskScheduler.D
 > * **HttpClient**: The `HttpClient` class for HTTP operations uses asynchronous methods for network I/O, relying on the lower-level HTTP stack provided by the OS.
 >
 > These lower-level APIs allow .NET to provide a high-level, easy-to-use abstraction for performing efficient asynchronous I/O operations e.g. using `async/await`
+
+##### Iterating with `async` Enumerables
+
+> [!TIP]
+>
+> Read [Iterating with Async Enumerables](https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8)
+
+##### Async Scenarios
+
+> [!TIP]
+>
+> Read [Async scenarios](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/async-scenarios)
 
 #### Thread Safety
 ##### Locks and Mutex
@@ -2556,6 +2570,52 @@ Codex – OpenAI’s coding agent. Visual Studio Code offers the best integratio
 ### Rotate an array
 
 ### Fibonnaci
+The Fibonacci sequence is a famous series of numbers where each number is the sum of the two numbers before it. It starts like this: (0, 1, 1, 2, 3, 5, 8, 13, 21), and so on.
+
+```CSharp
+		// Return a single number
+        public int Fibonacci(int n)
+        {
+            if (n < 0)
+            {
+                throw new ArgumentException("Input cannot be negative", nameof(n));
+            }
+            else if (n == 0)
+            {
+                return 0;
+            }
+            else if (n == 1)
+            {
+                return 1;
+            }
+            int a = 0, b = 1, c = 0;
+            for (int i = 2; i <= n; i++)
+            {
+                c = a + b;
+                a = b;
+                b = c;
+            }
+            return c;
+        }
+```
+
+```C#
+		// iterate over a sequence
+        public static IEnumerable<int> Fibonacci(int n)
+        {
+            int prev = 0, next = 1;
+            yield return prev;
+            yield return next;
+
+            for (int i = 2; i <= n; i++) // Generate first n Fibonacci numbers
+            {
+                int sum = prev + next;
+                yield return sum;
+                prev = next;
+                next = sum;
+            }
+        }
+```
 
 ### Sort algorithm
 
