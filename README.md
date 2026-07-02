@@ -117,6 +117,7 @@
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
 - [Interview Q/A's](#interview-qas)
+	- [Reverse an Array](#reverse-an-array) 
 	- [Rotate an array](#rotate-an-array)
     - [Fibonnaci](#fibonnaci)
     - [Sort algorithm](#sort-algorithm)
