@@ -2567,6 +2567,18 @@ GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscript
 Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
 
 ## Interview Q/A's
+### Reverse an Array
+`Array.Reverse` has a time complexity of `O(n)`, where `n` is the number of elements being reversed.
+Internally, it swaps elements from the two ends of the range until it reaches the middle
+```C#
+	for (int i = 0, j = array.Length - 1; i < j; i++, j--)
+    {
+        int tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+```
+
 ### Rotate an array
 
 ### Fibonnaci
