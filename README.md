@@ -2581,6 +2581,35 @@ Internally, it swaps elements from the two ends of the range until it reaches th
 ```
 
 ### Rotate an array
+The purpose of `k = k % n;` is to normalize the rotation amount so that it is always between `0` and `n - 1`.
+This works because rotating an array by its own length leaves it unchanged.
+
+For an array of length 5:
+```
+Rotate by 0 == Rotate by 5 == Rotate by 10 == Rotate by 15
+Rotate by 1 == Rotate by 6 == Rotate by 11 == Rotate by 21
+Rotate by 2 == Rotate by 7 == Rotate by 12 == Rotate by 22
+```
+
+Taking the remainder (%) removes these complete rotations.
+
+```C#
+public static void Rotate(int[] nums, int k)
+{
+    if (nums == null || nums.Length == 0)
+        return;
+
+    int n = nums.Length;
+
+    // Normalize rotation amount so it's always between 0 and n - 1.
+    // Taking the remainder (%) removes these complete rotations. 
+    k = k % n;
+									// e.g. in an array 1,2,3,4,5 where n = 3:
+    Array.Reverse(nums);			// 5,4,3,2,1
+    Array.Reverse(nums, 0, k);		// 3,4,5,2,1
+    Array.Reverse(nums, k, n - k);  // 3,4,5,1,2
+}
+```
 
 ### Fibonnaci
 The Fibonacci sequence is a famous series of numbers where each number is the sum of the two numbers before it. It starts like this: (0, 1, 1, 2, 3, 5, 8, 13, 21), and so on.
