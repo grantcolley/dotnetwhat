@@ -2579,6 +2579,19 @@ Internally, it swaps elements from the two ends of the range until it reaches th
         array[j] = tmp;
     }
 ```
+The three-reversal algorithm performs:
+```C#
+Array.Reverse(array);                     // O(n)
+Array.Reverse(array, 0, positions);       // O(k)
+Array.Reverse(array, positions, n - k);   // O(n - k)
+```
+Total time:
+```
+O(n) + O(k) + O(n - k)
+= O(2n)
+= O(n)
+```
+The constant factor is about twice that of a single pass, but asymptotically it is still `O(n)` and uses `O(1)` additional memory.
 
 ### Rotate an array
 The purpose of `k = k % n;` is to normalize the rotation amount so that it is always between `0` and `n - 1`.
