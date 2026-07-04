@@ -117,7 +117,9 @@
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
 - [Interview Q/A's](#interview-qas)
-	- [Reverse an Array](#reverse-an-array) 
+	- [Reverse an Array](#reverse-an-array)
+ 	  - [Three-reversal algorithm](#three-reversal-algorithm)
+      - [Copy to new array](#copy-to-new-array) 
 	- [Rotate an array](#rotate-an-array)
     - [Fibonnaci](#fibonnaci)
     - [Sort algorithm](#sort-algorithm)
@@ -2592,6 +2594,7 @@ while (left < right)
 ```
 
 ### Rotate an array
+#### Three-reversal algorithm
 The purpose of `k = k % n;` is to normalize the rotation amount so that it is always between `0` and `n - 1`.
 This works because rotating an array by its own length leaves it unchanged.
 
@@ -2630,13 +2633,53 @@ Array.Reverse(nums);             // O(n) 		-> 5,4,3,2,1
 Array.Reverse(nums, 0, k);       // O(k) 		-> 3,4,5,2,1
 Array.Reverse(nums, k, n - k);   // O(n - k)	-> 3,4,5,1,2
 ```
-Total time:
+
+Total time: `O(n)`
 ```
 O(n) + O(k) + O(n - k)
 = O(2n)
 = O(n)
 ```
 The constant factor is about twice that of a single pass, but asymptotically it is still `O(n)` and uses `O(1)` additional memory.
+
+#### Copy to new array
+If allocating a new array is acceptable.
+
+```C#
+public static int[] Rotate(int[] nums, int k)
+{
+    if (nums == null || nums.Length == 0)
+        return null;
+
+    int n = nums.Length;
+
+    // Normalize rotation amount so it's always between 0 and n - 1.
+    // Taking the remainder (%) removes these complete rotations. 
+    k = k % n;
+
+    int[] rotated = new int[nums.Length];
+
+    for (int i = 0; i < n; i++)
+    {
+        int position = (i + k) % n;
+        rotated[position] = nums[i];
+    }
+
+    return rotated;
+}
+
+```
+
+Total time: `O(n)`
+| Operation     | Complexity         |
+| ------------- | ------------------ |
+| `nums.Length` | O(1)               |
+| `new int[n]`  | O(n)               |
+| `k = k % n`   | O(1)               |
+| `for` loop    | O(n)               |
+| Loop body     | O(1) per iteration |
+| `return`      | O(1)               |
+
 
 ### Fibonnaci
 The Fibonacci sequence is a famous series of numbers where each number is the sum of the two numbers before it. It starts like this: (0, 1, 1, 2, 3, 5, 8, 13, 21), and so on.
