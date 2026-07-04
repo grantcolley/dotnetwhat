@@ -2578,15 +2578,16 @@ Codex – OpenAI’s coding agent. Visual Studio Code offers the best integratio
 `Array.Reverse` has a time complexity of `O(n)`, where `n` is the number of elements being reversed.
 Internally, it swaps elements from the two ends of the range until it reaches the middle
 ```C#
-int i = 0;
-int j = array.Length - 1;
-while (i < j)
+int left = 0;
+int right = array.Length - 1;
+
+while (left < right)
 {
-    int tmp = array[i];
-    array[i] = array[j];
-    array[j] = tmp;
-    i++;
-    j--;
+    int tmp = array[left];
+    array[left] = array[right];
+    array[right] = tmp;
+    left++;
+    right--;
 }
 ```
 
