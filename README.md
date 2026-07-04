@@ -2186,6 +2186,12 @@ It doesn't measure actual time (like milliseconds); it measures how the number o
 - Favor `O(1)` and `O(log n)` when you can.
 - Be cautious with `O(n²)` and worse – especially with nested loops.
 
+> [!IMPORTANT]
+> 
+> **Is 2n Big O of n?**
+>
+> Before we get started, it's important to remember that the "big O" in **Big O** stands for order of, so we are really only concerned with changes in the order of magnitude. This means we don't have to worry about constants. It also means that `O(n)`, `O(2n)`, `O(10n)` are all just `O(n)`.
+
 #### Big *O* with Code Examples
 ##### Constant Time `O(1)`
 Doesn’t depend on input size. You know exactly where the item is so go straight to it.
@@ -2572,26 +2578,17 @@ Codex – OpenAI’s coding agent. Visual Studio Code offers the best integratio
 `Array.Reverse` has a time complexity of `O(n)`, where `n` is the number of elements being reversed.
 Internally, it swaps elements from the two ends of the range until it reaches the middle
 ```C#
-	for (int i = 0, j = array.Length - 1; i < j; i++, j--)
-    {
-        int tmp = array[i];
-        array[i] = array[j];
-        array[j] = tmp;
-    }
+int i = 0;
+int j = array.Length - 1;
+while (i < j)
+{
+    int tmp = array[i];
+    array[i] = array[j];
+    array[j] = tmp;
+    i++;
+    j--;
+}
 ```
-The three-reversal algorithm performs:
-```C#
-Array.Reverse(array);                     // O(n)
-Array.Reverse(array, 0, positions);       // O(k)
-Array.Reverse(array, positions, n - k);   // O(n - k)
-```
-Total time:
-```
-O(n) + O(k) + O(n - k)
-= O(2n)
-= O(n)
-```
-The constant factor is about twice that of a single pass, but asymptotically it is still `O(n)` and uses `O(1)` additional memory.
 
 ### Rotate an array
 The purpose of `k = k % n;` is to normalize the rotation amount so that it is always between `0` and `n - 1`.
@@ -2617,12 +2614,28 @@ public static void Rotate(int[] nums, int k)
     // Normalize rotation amount so it's always between 0 and n - 1.
     // Taking the remainder (%) removes these complete rotations. 
     k = k % n;
-									// e.g. in an array 1,2,3,4,5 where n = 3:
-    Array.Reverse(nums);			// 5,4,3,2,1
-    Array.Reverse(nums, 0, k);		// 3,4,5,2,1
-    Array.Reverse(nums, k, n - k);  // 3,4,5,1,2
+									
+    Array.Reverse(nums);
+    Array.Reverse(nums, 0, k);
+    Array.Reverse(nums, k, n - k);
 }
 ```
+
+The three-reversal algorithm performs:
+```C#
+// e.g. in an array 1,2,3,4,5 where n = 3:
+
+Array.Reverse(nums);             // O(n) 		-> 5,4,3,2,1
+Array.Reverse(nums, 0, k);       // O(k) 		-> 3,4,5,2,1
+Array.Reverse(nums, k, n - k);   // O(n - k)	-> 3,4,5,1,2
+```
+Total time:
+```
+O(n) + O(k) + O(n - k)
+= O(2n)
+= O(n)
+```
+The constant factor is about twice that of a single pass, but asymptotically it is still `O(n)` and uses `O(1)` additional memory.
 
 ### Fibonnaci
 The Fibonacci sequence is a famous series of numbers where each number is the sum of the two numbers before it. It starts like this: (0, 1, 1, 2, 3, 5, 8, 13, 21), and so on.
