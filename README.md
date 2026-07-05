@@ -122,10 +122,12 @@
       - [Copy to new array](#copy-to-new-array) 
 	- [Rotate an array](#rotate-an-array)
     - [Fibonnaci](#fibonnaci)
+      -[Return a single number](#return-a-single-number)
+      -[Iterate over a sequence](#iterate-over-a-sequence)       
     - [Sort algorithm](#sort-algorithm)
     - [Search algorithm](#search-algorithm)
     - [Refactor](#refactor)
-    	- [Currency Converter](#currency-converter) 
+      - [Currency Converter](#currency-converter) 
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -2716,6 +2718,7 @@ Total time: `O(n)`
 ### Fibonnaci
 The Fibonacci sequence is a famous series of numbers where each number is the sum of the two numbers before it. It starts like this: (0, 1, 1, 2, 3, 5, 8, 13, 21), and so on.
 
+#### Return a single number
 ```CSharp
 		// Return a single number
         public int Fibonacci(int n)
@@ -2742,7 +2745,31 @@ The Fibonacci sequence is a famous series of numbers where each number is the su
             return c;
         }
 ```
+**Time Complexity: `O(n)`**
 
+The key part is the loop, which executes `n - 1` times (approximately `n` times).
+
+Each iteration performs a fixed number of constant-time operations:
+- one addition
+- three assignments
+- one comparison
+- loop increment
+
+Since the work per iteration is constant `O(1) × n = O(n)`
+
+**Space Complexity: `O(1)`**
+
+The algorithm uses only three integer variables:
+```C#
+int a = 0;
+int b = 1;
+int c = 0;
+```
+Regardless of how large n becomes, it doesn't allocate any additional memory.
+
+Therefore space = `O(1)`
+
+#### Iterate over a sequence
 ```C#
 		// iterate over a sequence
         public static IEnumerable<int> Fibonacci(int n)
@@ -2751,7 +2778,7 @@ The Fibonacci sequence is a famous series of numbers where each number is the su
             yield return prev;
             yield return next;
 
-            for (int i = 2; i <= n; i++) // Generate first n Fibonacci numbers
+            for (int i = 2; i <= n; i++)
             {
                 int sum = prev + next;
                 yield return sum;
@@ -2760,6 +2787,27 @@ The Fibonacci sequence is a famous series of numbers where each number is the su
             }
         }
 ```
+
+**Time Complexity: `O(n)`**
+
+The loop executes approximately `n - 1` times, and each iteration performs:
+- one addition `O(1)`
+- three assignments, each `O(1)`
+- one yield return `O(1)`
+
+Therefore `O(1) × n = O(n)`.
+
+**Space Complexity: `O(1)`**
+
+The iterator maintains only a few local variables:
+```C#
+int prev = 0;
+int next = 1;
+int sum;
+```
+The compiler transforms the method into a state machine that stores these variables between calls to `MoveNext()`, but the amount of state does not grow with `n`.
+
+Therefore the extra space is `O(1)`
 
 ### Sort algorithm
 
