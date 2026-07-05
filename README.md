@@ -2625,13 +2625,13 @@ public static void Rotate(int[] nums, int k)
 }
 ```
 
-The three-reversal algorithm performs:
+The three-reversal algorithm does this:
 ```C#
 // e.g. in an array 1,2,3,4,5 where n = 3:
 
-Array.Reverse(nums);             // O(n) 		-> 5,4,3,2,1
-Array.Reverse(nums, 0, k);       // O(k) 		-> 3,4,5,2,1
-Array.Reverse(nums, k, n - k);   // O(n - k)	-> 3,4,5,1,2
+Array.Reverse(nums);             // O(n) 	 -> 5,4,3,2,1  first, reverse entire array
+Array.Reverse(nums, 0, k);       // O(k) 	 -> 3,4,5,2,1  then, reverse beginning section up to k
+Array.Reverse(nums, k, n - k);   // O(n - k) -> 3,4,5,1,2  finally, reverse remaining section after k 
 ```
 
 Total time: `O(n)`
@@ -2643,7 +2643,7 @@ O(n) + O(k) + O(n - k)
 The constant factor is about twice that of a single pass, but asymptotically it is still `O(n)` and uses `O(1)` additional memory.
 
 #### Copy to new array
-If allocating a new array is acceptable.
+If allocating a new array is acceptable then.
 
 ```C#
 public static int[] Rotate(int[] nums, int k)
@@ -2668,6 +2668,38 @@ public static int[] Rotate(int[] nums, int k)
     return rotated;
 }
 
+```
+
+Copy to new array algorithm does this:
+
+**Step 1: Start with the current index**
+
+Loop through over every element in the current the array, where `i` is the current index in the original array.
+
+**Step 2: Calculating the index in the destination array - shift it right by `k`**
+
+The current element at `i` should be placed after rotating the array to the right by `k` positions.
+
+**Step 3: Wrap around the end**
+
+This is where `% n` comes in. The modulo operator is what makes the indices "wrap around" instead of going out of bounds.
+
+So, if the result extends past the end of the array, you wrap it back to the beginning. This guarantees that newIndex is always between 0 and n - 1, making it a valid array index.
+
+`newIndex = (oldIndex + k) % arrayLength`
+
+```CSharp
+// e.g. in an array 1,2,3,4,5 where n = 3:
+
+for (int i = 0; i < n; i++)
+{
+    // when i = 3, then (i + k) = 6
+    // and 6 % 5 = 1
+    // So index 6 "wraps around" to index 1.
+    int position = (i + k) % n;
+
+    rotated[position] = nums[i];
+}
 ```
 
 Total time: `O(n)`
