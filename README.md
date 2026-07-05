@@ -2775,6 +2775,7 @@ Therefore space = `O(1)`
         public static IEnumerable<int> Fibonacci(int n)
         {
             int prev = 0, next = 1;
+
             yield return prev;
             yield return next;
 
