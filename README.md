@@ -128,7 +128,8 @@
     - [Sort algorithm](#sort-algorithm)
     - [Search algorithm](#search-algorithm)
     - [Refactor](#refactor)
-      - [Currency Converter](#currency-converter) 
+      - [Currency Converter](#currency-converter)
+      - [Compute Latest Positions](#compute-latest-positions)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -2969,6 +2970,42 @@ Key improvements:
         }
     }
 ```
+
+#### Compute Latest Positions
+Fix the following code. It does not compile and isn't efficient. Can you figure out why and adjust the code?
+
+```C#
+    record Trade(int TradeId, int SecurityId, DateTime TradeDate, string BuyOrSell, int Quantity);
+    record Position(int SecurityId, int Quantity);
+
+    public class PositionCalculator
+    {
+        public List<Position> ComputeLatestPositions(List<Trade> trades, ImmutableList<Position> previousPositions = null)
+        {
+            foreach (var t in trades)
+            {
+                lock (this)
+                {
+                    var previousPosition = previousPositions.First(p => p.SecurityId == t.TradeId);
+                    previousPosition.Quantity += t.Quantity;
+                }
+            }
+
+            return null;
+        }
+    }
+```
+
+Key improvements:
+- Records are immutable, so can't update `previousPosition.Quantity`.
+- Wrong lookup fields `p => p.SecurityId == t.TradeId`.
+- `previousPositions.First(...)` throws if no position exists.
+- `BuyOrSell` is ignored - `Buy` should add, `Sell` should subtract.
+- Method `ComputeLatestPositions` always returns `null`.
+- `lock(this)` is bad practice - External code can also lock the same object, causing deadlocks. Use a private lock object.
+- Searching positions with `First()` inside a loop is potentially `O(n * m)`. A dictionary keyed by `SecurityId` would be faster.
+
+
 
 
 ## Glossary
