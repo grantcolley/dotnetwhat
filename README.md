@@ -2998,13 +2998,13 @@ Fix the following code. It does not compile and isn't efficient. Can you figure 
 
 Key improvements:
 - Use immutable records correctly. Create a new position because `previousPosition.Quantity` can't be updated.
-- Uses the correct lookup key `SecurityId` instead of `p.SecurityId == t.TradeId`.
+- Use the correct lookup key `SecurityId` instead of `p.SecurityId == t.TradeId`.
 - Handle missing positions by adding positions for a new security instead of `previousPositions.First(...)`, which throws when no existing position exists.
 - Correctly processes `BUY` and `SELL` by adding `BUY` and subtract `SELL` quantities, and ignore invalid trade directions.
 - Add validation to prevent unexpected `NullReferenceExceptions`, so `trades` can't be null, and `null` trade entries are ignored.
 - Improve performance by using a dictionary keyed by `SecurityId` for `O(n + m)`.
 - Return a `result` instead of `null`.
-- Removes unnecessary thread synchronization while remaining thread-safe. The method is naturally thread-safe because it operates entirely on local variables so there is no shared mutable state. Using `lock(this)` is bad practice because external code can also lock the same object, causing deadlocks.
+- Remove unnecessary thread synchronization while remaining thread-safe. The method is naturally thread-safe because it operates entirely on local variables so there is no shared mutable state. Using `lock(this)` is bad practice because external code can also lock the same object, causing deadlocks.
 - Use more flexible interface `IReadOnlyList<T>` instead of `ImmutableList<T>`, allowing users to pass in from a wider range of source type including `List<Trade>`, `Trade[]`, `ImmutableList<Trade>` and `ReadOnlyCollection<Trade>`. 
 
 > [!IMPORTANT]
