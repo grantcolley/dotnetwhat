@@ -2997,15 +2997,90 @@ Fix the following code. It does not compile and isn't efficient. Can you figure 
 ```
 
 Key improvements:
-- Records are immutable, so can't update `previousPosition.Quantity`.
-- Wrong lookup fields `p => p.SecurityId == t.TradeId`.
-- `previousPositions.First(...)` throws if no position exists.
-- `BuyOrSell` is ignored - `Buy` should add, `Sell` should subtract.
-- Method `ComputeLatestPositions` always returns `null`.
-- `lock(this)` is bad practice - External code can also lock the same object, causing deadlocks. Use a private lock object.
-- Searching positions with `First()` inside a loop is potentially `O(n * m)`. A dictionary keyed by `SecurityId` would be faster.
+- Use immutable records correctly. Create a new position because `previousPosition.Quantity` can't be updated.
+- Uses the correct lookup key `SecurityId` instead of `p.SecurityId == t.TradeId`.
+- Handle missing positions by adding positions for a new security instead of `previousPositions.First(...)`, which throws when no existing position exists.
+- Correctly processes `BUY` and `SELL` by adding `BUY` and subtract `SELL` quantities, and ignore invalid trade directions.
+- Add validation to prevent unexpected `NullReferenceExceptions`, so `trades` can't be null, and `null` trade entries are ignored.
+- Improve performance by using a dictionary keyed by `SecurityId` for `O(n + m)`.
+- Return a `result` instead of `null`.
+- Removes unnecessary thread synchronization while remaining thread-safe. The method is naturally thread-safe because it operates entirely on local variables so there is no shared mutable state. Using `lock(this)` is bad practice because external code can also lock the same object, causing deadlocks.
+- Use more flexible interface `IReadOnlyList<T>` instead of `ImmutableList<T>`, allowing users to pass in from a wider range of source type including `List<Trade>`, `Trade[]`, `ImmutableList<Trade>` and `ReadOnlyCollection<Trade>`. 
 
+> [!IMPORTANT]
+>
+> Use a dictionary keyed by `SecurityId` for `O(n + m)` where the complexity is approximately `O(n + m)`. position. Don't search positions with `First()` inside a loop which is `O(n * m)`.
+>
+> List lookup using `First(...)`   -> `O(number of trades * number of positions)` 
+> Dictionary keyed by `SecurityId` -> `O(number of trades + number of positions)` 
 
+> [!TIP]
+>
+> When using a Dictionary, use `ContainsKey(...)` which requires a single lookup, instead of two with `ContainsKey(...)` followed by `result[key]`.
+>
+> ```C#
+>   // GOOD - one lookup
+>   TryGetValue(...)
+>
+> // BAD - two lookups
+> 	ContainsKey(...)
+>   result[key]
+> ``` 
+
+```C#
+    public record Trade(int TradeId, int SecurityId, DateTime TradeDate, string BuyOrSell, long Quantity);
+    public record Position(int SecurityId, long Quantity);
+
+    public class PositionCalculator
+    {
+        public List<Position> ComputeLatestPositions(
+            IReadOnlyList<Trade> trades,
+            IReadOnlyList<Position> previousPositions = null)
+        {
+            ArgumentNullException.ThrowIfNull(trades);
+
+            var result = previousPositions != null
+                ? previousPositions.ToDictionary(p => p.SecurityId, p => p.Quantity)
+                : new Dictionary<int, long>();
+
+            foreach (var t in trades)
+            {
+                if (t is null)
+                {
+                    continue;
+                }
+
+                long amount;
+
+                if (string.Equals(t.BuyOrSell, "BUY", StringComparison.OrdinalIgnoreCase))
+                {
+                    amount = t.Quantity;
+                }
+                else if (string.Equals(t.BuyOrSell, "SELL", StringComparison.OrdinalIgnoreCase))
+                {
+                    amount = -t.Quantity;
+                }
+                else
+                {
+                    continue;
+                }
+
+                if (result.TryGetValue(t.SecurityId, out var quantity))
+                {
+                    result[t.SecurityId] = quantity + amount;
+                }
+                else
+                {
+                    result.Add(t.SecurityId, amount);
+                }
+            }
+
+            return result
+                .Select(kv => new Position(kv.Key, kv.Value))
+                .ToList();
+        }
+    }
+```
 
 
 ## Glossary
