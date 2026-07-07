@@ -3022,8 +3022,8 @@ Key improvements:
 >   // GOOD - one lookup
 >   TryGetValue(...)
 >
-> // BAD - two lookups
-> 	ContainsKey(...)
+>   // BAD - two lookups
+>   ContainsKey(...)
 >   result[key]
 > ``` 
 
