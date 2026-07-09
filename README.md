@@ -3085,8 +3085,10 @@ Key improvements:
 
 #### Calculate Moving Average
 Write a moving average calculator class for a single security.
-- Think about how this class should be implemented.
-- For example, should it use a push based or pull based approach?
+
+Think about how this class should be implemented, for example:
+- should it use a push based or pull based approach?
+- it should be unit testable
 
 ```C#
 // Interface used to abstract the system clock.
@@ -3184,6 +3186,18 @@ internal sealed class MovingAverageCalculator : IObserver<decimal>
         }
     }
 
+    // Required by IObserver<T>.
+    // No implementation needed for this exercise.
+    public void OnCompleted()
+    {
+    }
+
+    // Required by IObserver<T>.
+    public void OnError(Exception error)
+    {
+        ArgumentNullException.ThrowIfNull(error);
+    }
+
     // Removes all values older than the configured duration.
     private void RemoveExpiredPrices()
     {
@@ -3199,30 +3213,18 @@ internal sealed class MovingAverageCalculator : IObserver<decimal>
             _values.Dequeue();
         }
     }
-
-    // Required by IObserver<T>.
-    // No implementation needed for this exercise.
-    public void OnCompleted()
-    {
-    }
-
-    // Required by IObserver<T>.
-    public void OnError(Exception error)
-    {
-        ArgumentNullException.ThrowIfNull(error);
-    }
 }
 ```
 **Review**
--Push-based design using `IObserver<decimal>`.
--Queue-based storage for efficient `O(1)` append/removal.
--`O(1)` running average calculation using `_sum / _values.Count`.
--Time-window expiry so only prices inside the configured duration are used.
--Injected clock abstraction for deterministic unit testing.
--Constructor validation for invalid duration and null dependencies.
--Thread safety using a private lock.
--Clear empty-state handling via `TryGetMovingAverage`.
--Sealed class to prevent unnecessary inheritance.
+- Push-based design using `IObserver<decimal>`.
+- Queue-based storage for efficient `O(1)` append/removal.
+- `O(1)` running average calculation using `_sum / _values.Count`.
+- Time-window expiry so only prices inside the configured duration are used.
+- Injected clock abstraction for deterministic unit testing.
+- Constructor validation for invalid duration and null dependencies.
+- Thread safety using a private lock.
+- Clear empty-state handling via `TryGetMovingAverage`.
+- Sealed class to prevent unnecessary inheritance.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
