@@ -127,9 +127,10 @@
       - [Iterate over a sequence](#iterate-over-a-sequence)       
     - [Sort algorithm](#sort-algorithm)
     - [Search algorithm](#search-algorithm)
-    - [Refactor](#refactor)
+    - [Challenge](#challenge)
       - [Currency Converter](#currency-converter)
       - [Compute Latest Positions](#compute-latest-positions)
+      - [Calculate Moving Average](#calculate-moving-average)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -2816,7 +2817,7 @@ Therefore the extra space is `O(1)`
 
 ### Search algorithm
 
-### Refactor
+### Challenge
 #### Currency Converter
 The following class has been written to convert an amount to USD.
 `IExchangeService` is an interface to a vendor supplied API for getting the spot rate for a currency.
@@ -3082,6 +3083,146 @@ Key improvements:
     }
 ```
 
+#### Calculate Moving Average
+Write a moving average calculator class for a single security.
+- Think about how this class should be implemented.
+- For example, should it use a push based or pull based approach?
+
+```C#
+// Interface used to abstract the system clock.
+// This allows time to be mocked during unit testing.
+public interface IClock
+{
+    DateTime GetCurrentDateTime();
+}
+
+// Implements the Observer pattern so prices can be pushed into
+// the calculator as they arrive.
+internal sealed class MovingAverageCalculator : IObserver<decimal>
+{
+    // The moving average time window.
+    private readonly TimeSpan _duration;
+
+    // Clock abstraction for testability.
+    private readonly IClock _clock;
+
+    // Queue of prices with the time they were received.
+    // Old prices can be removed efficiently from the front.
+    private readonly Queue<(decimal Value, DateTime Timestamp)> _values =
+        new Queue<(decimal, DateTime)>();
+
+    // Synchronises access if prices are pushed/read concurrently.
+    private readonly object _gate = new();
+
+    // Running total of all values currently in the queue.
+    // This allows O(1) average calculation.
+    private decimal _sum = 0;
+
+    // Constructor.
+    public MovingAverageCalculator(TimeSpan duration, IClock clock)
+    {
+        if (duration <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(duration),
+                "Duration must be greater than zero.");
+        }
+
+        _duration = duration;
+        _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+    }
+
+    // Returns the current moving average.
+    public decimal GetMovingAverage()
+    {
+        lock (_gate)
+        {
+            // Remove any expired values first.
+            RemoveExpiredPrices();
+
+            // Return the average if there are values,
+            // otherwise return zero.
+            return _values.Count > 0
+                ? _sum / _values.Count
+                : 0;
+        }
+    }
+
+    // Attempts to get the current moving average.
+    // Returns false when no prices are currently available.
+    public bool TryGetMovingAverage(out decimal average)
+    {
+        lock (_gate)
+        {
+            // Remove any expired values first.
+            RemoveExpiredPrices();
+
+            if (_values.Count == 0)
+            {
+                average = 0;
+                return false;
+            }
+
+            average = _sum / _values.Count;
+            return true;
+        }
+    }
+
+    // Called whenever a new price arrives.
+    public void OnNext(decimal value)
+    {
+        lock (_gate)
+        {
+            // Add the new value with the current timestamp.
+            _values.Enqueue((value, _clock.GetCurrentDateTime()));
+
+            // Update the running total.
+            _sum += value;
+
+            // Remove expired prices.
+            RemoveExpiredPrices();
+        }
+    }
+
+    // Removes all values older than the configured duration.
+    private void RemoveExpiredPrices()
+    {
+        DateTime now = _clock.GetCurrentDateTime();
+
+        while (_values.Count > 0 &&
+               now - _values.Peek().Timestamp > _duration)
+        {
+            // Remove the oldest value from the running total.
+            _sum -= _values.Peek().Value;
+
+            // Remove it from the queue.
+            _values.Dequeue();
+        }
+    }
+
+    // Required by IObserver<T>.
+    // No implementation needed for this exercise.
+    public void OnCompleted()
+    {
+    }
+
+    // Required by IObserver<T>.
+    public void OnError(Exception error)
+    {
+        ArgumentNullException.ThrowIfNull(error);
+    }
+}
+```
+**Review**
+-Push-based design using `IObserver<decimal>`.
+-Queue-based storage for efficient `O(1)` append/removal.
+-`O(1)` running average calculation using `_sum / _values.Count`.
+-Time-window expiry so only prices inside the configured duration are used.
+-Injected clock abstraction for deterministic unit testing.
+-Constructor validation for invalid duration and null dependencies.
+-Thread safety using a private lock.
+-Clear empty-state handling via `TryGetMovingAverage`.
+-Sealed class to prevent unnecessary inheritance.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
