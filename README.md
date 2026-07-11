@@ -134,8 +134,8 @@
       - [Easy](#easy) 
         - [Two Sum](#two-sum)
         - [Rotate Array](#rotate-array)
-          
-          
+        - [Valid Parentheses](#valid-parentheses)
+                    
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -3356,6 +3356,86 @@ Complexity
 | Space     |   **O(1)** |
 
 The algorithm performs three linear passes over the array using the reverse technique. Since each element is visited a constant number of times, the overall time complexity is `O(n)` while requiring only `O(1)` additional space because the rotation is performed in-place.
+
+##### Valid Parentheses
+Given a string containing only the characters `(`, `)`, `{`, `}`, `[` and `]`, determine whether the brackets are correctly balanced. Every opening bracket must be closed by the same type of bracket, and in the correct order.
+```C#
+Input:
+s = "([{}])"
+
+Output:
+true
+
+e.g.
+IsValid("()")       -> true
+IsValid("()[]{}")   -> true
+IsValid("([{}])")   -> true
+IsValid("(]")       -> false
+IsValid("([)]")     -> false
+IsValid("((")       -> false
+IsValid("]")        -> false
+IsValid("")         -> true
+```
+Skills
+- `Stack<T>`
+- Character processing
+- `O(n)` traversal
+```C#
+    public static bool IsValid(string input)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+
+        Stack<char> stack = new();
+
+        foreach (char character in input)
+        {
+            switch (character)
+            {
+                case '(':
+                case '[':
+                case '{':
+                    stack.Push(character);
+                    break;
+
+                case ')':
+                    if (stack.Count == 0 || stack.Pop() != '(')
+                    {
+                        return false;
+                    }
+                    break;
+
+                case ']':
+                    if (stack.Count == 0 || stack.Pop() != '[')
+                    {
+                        return false;
+                    }
+                    break;
+
+                case '}':
+                    if (stack.Count == 0 || stack.Pop() != '{')
+                    {
+                        return false;
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentException(
+                        $"Invalid character '{character}'.",
+                        nameof(input));
+            }
+        }
+
+        // All opening brackets must have been matched.
+        return stack.Count == 0;
+    }
+```
+Complexity
+| Operation | Complexity |
+| --------- | ---------: |
+| Time      |   **O(n)** |
+| Space     |   **O(n)** |
+
+The algorithm processes the input string once. Each opening bracket is pushed onto the stack and each closing bracket results in at most one pop operation. In the worst case (all opening brackets), the stack stores every character, resulting in `O(n)` time and `O(n)` auxiliary space.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
