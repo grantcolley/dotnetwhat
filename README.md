@@ -117,7 +117,7 @@
     - [Exponential Time `O(2n)`](#exponential-time-o2n)
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
-- [Interview Q/A's](#interview-qas)
+- [Interview Prep](#interview-prep)
 	- [Reverse an Array](#reverse-an-array)
  	  - [Three-reversal algorithm](#three-reversal-algorithm)
       - [Copy to new array](#copy-to-new-array) 
@@ -127,10 +127,13 @@
       - [Iterate over a sequence](#iterate-over-a-sequence)       
     - [Sort algorithm](#sort-algorithm)
     - [Search algorithm](#search-algorithm)
-    - [Challenge](#challenge)
-      - [Currency Converter](#currency-converter)
-      - [Compute Latest Positions](#compute-latest-positions)
-      - [Calculate Moving Average](#calculate-moving-average)
+    - [Currency Converter](#currency-converter)
+    - [Compute Latest Positions](#compute-latest-positions)
+    - [Calculate Moving Average](#calculate-moving-average)
+    - [Code Challenge](#code-challenge)
+      - [Easy](#easy) 
+        - [Two Sum](#two-sum)
+          
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -2580,7 +2583,7 @@ int Fibonacci(int n)
 - `O(n²)`: Slows down fast with large input
 - `O(2ⁿ)`: Unusable beyond ~20 items
 
-## Interview Q/A's
+## Interview Prep
 ### Reverse an Array
 `Array.Reverse` has a time complexity of `O(n)`, where `n` is the number of elements being reversed.
 Internally, it swaps elements from the two ends of the range until it reaches the middle
@@ -2817,8 +2820,7 @@ Therefore the extra space is `O(1)`
 
 ### Search algorithm
 
-### Challenge
-#### Currency Converter
+### Currency Converter
 The following class has been written to convert an amount to USD.
 `IExchangeService` is an interface to a vendor supplied API for getting the spot rate for a currency.
 This class will be handed to other teams. Can it be written better?
@@ -2972,7 +2974,7 @@ Key improvements:
     }
 ```
 
-#### Compute Latest Positions
+### Compute Latest Positions
 Fix the following code. It does not compile and isn't efficient. Can you figure out why and adjust the code?
 
 ```C#
@@ -3083,7 +3085,7 @@ Key improvements:
     }
 ```
 
-#### Calculate Moving Average
+### Calculate Moving Average
 Write a moving average calculator class for a single security.
 
 Think about how this class should be implemented, for example:
@@ -3225,6 +3227,10 @@ internal sealed class MovingAverageCalculator : IObserver<decimal>
 - Thread safety using a private lock.
 - Clear empty-state handling via `TryGetMovingAverage`.
 - Sealed class to prevent unnecessary inheritance.
+
+### Code Challenge
+#### Easy
+##### Two Sum
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
