@@ -133,6 +133,8 @@
     - [Code Challenge](#code-challenge)
       - [Easy](#easy) 
         - [Two Sum](#two-sum)
+        - [Rotate Array](#rotate-array)
+          
           
 - [Glossary](#glossary)
 - [References](#references)
@@ -3282,6 +3284,78 @@ Complexity
 | Space     |   **O(n)** |
 
 The algorithm performs a single pass through the array. Each dictionary lookup and insertion is `O(1)`n average, giving an overall time complexity of `O(n)` while using `O(n)` additional space.
+
+##### Rotate Array
+Rotate an array to the right by `k` positions.
+```C#
+Input:
+nums = [1, 2, 3, 4, 5, 6, 7]
+k = 3
+
+Output:
+[5, 6, 7, 1, 2, 3, 4]
+
+e.g.
+Rotate([1, 2, 3, 4, 5, 6, 7], 3) -> [5, 6, 7, 1, 2, 3, 4]
+Rotate([-1, -100, 3, 99], 2)     -> [3, 99, -1, -100]
+Rotate([1], 10)                  -> [1]
+Rotate([1, 2], 0)                -> [1, 2]
+```
+Skills
+- Array manipulation
+- Modulo arithmetic
+- In-place algorithm
+- `O(n)` traversal
+```C#
+    public static void Rotate(int[] nums, int k)
+    {
+        ArgumentNullException.ThrowIfNull(nums);
+
+        if (k < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(k));
+        }
+
+        if (nums.Length <= 1)
+        {
+            return;
+        }
+
+        // Reduce the number of rotations to the minimum required.
+        k %= nums.Length;
+
+        if (k == 0)
+        {
+            return;
+        }
+
+        // Reverse the entire array.
+        Reverse(nums, 0, nums.Length - 1);
+
+        // Reverse the first k elements.
+        Reverse(nums, 0, k - 1);
+
+        // Reverse the remaining elements.
+        Reverse(nums, k, nums.Length - 1);
+    }
+
+    private static void Reverse(int[] nums, int left, int right)
+    {
+        while (left < right)
+        {
+            (nums[left], nums[right]) = (nums[right], nums[left]);
+            left++;
+            right--;
+        }
+    }
+```
+Complexity
+| Operation | Complexity |
+| --------- | ---------: |
+| Time      |   **O(n)** |
+| Space     |   **O(1)** |
+
+The algorithm performs three linear passes over the array using the reverse technique. Since each element is visited a constant number of times, the overall time complexity is `O(n)` while requiring only `O(1)` additional space because the rotation is performed in-place.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
