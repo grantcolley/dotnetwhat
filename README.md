@@ -136,7 +136,7 @@
         - [Rotate Array](#rotate-array)
         - [Valid Parentheses](#valid-parentheses)
         - [Remove Duplicates from Sorted Array](#remove-duplicates-from-sorted-array)
-        - 
+        - [Binary Search](#binary-search)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -3492,6 +3492,67 @@ Complexity
 | Space     |   **O(1)** |
 
 The algorithm uses two pointers: one to read through the array and one to write the next unique value. Each element is examined exactly once, resulting in `O(n)` time complexity. Since the duplicates are removed in-place without allocating another array, the extra space complexity is `O(1)`.
+
+##### Binary Search
+Given a sorted array of integers and a target value, return the index of the target if it exists; otherwise, return `-1`.
+```C#
+Input:
+nums = [1, 3, 5, 7, 9]
+target = 7
+
+Output:
+3
+
+e.g.
+BinarySearch([1, 3, 5, 7, 9], 7) -> 3
+BinarySearch([1, 3, 5, 7, 9], 1) -> 0
+BinarySearch([1, 3, 5, 7, 9], 9) -> 4
+BinarySearch([1, 3, 5, 7, 9], 4) -> -1
+BinarySearch([], 5)              -> -1
+```
+Skills
+- Binary search
+- Divide and conquer
+- `O(log n)` lookup
+- Sorted arrays
+```C#
+    public static int BinarySearch(int[] nums, int target)
+    {
+        ArgumentNullException.ThrowIfNull(nums);
+
+        int left = 0;
+        int right = nums.Length - 1;
+
+        while (left <= right)
+        {
+            // Prevent integer overflow when calculating the midpoint.
+            int middle = left + ((right - left) / 2);
+
+            if (nums[middle] == target)
+            {
+                return middle;
+            }
+
+            if (nums[middle] < target)
+            {
+                left = middle + 1;
+            }
+            else
+            {
+                right = middle - 1;
+            }
+        }
+
+        return -1;
+    }
+```
+Complexity
+| Operation |   Complexity |
+| --------- | -----------: |
+| Time      | **O(log n)** |
+| Space     |     **O(1)** |
+
+Binary search repeatedly halves the search range until the target is found or no elements remain. Since the search space is reduced by half on each iteration, the algorithm runs in `O(log n)` time while requiring only `O(1)` additional space. It is one of the most efficient algorithms for searching a sorted array.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
