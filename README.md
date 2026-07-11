@@ -3231,6 +3231,57 @@ internal sealed class MovingAverageCalculator : IObserver<decimal>
 ### Code Challenge
 #### Easy
 ##### Two Sum
+Given an array of integers and a target, return the indices of the two numbers that add up to the target.
+```C#
+Input:
+nums = [2, 7, 11, 15]
+target = 9
+
+Output:
+[0, 1]
+
+e.g.
+TwoSum([2, 7, 11, 15], 9)   -> [0, 1]
+TwoSum([3, 2, 4], 6)        -> [1, 2]
+TwoSum([3, 3], 6)           -> [0, 1]
+TwoSum([1, 2, 3], 7)        -> Exception ("No solution exists.")
+```
+Skills
+- `Dictionary<TKey, TValue>`
+- `O(n)` lookup
+```C#
+    public static int[] TwoSum(int[] nums, int target)
+    {
+        ArgumentNullException.ThrowIfNull(nums);
+
+        // Maps a number to its index.
+        Dictionary<int, int> seen = new();
+
+        for (int i = 0; i < nums.Length; i++)
+        {
+            int complement = target - nums[i];
+
+            // If we've already seen the complement,
+            // we've found the required pair.
+            if (seen.TryGetValue(complement, out int index))
+            {
+                return [index, i];
+            }
+
+            // Store the current value and its index.
+            seen[nums[i]] = i;
+        }
+
+        throw new InvalidOperationException("No solution exists.");
+    }
+```
+Complexity
+| Operation | Complexity |
+| --------- | ---------: |
+| Time      |   **O(n)** |
+| Space     |   **O(n)** |
+
+The algorithm performs a single pass through the array. Each dictionary lookup and insertion is `O(1)`n average, giving an overall time complexity of `O(n)` while using `O(n)` additional space.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
