@@ -137,6 +137,7 @@
         - [Valid Parentheses](#valid-parentheses)
         - [Remove Duplicates from Sorted Array](#remove-duplicates-from-sorted-array)
         - [Binary Search](#binary-search)
+      - [Medium](#medium) 
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
