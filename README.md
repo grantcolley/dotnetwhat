@@ -3555,6 +3555,8 @@ Complexity
 
 Binary search repeatedly halves the search range until the target is found or no elements remain. Since the search space is reduced by half on each iteration, the algorithm runs in `O(log n)` time while requiring only `O(1)` additional space. It is one of the most efficient algorithms for searching a sorted array.
 
+#### Medium
+
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
 * **Base Class Library  (BCL)** *- a standard set of class libraries providing implementation for general functionality*
