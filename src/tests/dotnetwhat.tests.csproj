@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\dotnetwhat.library.csproj" />
+    <ProjectReference Include="..\library\dotnetwhat.library.csproj" />
   </ItemGroup>
 
 </Project>
