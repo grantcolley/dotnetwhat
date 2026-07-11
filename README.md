@@ -135,7 +135,8 @@
         - [Two Sum](#two-sum)
         - [Rotate Array](#rotate-array)
         - [Valid Parentheses](#valid-parentheses)
-                    
+        - [Remove Duplicates from Sorted Array](#remove-duplicates-from-sorted-array)
+        - 
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -3436,6 +3437,61 @@ Complexity
 | Space     |   **O(n)** |
 
 The algorithm processes the input string once. Each opening bracket is pushed onto the stack and each closing bracket results in at most one pop operation. In the worst case (all opening brackets), the stack stores every character, resulting in `O(n)` time and `O(n)` auxiliary space.
+
+##### Remove Duplicates from Sorted Array
+Given a sorted array of integers, remove the duplicates in-place such that each unique element appears only once. Return the number of unique elements. The first `k` elements of the array should contain the unique values.
+```C#
+Input:
+nums = [1, 1, 2, 2, 3]
+
+Output:
+k = 3
+nums = [1, 2, 3, _, _]
+
+e.g.
+RemoveDuplicates([1, 1, 2])                    -> 2, [1, 2, _]
+RemoveDuplicates([0, 0, 1, 1, 1, 2, 2, 3, 3])  -> 4, [0, 1, 2, 3, _, _, _, _, _]
+RemoveDuplicates([1])                          -> 1, [1]
+RemoveDuplicates([])                           -> 0, []
+```
+Skills
+- Two-pointer technique
+- In-place array manipulation
+- `O(n)` traversal
+- `O(1)` extra space
+```C#
+    public static int RemoveDuplicates(int[] nums)
+    {
+        ArgumentNullException.ThrowIfNull(nums);
+
+        if (nums.Length == 0)
+        {
+            return 0;
+        }
+
+        // The index where the next unique value will be written.
+        int writeIndex = 1;
+
+        for (int readIndex = 1; readIndex < nums.Length; readIndex++)
+        {
+            // Copy only unique values forward.
+            if (nums[readIndex] != nums[writeIndex - 1])
+            {
+                nums[writeIndex] = nums[readIndex];
+                writeIndex++;
+            }
+        }
+
+        return writeIndex;
+    }
+```
+Complexity
+| Operation | Complexity |
+| --------- | ---------: |
+| Time      |   **O(n)** |
+| Space     |   **O(1)** |
+
+The algorithm uses two pointers: one to read through the array and one to write the next unique value. Each element is examined exactly once, resulting in `O(n)` time complexity. Since the duplicates are removed in-place without allocating another array, the extra space complexity is `O(1)`.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
