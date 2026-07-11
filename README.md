@@ -63,6 +63,8 @@
   - [ValueTask\<T>](#value-taskt)
   - [`async/await`](#asyncawait)
       - [`async/await` Scheduling](#asyncawait-scheduling)
+      - [Iterating with `async` Enumerables](#iterating-with-async-enumerables)
+      - [Async Scenarios](#async-scenarios)
   - [Thread Safety](#thread-safety)
       - [Locks and Mutex](#locks-and-mutex)   
 - [What's in the CIL](#whats-in-the-cil)
@@ -91,6 +93,19 @@
   - [Query Operators](#query-operators)
   - [Deferred Execution](#deferred-execution)
   - [Fluent Syntax vs Query Expressions](#fluent-syntax-vs-query-expressions)
+- [AI Agents in the IDE](#ai-agents-in-the-ide)
+	- [GitHub Copilot Chat](#github-copilot-chat)
+ 	- [OpenAI Codex](#openai-codex)
+- [CI/CD](#cicd)
+- [Unit Testing](#unit-testing)
+- [REST](#rest)
+- [S.O.L.I.D Principles](#solid-principles)
+  - [S — Single Responsibility Principle](#s--single-responsibility-principle)
+  - [O — Open/Closed Principle](#o--openclosed-principle)
+  - [L — Liskov Substitution Principle](#l--liskov-substitution-principle)
+  - [I — Interface Segregation Principle](#i--interface-segregation-principle)
+  - [D — Dependency Inversion Principle](#d--dependency-inversion-principle)
+  - [Difference Between LSP and ISP](#difference-between-lsp-and-isp)
 - [Big *O*](#big-o)
   - [TL;DR](#tldr)
   - [Rules of Thumb](#rules-of-thumb)
@@ -102,25 +117,20 @@
     - [Exponential Time `O(2n)`](#exponential-time-o2n)
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
-- [S.O.L.I.D Principles](#solid-principles)
-  - [S — Single Responsibility Principle](#s--single-responsibility-principle)
-  - [O — Open/Closed Principle](#o--openclosed-principle)
-  - [L — Liskov Substitution Principle](#l--liskov-substitution-principle)
-  - [I — Interface Segregation Principle](#i--interface-segregation-principle)
-  - [D — Dependency Inversion Principle](#d--dependency-inversion-principle)
-  - [Difference Between LSP and ISP](#difference-between-lsp-and-isp)
-- [CI/CD](#cicd)
-- [REST](#rest)
-- [AI Agents in the IDE](#ai-agents-in-the-ide)
-	- [GitHub Copilot Chat](#github-copilot-chat)
- 	- [OpenAI Codex](#openai-codex)
 - [Interview Q/A's](#interview-qas)
+	- [Reverse an Array](#reverse-an-array)
+ 	  - [Three-reversal algorithm](#three-reversal-algorithm)
+      - [Copy to new array](#copy-to-new-array) 
 	- [Rotate an array](#rotate-an-array)
     - [Fibonnaci](#fibonnaci)
+      - [Return a single number](#return-a-single-number)
+      - [Iterate over a sequence](#iterate-over-a-sequence)       
     - [Sort algorithm](#sort-algorithm)
     - [Search algorithm](#search-algorithm)
-    - [Refactor](#refactor)
-    	- [Currency Converter](#currency-converter) 
+    - [Challenge](#challenge)
+      - [Currency Converter](#currency-converter)
+      - [Compute Latest Positions](#compute-latest-positions)
+      - [Calculate Moving Average](#calculate-moving-average)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -999,7 +1009,7 @@ A **Task** is a data structure that represents the eventual completion of an asy
 
 [Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) represents an asynchronous operation while [Task\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) represents and asynchronous operation that returns a value of type `T`.
 
->  [!Note]
+>  [!TIP]
 > 
 > Read [How Async/Await Really Works in C#](https://devblogs.microsoft.com/dotnet/how-async-await-really-works/)
 >
@@ -1167,6 +1177,18 @@ If no `SynchronizationContext` exists `await` falls back to the `TaskScheduler.D
 > * **HttpClient**: The `HttpClient` class for HTTP operations uses asynchronous methods for network I/O, relying on the lower-level HTTP stack provided by the OS.
 >
 > These lower-level APIs allow .NET to provide a high-level, easy-to-use abstraction for performing efficient asynchronous I/O operations e.g. using `async/await`
+
+##### Iterating with `async` Enumerables
+
+> [!TIP]
+>
+> Read [Iterating with Async Enumerables](https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8)
+
+##### Async Scenarios
+
+> [!TIP]
+>
+> Read [Async scenarios](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/async-scenarios)
 
 #### Thread Safety
 ##### Locks and Mutex
@@ -2152,154 +2174,19 @@ IEnumerable<string> query = from n in names
 							select n.ToUpper();
 ```
 
-## Big *O*
-Big *O* notation is a way to describe how fast or slow your code runs as the input size grows. It gives you a basic idea of your code's performance and scalability.
+## AI Agents in the IDE
+#### GitHub Copilot Chat
+GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscription does not include Copilot Pro.
 
-It doesn't measure actual time (like milliseconds); it measures how the number of operations grows relative to the input size.
+#### OpenAI Codex
+Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
 
-#### TL;DR
-| Big O          | Meaning                                                  | Example                                                         |
-| -------------- | -------------------------------------------------------- | --------------------------------------------------------------- |
-| **O(1)**       | Constant time – super fast, doesn’t depend on input size | `list[0];` or `dictionary.ContainsKey("foo")`                   |
-| **O(n)**       | Linear – time grows with input size                      | `foreach (var item in list) { ... }`                            |
-| **O(n²)**      | Quadratic – nested loops, gets slow fast                 | `foreach (var a in list) foreach (var b in list) { ... }`       |
-| **O(log n)**   | Logarithmic – very efficient, divide and conquer         | Binary search: `list.BinarySearch(item);`                       |
-| **O(n log n)** | Typical of efficient sorts                               | `list.Sort();` (uses TimSort in .NET)                           |
-| **O(2ⁿ)**      | Exponential – extremely slow for large inputs            | Recursive solutions like solving the Fibonacci sequence naively |
+## CI/CD
 
-#### Rules of Thumb:
-- Favor `O(1)` and `O(log n)` when you can.
-- Be cautious with `O(n²)` and worse – especially with nested loops.
+## Unit Testing
 
-#### Big *O* with Code Examples
-##### Constant Time `O(1)`
-Doesn’t depend on input size. You know exactly where the item is so go straight to it.
-
-e.g. Accessing an element in an array by index. Fast, no matter how big the array is. You know exactly where the item is so go straight to it.
-```C#
-int[] array = {1, 2, 3, 4, 5};
-
-int GetValue(int index)
-{
-    return array[index]; // Always takes the same amount of time
-}
-```
-
-##### Linear Time `O(n)`
-Time grows linearly with input size. Items are not sorted so check one by one from start to finish.
-
-e.g. Looping through a list or array, checking each item one by one from start to finish.
-```C#
-int[] array = {1, 2, 3, 4, 5};
-
-bool Contains(int value)
-{
-    foreach (var item in array)
-    {
-        if (item == value) return true;
-    }
-
-    return false;
-}
-```
-
-##### Logarithmic Time `O(log n)`
-Every step of the algorithm cuts the problem in half so instead of checking every item, you’re skipping a big chunk with each move. Super fast even with big input sizes. Typical used in binary search.
-
-e.g. Binary search in a sorted array. Each loop cuts the array size in half
-```C#
-int[] sortedArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-
-int BinarySearch(int value)
-{
-    int left = 0;
-    int right = sortedArray.Length - 1;
-
-    while (left <= right)
-    {
-        int mid = (left + right) / 2;
-
-        if (sortedArray[mid] == value)
-            return mid;
-        else if (sortedArray[mid] < value)
-            left = mid + 1;
-        else
-            right = mid - 1;
-    }
-
-    return -1;
-}
-```
-
-##### Quadratic Time `O(n²)`
-The work your code does grows a lot faster than the input size grows. Specifically, if you double the input, the work grows four times. If you triple it, it grows nine times — like squaring the size. Typically used in some sorting algorithms like bubble sort or selection sort
-
-e.g. Nested loops over the same data set. Gets much slower as numbers grows.
-- If `numbers = 10`, it prints 100 lines.
-- If `numbers = 100`, it prints 10,000 lines!
-```C#
-void PrintAllPairs(int[] numbers)
-{
-    foreach (var a in numbers)
-    {
-        foreach (var b in numbers)
-        {
-            Console.WriteLine($"{a}, {b}");
-        }
-    }
-}
-```
-
-##### Exponential Time `O(2n)`
-Time doubles with each extra input, resulting in explosive growth, making it extremely slow.
-
-e.g. Recursive Fibonacci, where each call creates two more calls, like a tree branching rapidly.
-```C#
-int Fibonacci(int n)
-{
-    if (n <= 1) return n;
-    return Fibonacci(n - 1) + Fibonacci(n - 2);
-}
-```
-> [!TIP]
-> 
-> The Fibonacci sequence is the series of numbers where each number is the sum of the two preceding numbers.
->
-> e.g. `0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610`
-> 
-> Here is a more efficient implementation of Fibonacci which can be called like this `foreach (int i in Fib())`
-> ```C#
-> public static IEnumerable<int> Fibonacci()
-> {
->    int prev = 0, next = 1;
->     yield return prev;
->     yield return next;
-> 
->     while (true)
->     {
->         int sum = prev + next;
->         yield return sum;
->         prev = next;
->         next = sum;
->     }
-> }
-> ```
-
-#### Big O Growth Comparison Table
-| **Big O**    | **Name**    | **Example** in English | **C# Code Pattern**          | **Growth for n = 10, 20, 30** |
-| ------------ | ----------- | ---------------------- | ---------------------------- | ----------------------------- |
-| **O(1)**     | Constant    | Always takes same time | `dict.ContainsKey(key)`      | 1, 1, 1                       |
-| **O(log n)** | Logarithmic | Cuts problem in half   | Binary Search                | \~4, \~5, \~6                 |
-| **O(n)**     | Linear      | One step per item      | `foreach (var item in list)` | 10, 20, 30                    |
-| **O(n²)**    | Quadratic   | Compare every pair     | Nested loops                 | 100, 400, 900                 |
-| **O(2ⁿ)**    | Exponential | Try all combinations   | Recursive brute-force        | 1,024; 1,048,576; >1 billion  |
-
-#### Big *O* Summary
-- `O(1)`: Super fast, doesn't care about size
-- `O(log n)`: Excellent, scales well
-- `O(n)`: Grows steadily
-- `O(n²)`: Slows down fast with large input
-- `O(2ⁿ)`: Unusable beyond ~20 items
+## REST
+**REST (REpresentational State Transfer)** is a widely used architectural style for designing networked applications, particularly APIs, that allows client-server communication using HTTP methods like `GET`, `POST`, `PUT`, and `DELETE`. It was introduced by Roy Fielding in 2000 to improve web efficiency through constraints like statelessness, uniform interfaces, and cacheability. 
 
 ## S.O.L.I.D Principles
 **SOLID** is a set of five object-oriented design principles that help make C# code easier to maintain, test, and extend.
@@ -2538,30 +2425,399 @@ The key difference is:
 | LSP       | Inheritance correctness | Subclass changes expected behavior         | “Can I safely use the child anywhere the parent is expected?” |
 | ISP       | Interface design        | Classes forced to implement unused methods | “Am I forcing classes to implement things they don’t need?”   |
 
+## Big *O*
+Big *O* notation is a way to describe how fast or slow your code runs as the input size grows. It gives you a basic idea of your code's performance and scalability.
 
-## CI/CD
+It doesn't measure actual time (like milliseconds); it measures how the number of operations grows relative to the input size.
 
-## REST
-**REST (REpresentational State Transfer)** is a widely used architectural style for designing networked applications, particularly APIs, that allows client-server communication using HTTP methods like `GET`, `POST`, `PUT`, and `DELETE`. It was introduced by Roy Fielding in 2000 to improve web efficiency through constraints like statelessness, uniform interfaces, and cacheability. 
+#### TL;DR
+| Big O          | Meaning                                                  | Example                                                         |
+| -------------- | -------------------------------------------------------- | --------------------------------------------------------------- |
+| **O(1)**       | Constant time – super fast, doesn’t depend on input size | `list[0];` or `dictionary.ContainsKey("foo")`                   |
+| **O(n)**       | Linear – time grows with input size                      | `foreach (var item in list) { ... }`                            |
+| **O(n²)**      | Quadratic – nested loops, gets slow fast                 | `foreach (var a in list) foreach (var b in list) { ... }`       |
+| **O(log n)**   | Logarithmic – very efficient, divide and conquer         | Binary search: `list.BinarySearch(item);`                       |
+| **O(n log n)** | Typical of efficient sorts                               | `list.Sort();` (uses TimSort in .NET)                           |
+| **O(2ⁿ)**      | Exponential – extremely slow for large inputs            | Recursive solutions like solving the Fibonacci sequence naively |
 
+#### Rules of Thumb:
+- Favor `O(1)` and `O(log n)` when you can.
+- Be cautious with `O(n²)` and worse – especially with nested loops.
 
-## AI Agents in the IDE
-#### GitHub Copilot Chat
-GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscription does not include Copilot Pro.
+> [!IMPORTANT]
+> 
+> **Is 2n Big O of n?**
+>
+> Before we get started, it's important to remember that the "big O" in **Big O** stands for order of, so we are really only concerned with changes in the order of magnitude. This means we don't have to worry about constants. It also means that `O(n)`, `O(2n)`, `O(10n)` are all just `O(n)`.
 
-#### OpenAI Codex
-Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
+#### Big *O* with Code Examples
+##### Constant Time `O(1)`
+Doesn’t depend on input size. You know exactly where the item is so go straight to it.
+
+e.g. Accessing an element in an array by index. Fast, no matter how big the array is. You know exactly where the item is so go straight to it.
+```C#
+int[] array = {1, 2, 3, 4, 5};
+
+int GetValue(int index)
+{
+    return array[index]; // Always takes the same amount of time
+}
+```
+
+##### Linear Time `O(n)`
+Time grows linearly with input size. Items are not sorted so check one by one from start to finish.
+
+e.g. Looping through a list or array, checking each item one by one from start to finish.
+```C#
+int[] array = {1, 2, 3, 4, 5};
+
+bool Contains(int value)
+{
+    foreach (var item in array)
+    {
+        if (item == value) return true;
+    }
+
+    return false;
+}
+```
+
+##### Logarithmic Time `O(log n)`
+Every step of the algorithm cuts the problem in half so instead of checking every item, you’re skipping a big chunk with each move. Super fast even with big input sizes. Typical used in binary search.
+
+e.g. Binary search in a sorted array. Each loop cuts the array size in half
+```C#
+int[] sortedArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+int BinarySearch(int value)
+{
+    int left = 0;
+    int right = sortedArray.Length - 1;
+
+    while (left <= right)
+    {
+        int mid = (left + right) / 2;
+
+        if (sortedArray[mid] == value)
+            return mid;
+        else if (sortedArray[mid] < value)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1;
+}
+```
+
+##### Quadratic Time `O(n²)`
+The work your code does grows a lot faster than the input size grows. Specifically, if you double the input, the work grows four times. If you triple it, it grows nine times — like squaring the size. Typically used in some sorting algorithms like bubble sort or selection sort
+
+e.g. Nested loops over the same data set. Gets much slower as numbers grows.
+- If `numbers = 10`, it prints 100 lines.
+- If `numbers = 100`, it prints 10,000 lines!
+```C#
+void PrintAllPairs(int[] numbers)
+{
+    foreach (var a in numbers)
+    {
+        foreach (var b in numbers)
+        {
+            Console.WriteLine($"{a}, {b}");
+        }
+    }
+}
+```
+
+##### Exponential Time `O(2n)`
+Time doubles with each extra input, resulting in explosive growth, making it extremely slow.
+
+e.g. Recursive Fibonacci, where each call creates two more calls, like a tree branching rapidly.
+```C#
+int Fibonacci(int n)
+{
+    if (n <= 1) return n;
+    return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+```
+> [!TIP]
+> 
+> The Fibonacci sequence is the series of numbers where each number is the sum of the two preceding numbers.
+>
+> e.g. `0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610`
+> 
+> Here is a more efficient implementation of Fibonacci which can be called like this `foreach (int i in Fib())`
+> ```C#
+> public static IEnumerable<int> Fibonacci()
+> {
+>    int prev = 0, next = 1;
+>     yield return prev;
+>     yield return next;
+> 
+>     while (true)
+>     {
+>         int sum = prev + next;
+>         yield return sum;
+>         prev = next;
+>         next = sum;
+>     }
+> }
+> ```
+
+#### Big O Growth Comparison Table
+| **Big O**    | **Name**    | **Example** in English | **C# Code Pattern**          | **Growth for n = 10, 20, 30** |
+| ------------ | ----------- | ---------------------- | ---------------------------- | ----------------------------- |
+| **O(1)**     | Constant    | Always takes same time | `dict.ContainsKey(key)`      | 1, 1, 1                       |
+| **O(log n)** | Logarithmic | Cuts problem in half   | Binary Search                | \~4, \~5, \~6                 |
+| **O(n)**     | Linear      | One step per item      | `foreach (var item in list)` | 10, 20, 30                    |
+| **O(n²)**    | Quadratic   | Compare every pair     | Nested loops                 | 100, 400, 900                 |
+| **O(2ⁿ)**    | Exponential | Try all combinations   | Recursive brute-force        | 1,024; 1,048,576; >1 billion  |
+
+#### Big *O* Summary
+- `O(1)`: Super fast, doesn't care about size
+- `O(log n)`: Excellent, scales well
+- `O(n)`: Grows steadily
+- `O(n²)`: Slows down fast with large input
+- `O(2ⁿ)`: Unusable beyond ~20 items
 
 ## Interview Q/A's
+### Reverse an Array
+`Array.Reverse` has a time complexity of `O(n)`, where `n` is the number of elements being reversed.
+Internally, it swaps elements from the two ends of the range until it reaches the middle
+```C#
+int left = 0;
+int right = array.Length - 1;
+
+while (left < right)
+{
+    int tmp = array[left];
+    array[left] = array[right];
+    array[right] = tmp;
+    left++;
+    right--;
+}
+```
+
 ### Rotate an array
+#### Three-reversal algorithm
+The purpose of `k = k % n;` is to normalize the rotation amount so that it is always between `0` and `n - 1`.
+This works because rotating an array by its own length leaves it unchanged.
+
+For an array of length 5:
+```
+Rotate by 0 == Rotate by 5 == Rotate by 10 == Rotate by 15
+Rotate by 1 == Rotate by 6 == Rotate by 11 == Rotate by 21
+Rotate by 2 == Rotate by 7 == Rotate by 12 == Rotate by 22
+```
+
+Taking the remainder (%) removes these complete rotations.
+
+```C#
+public static void Rotate(int[] nums, int k)
+{
+    if (nums == null || nums.Length == 0)
+        return;
+
+    int n = nums.Length;
+
+    // Normalize rotation amount so it's always between 0 and n - 1.
+    // Taking the remainder (%) removes these complete rotations. 
+    k = k % n;
+									
+    Array.Reverse(nums);
+    Array.Reverse(nums, 0, k);
+    Array.Reverse(nums, k, n - k);
+}
+```
+
+The three-reversal algorithm does this:
+```C#
+// e.g. in an array 1,2,3,4,5 where n = 3:
+
+Array.Reverse(nums);             // O(n) 	 -> 5,4,3,2,1  first, reverse entire array
+Array.Reverse(nums, 0, k);       // O(k) 	 -> 3,4,5,2,1  then, reverse beginning section up to k
+Array.Reverse(nums, k, n - k);   // O(n - k) -> 3,4,5,1,2  finally, reverse remaining section after k 
+```
+
+Total time: `O(n)`
+```
+O(n) + O(k) + O(n - k)
+= O(2n)
+= O(n)
+```
+The constant factor is about twice that of a single pass, but asymptotically it is still `O(n)` and uses `O(1)` additional memory.
+
+#### Copy to new array
+If allocating a new array is acceptable then.
+
+```C#
+public static int[] Rotate(int[] nums, int k)
+{
+    if (nums == null || nums.Length == 0)
+        return null;
+
+    int n = nums.Length;
+
+    // Normalize rotation amount so it's always between 0 and n - 1.
+    // Taking the remainder (%) removes these complete rotations. 
+    k = k % n;
+
+    int[] rotated = new int[nums.Length];
+
+    for (int i = 0; i < n; i++)
+    {
+        int position = (i + k) % n;
+        rotated[position] = nums[i];
+    }
+
+    return rotated;
+}
+
+```
+
+Copy to new array algorithm does this:
+
+**Step 1: Start with the current index**
+
+Loop through over every element in the current the array, where `i` is the current index in the original array.
+
+**Step 2: Calculating the index in the destination array - shift it right by `k`**
+
+The current element at `i` should be placed after rotating the array to the right by `k` positions.
+
+**Step 3: Wrap around the end**
+
+This is where `% n` comes in. The modulo operator is what makes the indices "wrap around" instead of going out of bounds.
+
+So, if the result extends past the end of the array, you wrap it back to the beginning. This guarantees that newIndex is always between 0 and n - 1, making it a valid array index.
+
+`newIndex = (oldIndex + k) % arrayLength`
+
+```CSharp
+// e.g. in an array 1,2,3,4,5 where n = 3:
+
+for (int i = 0; i < n; i++)
+{
+    // when i = 3, then (i + k) = 6
+    // and 6 % 5 = 1
+    // So index 6 "wraps around" to index 1.
+    int position = (i + k) % n;
+
+    rotated[position] = nums[i];
+}
+```
+
+Total time: `O(n)`
+| Operation     | Complexity         |
+| ------------- | ------------------ |
+| `nums.Length` | O(1)               |
+| `new int[n]`  | O(n)               |
+| `k = k % n`   | O(1)               |
+| `for` loop    | O(n)               |
+| Loop body     | O(1) per iteration |
+| `return`      | O(1)               |
+
 
 ### Fibonnaci
+The Fibonacci sequence is a famous series of numbers where each number is the sum of the two numbers before it. It starts like this: (0, 1, 1, 2, 3, 5, 8, 13, 21), and so on.
+
+#### Return a single number
+```CSharp
+		// Return a single number
+        public int Fibonacci(int n)
+        {
+            if (n < 0)
+            {
+                throw new ArgumentException("Input cannot be negative", nameof(n));
+            }
+            else if (n == 0)
+            {
+                return 0;
+            }
+            else if (n == 1)
+            {
+                return 1;
+            }
+            int a = 0, b = 1, c = 0;
+            for (int i = 2; i <= n; i++)
+            {
+                c = a + b;
+                a = b;
+                b = c;
+            }
+            return c;
+        }
+```
+**Time Complexity: `O(n)`**
+
+The key part is the loop, which executes `n - 1` times (approximately `n` times).
+
+Each iteration performs a fixed number of constant-time operations:
+- one addition
+- three assignments
+- one comparison
+- loop increment
+
+Since the work per iteration is constant `O(1) × n = O(n)`
+
+**Space Complexity: `O(1)`**
+
+The algorithm uses only three integer variables:
+```C#
+int a = 0;
+int b = 1;
+int c = 0;
+```
+Regardless of how large n becomes, it doesn't allocate any additional memory.
+
+Therefore space = `O(1)`
+
+#### Iterate over a sequence
+```C#
+		// iterate over a sequence
+        public static IEnumerable<int> Fibonacci(int n)
+        {
+            int prev = 0, next = 1;
+
+            yield return prev;
+            yield return next;
+
+            for (int i = 2; i <= n; i++)
+            {
+                int sum = prev + next;
+                yield return sum;
+                prev = next;
+                next = sum;
+            }
+        }
+```
+
+**Time Complexity: `O(n)`**
+
+The loop executes approximately `n - 1` times, and each iteration performs:
+- one addition `O(1)`
+- three assignments, each `O(1)`
+- one yield return `O(1)`
+
+Therefore `O(1) × n = O(n)`.
+
+**Space Complexity: `O(1)`**
+
+The iterator maintains only a few local variables:
+```C#
+int prev = 0;
+int next = 1;
+int sum;
+```
+The compiler transforms the method into a state machine that stores these variables between calls to `MoveNext()`, but the amount of state does not grow with `n`.
+
+Therefore the extra space is `O(1)`
 
 ### Sort algorithm
 
 ### Search algorithm
 
-### Refactor
+### Challenge
 #### Currency Converter
 The following class has been written to convert an amount to USD.
 `IExchangeService` is an interface to a vendor supplied API for getting the spot rate for a currency.
@@ -2687,7 +2943,17 @@ Key improvements:
             }
 
             try
-            {               
+            {
+                // Check the cache again after aquiring the lock, before calling the provider.
+                cachedRate = _cache.Get(currencyCode);
+
+                if (cachedRate.HasValue)
+                {
+                    // Return the cached rate if it exists, no
+                    // need to call the exchange rate provider.
+                    return cachedRate;
+                }
+
                 decimal? rate = await _exchangeRateProvider.GetSpotRateAsync(currencyCode);
 
                 if (rate != null)
@@ -2706,6 +2972,259 @@ Key improvements:
     }
 ```
 
+#### Compute Latest Positions
+Fix the following code. It does not compile and isn't efficient. Can you figure out why and adjust the code?
+
+```C#
+    record Trade(int TradeId, int SecurityId, DateTime TradeDate, string BuyOrSell, int Quantity);
+    record Position(int SecurityId, int Quantity);
+
+    public class PositionCalculator
+    {
+        public List<Position> ComputeLatestPositions(List<Trade> trades, ImmutableList<Position> previousPositions = null)
+        {
+            foreach (var t in trades)
+            {
+                lock (this)
+                {
+                    var previousPosition = previousPositions.First(p => p.SecurityId == t.TradeId);
+                    previousPosition.Quantity += t.Quantity;
+                }
+            }
+
+            return null;
+        }
+    }
+```
+
+Key improvements:
+- Use immutable records correctly. Create a new position because `previousPosition.Quantity` can't be updated.
+- Use the correct lookup key `SecurityId` instead of `p.SecurityId == t.TradeId`.
+- Handle missing positions by adding positions for a new security instead of `previousPositions.First(...)`, which throws when no existing position exists.
+- Correctly processes `BUY` and `SELL` by adding `BUY` and subtract `SELL` quantities, and ignore invalid trade directions.
+- Add validation to prevent unexpected `NullReferenceExceptions`, so `trades` can't be null, and `null` trade entries are ignored.
+- Improve performance by using a dictionary keyed by `SecurityId` for `O(n + m)`.
+- Return a `result` instead of `null`.
+- Remove unnecessary thread synchronization while remaining thread-safe. The method is naturally thread-safe because it operates entirely on local variables so there is no shared mutable state. Using `lock(this)` is bad practice because external code can also lock the same object, causing deadlocks.
+- Use more flexible interface `IReadOnlyList<T>` instead of `ImmutableList<T>`, allowing users to pass in from a wider range of source type including `List<Trade>`, `Trade[]`, `ImmutableList<Trade>` and `ReadOnlyCollection<Trade>`. 
+
+> [!IMPORTANT]
+>
+> Use a dictionary keyed by `SecurityId` for `O(n + m)` where the complexity is approximately `O(n + m)`. position. Don't search positions with `First()` inside a loop which is `O(n * m)`.
+>
+> List lookup using `First(...)`   -> `O(number of trades * number of positions)` 
+> Dictionary keyed by `SecurityId` -> `O(number of trades + number of positions)` 
+
+> [!TIP]
+>
+> When using a Dictionary, use `ContainsKey(...)` which requires a single lookup, instead of two with `ContainsKey(...)` followed by `result[key]`.
+>
+> ```C#
+>   // GOOD - one lookup
+>   TryGetValue(...)
+>
+>   // BAD - two lookups
+>   ContainsKey(...)
+>   result[key]
+> ``` 
+
+```C#
+    public record Trade(int TradeId, int SecurityId, DateTime TradeDate, string BuyOrSell, long Quantity);
+    public record Position(int SecurityId, long Quantity);
+
+    public class PositionCalculator
+    {
+        public List<Position> ComputeLatestPositions(
+            IReadOnlyList<Trade> trades,
+            IReadOnlyList<Position> previousPositions = null)
+        {
+            ArgumentNullException.ThrowIfNull(trades);
+
+            var result = previousPositions != null
+                ? previousPositions.ToDictionary(p => p.SecurityId, p => p.Quantity)
+                : new Dictionary<int, long>();
+
+            foreach (var t in trades)
+            {
+                if (t is null)
+                {
+                    continue;
+                }
+
+                long amount;
+
+                if (string.Equals(t.BuyOrSell, "BUY", StringComparison.OrdinalIgnoreCase))
+                {
+                    amount = t.Quantity;
+                }
+                else if (string.Equals(t.BuyOrSell, "SELL", StringComparison.OrdinalIgnoreCase))
+                {
+                    amount = -t.Quantity;
+                }
+                else
+                {
+                    continue;
+                }
+
+                if (result.TryGetValue(t.SecurityId, out var quantity))
+                {
+                    result[t.SecurityId] = quantity + amount;
+                }
+                else
+                {
+                    result.Add(t.SecurityId, amount);
+                }
+            }
+
+            return result
+                .Select(kv => new Position(kv.Key, kv.Value))
+                .ToList();
+        }
+    }
+```
+
+#### Calculate Moving Average
+Write a moving average calculator class for a single security.
+
+Think about how this class should be implemented, for example:
+- should it use a push based or pull based approach?
+- it should be unit testable
+
+```C#
+// Interface used to abstract the system clock.
+// This allows time to be mocked during unit testing.
+public interface IClock
+{
+    DateTime GetCurrentDateTime();
+}
+
+// Implements the Observer pattern so prices can be pushed into
+// the calculator as they arrive.
+internal sealed class MovingAverageCalculator : IObserver<decimal>
+{
+    // The moving average time window.
+    private readonly TimeSpan _duration;
+
+    // Clock abstraction for testability.
+    private readonly IClock _clock;
+
+    // Queue of prices with the time they were received.
+    // Old prices can be removed efficiently from the front.
+    private readonly Queue<(decimal Value, DateTime Timestamp)> _values =
+        new Queue<(decimal, DateTime)>();
+
+    // Synchronises access if prices are pushed/read concurrently.
+    private readonly object _gate = new();
+
+    // Running total of all values currently in the queue.
+    // This allows O(1) average calculation.
+    private decimal _sum = 0;
+
+    // Constructor.
+    public MovingAverageCalculator(TimeSpan duration, IClock clock)
+    {
+        if (duration <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(duration),
+                "Duration must be greater than zero.");
+        }
+
+        _duration = duration;
+        _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+    }
+
+    // Returns the current moving average.
+    public decimal GetMovingAverage()
+    {
+        lock (_gate)
+        {
+            // Remove any expired values first.
+            RemoveExpiredPrices();
+
+            // Return the average if there are values,
+            // otherwise return zero.
+            return _values.Count > 0
+                ? _sum / _values.Count
+                : 0;
+        }
+    }
+
+    // Attempts to get the current moving average.
+    // Returns false when no prices are currently available.
+    public bool TryGetMovingAverage(out decimal average)
+    {
+        lock (_gate)
+        {
+            // Remove any expired values first.
+            RemoveExpiredPrices();
+
+            if (_values.Count == 0)
+            {
+                average = 0;
+                return false;
+            }
+
+            average = _sum / _values.Count;
+            return true;
+        }
+    }
+
+    // Called whenever a new price arrives.
+    public void OnNext(decimal value)
+    {
+        lock (_gate)
+        {
+            // Add the new value with the current timestamp.
+            _values.Enqueue((value, _clock.GetCurrentDateTime()));
+
+            // Update the running total.
+            _sum += value;
+
+            // Remove expired prices.
+            RemoveExpiredPrices();
+        }
+    }
+
+    // Required by IObserver<T>.
+    // No implementation needed for this exercise.
+    public void OnCompleted()
+    {
+    }
+
+    // Required by IObserver<T>.
+    public void OnError(Exception error)
+    {
+        ArgumentNullException.ThrowIfNull(error);
+    }
+
+    // Removes all values older than the configured duration.
+    private void RemoveExpiredPrices()
+    {
+        DateTime now = _clock.GetCurrentDateTime();
+
+        while (_values.Count > 0 &&
+               now - _values.Peek().Timestamp > _duration)
+        {
+            // Remove the oldest value from the running total.
+            _sum -= _values.Peek().Value;
+
+            // Remove it from the queue.
+            _values.Dequeue();
+        }
+    }
+}
+```
+**Review**
+- Push-based design using `IObserver<decimal>`.
+- Queue-based storage for efficient `O(1)` append/removal.
+- `O(1)` running average calculation using `_sum / _values.Count`.
+- Time-window expiry so only prices inside the configured duration are used.
+- Injected clock abstraction for deterministic unit testing.
+- Constructor validation for invalid duration and null dependencies.
+- Thread safety using a private lock.
+- Clear empty-state handling via `TryGetMovingAverage`.
+- Sealed class to prevent unnecessary inheritance.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
