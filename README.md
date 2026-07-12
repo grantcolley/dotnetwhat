@@ -141,6 +141,7 @@
       	- [Reverse Words](#reverse-words)
         - [Longest Common Prefix](#longest-common-prefix)
         - [Merge Intervals](#merge-intervals)
+        - [Group Anagrams](#group-anagrams)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -3787,6 +3788,97 @@ Complexity
 The intervals are first sorted by their start values, which takes `O(n log n)` time. The algorithm then makes one linear pass through the sorted intervals, merging overlaps in `O(n)` time.
 
 The returned collection may contain up to n intervals, resulting in `O(n)` output space. Excluding the returned result, the algorithm uses `O(1)` additional working space, although `Array.Sort` may use implementation-dependent stack space.
+
+##### Group Anagrams
+Given an array of strings, group together all strings that are anagrams of each other. Two words are anagrams if they contain the same characters with the same frequencies.
+
+The groups may be returned in any order.
+
+Description
+```C#
+Input:
+["eat", "tea", "tan", "ate", "nat", "bat"]
+
+Output:
+[
+    ["eat", "tea", "ate"],
+    ["tan", "nat"],
+    ["bat"]
+]
+
+e.g.
+GroupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"])
+-> [["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]
+
+GroupAnagrams([""])
+-> [[""]]
+
+GroupAnagrams(["a"])
+-> [["a"]]
+
+GroupAnagrams(["abc", "bca", "cab", "xyz"])
+-> [["abc", "bca", "cab"], ["xyz"]]
+
+GroupAnagrams([])
+-> []
+```
+Skills
+- `Dictionary<TKey, TValue>`
+- String manipulation
+- Sorting
+- `O(n × k log k)` processing
+> Where `n` is the number of strings and `k` is the average length of a string.
+```C#
+    public static IList<IList<string>> GroupAnagrams(string[] words)
+    {
+        ArgumentNullException.ThrowIfNull(words);
+
+        Dictionary<string, List<string>> groups = new();
+
+        foreach (string word in words)
+        {
+            ArgumentNullException.ThrowIfNull(word);
+
+            // Create a canonical key by sorting the characters.
+            char[] characters = word.ToCharArray();
+            Array.Sort(characters);
+
+            string key = new(characters);
+
+            if (!groups.TryGetValue(key, out List<string>? group))
+            {
+                group = [];
+                groups.Add(key, group);
+            }
+
+            group.Add(word);
+        }
+
+        List<IList<string>> result = [];
+
+        foreach (List<string> group in groups.Values)
+        {
+            result.Add(group);
+        }
+
+        return result;
+    }
+```
+Complexity
+| Operation |         Complexity |
+| --------- | -----------------: |
+| Time      | **O(n × k log k)** |
+| Space     |       **O(n × k)** |
+
+For each of the `n` input strings, the algorithm sorts its `k` characters to produce a canonical dictionary key, which takes `O(k log k)` time. Dictionary lookups and insertions are `O(1)` on average, resulting in an overall time complexity of `O(n × k log k)`.
+
+The dictionary stores every input string along with its corresponding key, requiring `O(n × k)` additional space.
+
+> [!TIP]
+>
+> Interview follow-up:
+>
+> An optimized solution avoids sorting each word by constructing a frequency-count key (for example, the counts of `'a'` through `'z'`). This reduces the time complexity to `O(n × k)` while using a slightly more complex key-generation algorithm.
 
 ##### Next Challenge
 Description
