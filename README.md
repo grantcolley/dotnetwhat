@@ -138,7 +138,9 @@
         - [Remove Duplicates from Sorted Array](#remove-duplicates-from-sorted-array)
         - [Binary Search](#binary-search)
       - [Medium](#medium)
-      	- [Reverse Words](#reverse-words) 
+      	- [Reverse Words](#reverse-words)
+        - [Longest Common Prefix](#longest-common-prefix)
+        - [Merge Intervals](#merge-intervals)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -3615,6 +3617,191 @@ The algorithm splits the input into words, reverses the array of words, and join
 > Interview follow-up:
 >
 > A common follow-up question is to solve this in-place using a `char[]` without calling `Split()` or `Array.Reverse()`. The in-place solution first reverses the entire character array, then reverses each individual word, achieving `O(n)` time while using `O(1)` additional space (excluding the character array itself).
+
+##### Longest Common Prefix
+Given an array of strings, return the longest common prefix shared by all the strings. If there is no common prefix, return an empty string.
+```C#
+Input:
+["flower", "flow", "flight"]
+
+Output:
+"fl"
+
+e.g.
+LongestCommonPrefix(["flower", "flow", "flight"]) -> "fl"
+LongestCommonPrefix(["dog", "racecar", "car"])    -> ""
+LongestCommonPrefix(["interspecies", "interstellar", "interstate"]) -> "inters"
+LongestCommonPrefix(["hello"])                    -> "hello"
+LongestCommonPrefix([])                           -> ""
+```
+Skills
+- String manipulation
+- Character comparison
+- `StartsWith()`
+- `O(n × m)` traversal
+> Where `n` is the number of strings and `m` is the length of the shortest string.
+```C#
+    public static string LongestCommonPrefix(string[] strings)
+    {
+        ArgumentNullException.ThrowIfNull(strings);
+
+        if (strings.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        // Assume the first string is the common prefix.
+        string prefix = strings[0];
+
+        // Reduce the prefix until every string starts with it.
+        for (int i = 1; i < strings.Length; i++)
+        {
+            while (!strings[i].StartsWith(prefix, StringComparison.Ordinal))
+            {
+                prefix = prefix[..^1];
+
+                if (prefix.Length == 0)
+                {
+                    return string.Empty;
+                }
+            }
+        }
+
+        return prefix;
+    }
+```
+Complexity
+| Operation |   Complexity |
+| --------- | -----------: |
+| Time      | **O(n × m)** |
+| Space     |     **O(1)** |
+
+The algorithm starts by assuming the first string is the common prefix. It then compares this prefix against each remaining string, shortening it until a match is found. In the worst case, each character of the prefix may be removed once for each string, resulting in `O(n × m)` time complexity, where `n` is the number of strings and `m` is the length of the shortest string. The algorithm uses only a few local variables, giving it `O(1)` additional space complexity.
+
+##### Merge Intervals
+Given an array of intervals where each interval is represented as `[start, end]`, merge all overlapping intervals and return the resulting non-overlapping intervals.
+```C#
+Input:
+[[1, 3], [2, 6], [8, 10], [15, 18]]
+
+Output:
+[[1, 6], [8, 10], [15, 18]]
+
+e.g.
+MergeIntervals([[1, 3], [2, 6], [8, 10], [15, 18]])
+-> [[1, 6], [8, 10], [15, 18]]
+
+MergeIntervals([[1, 4], [4, 5]])
+-> [[1, 5]]
+
+MergeIntervals([[1, 10], [2, 3], [4, 8]])
+-> [[1, 10]]
+
+MergeIntervals([[1, 2]])
+-> [[1, 2]]
+
+MergeIntervals([])
+-> []
+```
+Skills
+- Sorting
+- Interval comparison
+- `List<T>`
+- `O(n log n)` processing
+```C#
+    public static int[][] MergeIntervals(int[][] intervals)
+    {
+        ArgumentNullException.ThrowIfNull(intervals);
+
+        if (intervals.Length == 0)
+        {
+            return [];
+        }
+
+        foreach (int[] interval in intervals)
+        {
+            if (interval is null || interval.Length != 2)
+            {
+                throw new ArgumentException(
+                    "Each interval must contain exactly two values.",
+                    nameof(intervals));
+            }
+
+            if (interval[0] > interval[1])
+            {
+                throw new ArgumentException(
+                    "An interval's start value cannot be greater than its end value.",
+                    nameof(intervals));
+            }
+        }
+
+        // Sort the intervals by their start value.
+        Array.Sort(intervals, static (left, right) =>
+            left[0].CompareTo(right[0]));
+
+        List<int[]> mergedIntervals = [];
+
+        // Copy the first interval so the input interval is not modified.
+        int[] currentInterval =
+        [
+            intervals[0][0],
+            intervals[0][1]
+        ];
+
+        for (int i = 1; i < intervals.Length; i++)
+        {
+            int[] nextInterval = intervals[i];
+
+            if (nextInterval[0] <= currentInterval[1])
+            {
+                // The intervals overlap, so extend the current interval.
+                currentInterval[1] = Math.Max(
+                    currentInterval[1],
+                    nextInterval[1]);
+            }
+            else
+            {
+                // The intervals do not overlap, so store the current interval.
+                mergedIntervals.Add(currentInterval);
+
+                currentInterval =
+                [
+                    nextInterval[0],
+                    nextInterval[1]
+                ];
+            }
+        }
+
+        // Add the final interval.
+        mergedIntervals.Add(currentInterval);
+
+        return [.. mergedIntervals];
+    }
+```
+Complexity
+| Operation |     Complexity |
+| --------- | -------------: |
+| Time      | **O(n log n)** |
+| Space     |       **O(n)** |
+
+The intervals are first sorted by their start values, which takes `O(n log n)` time. The algorithm then makes one linear pass through the sorted intervals, merging overlaps in `O(n)` time.
+
+The returned collection may contain up to n intervals, resulting in `O(n)` output space. Excluding the returned result, the algorithm uses `O(1)` additional working space, although `Array.Sort` may use implementation-dependent stack space.
+
+##### Next Challenge
+Description
+```C#
+Input:
+
+Output:
+
+e.g.
+```
+Skills
+- 
+```C#
+```
+Complexity
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
