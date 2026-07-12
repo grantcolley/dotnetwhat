@@ -137,7 +137,8 @@
         - [Valid Parentheses](#valid-parentheses)
         - [Remove Duplicates from Sorted Array](#remove-duplicates-from-sorted-array)
         - [Binary Search](#binary-search)
-      - [Medium](#medium) 
+      - [Medium](#medium)
+      	- [Reverse Words](#reverse-words) 
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -3556,6 +3557,64 @@ Complexity
 Binary search repeatedly halves the search range until the target is found or no elements remain. Since the search space is reduced by half on each iteration, the algorithm runs in `O(log n)` time while requiring only `O(1)` additional space. It is one of the most efficient algorithms for searching a sorted array.
 
 #### Medium
+##### Reverse Words
+Reverse Words (Medium)
+Given a string containing one or more words separated by spaces, return a new string with the words in reverse order.
+Assume words are separated by one or more spaces. The output should contain a single space between each word and no leading or trailing spaces.
+```C#
+Input:
+"The quick brown fox"
+
+Output:
+"fox brown quick The"
+
+e.g.
+ReverseWords("The quick brown fox") -> "fox brown quick The"
+ReverseWords("Hello World")         -> "World Hello"
+ReverseWords("  a good   example ") -> "example good a"
+ReverseWords("ChatGPT")             -> "ChatGPT"
+ReverseWords("")                    -> ""
+```
+Skills
+- String manipulation
+- Arrays
+- `StringSplitOptions`
+- `O(n)` traversal
+```C#
+    public static string ReverseWords(string input)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+
+        if (input.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        // Split the input into words, ignoring extra whitespace.
+        string[] words = input.Split(
+            ' ',
+            StringSplitOptions.RemoveEmptyEntries);
+
+        // Reverse the order of the words.
+        Array.Reverse(words);
+
+        // Join the words together with a single space.
+        return string.Join(' ', words);
+    }
+```
+Complexity
+| Operation | Complexity |
+| --------- | ---------: |
+| Time      |   **O(n)** |
+| Space     |   **O(n)** |
+
+The algorithm splits the input into words, reverses the array of words, and joins them back together. Each character is processed a constant number of times, resulting in `O(n)` time complexity. An additional array of words is created during the split operation, so the auxiliary space complexity is `O(n)`.
+
+> [!TIP]
+> 
+> Interview follow-up:
+>
+> A common follow-up question is to solve this in-place using a `char[]` without calling `Split()` or `Array.Reverse()`. The in-place solution first reverses the entire character array, then reverses each individual word, achieving `O(n)` time while using `O(1)` additional space (excluding the character array itself).
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
