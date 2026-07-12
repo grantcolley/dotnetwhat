@@ -142,6 +142,10 @@
         - [Longest Common Prefix](#longest-common-prefix)
         - [Merge Intervals](#merge-intervals)
         - [Group Anagrams](#group-anagrams)
+        - [Maximum Subarray](#maximum-subarray)
+        - [Find Missing Number](#find-missing-number)
+        - [First Non-Repeating Character](#first-non-repeating-character)
+      - [Hard](#hard)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -3880,6 +3884,204 @@ The dictionary stores every input string along with its corresponding key, requi
 >
 > An optimized solution avoids sorting each word by constructing a frequency-count key (for example, the counts of `'a'` through `'z'`). This reduces the time complexity to `O(n × k)` while using a slightly more complex key-generation algorithm.
 
+##### Maximum Subarray
+Given an array of integers, find the contiguous subarray with the largest sum and return that sum.
+
+The subarray must contain at least one element.
+
+For each element, you have two choices:
+- Extend the previous subarray (if it was positive, it helps you)
+- Start a new subarray at the current element (if the previous sum was negative, it hurts you)
+
+This greedy/dynamic decision at every step ensures the global optimum emerges naturally.
+```C#
+Input:
+nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+
+Output:
+6
+
+Subarray:
+[4, -1, 2, 1]
+
+e.g.
+MaximumSubarray([-2, 1, -3, 4, -1, 2, 1, -5, 4]) -> 6
+MaximumSubarray([1])                               -> 1
+MaximumSubarray([5, 4, -1, 7, 8])                 -> 23
+MaximumSubarray([-3, -2, -5])                     -> -2
+MaximumSubarray([-2, 1])                          -> 1
+```
+Skills
+- Kadane's algorithm
+- Dynamic programming
+- Running totals
+- `O(n)` traversal
+```C#
+    public static int MaximumSubarray(int[] nums)
+    {
+        ArgumentNullException.ThrowIfNull(nums);
+
+        if (nums.Length == 0)
+        {
+            throw new ArgumentException(
+                "The array must contain at least one element.",
+                nameof(nums));
+        }
+
+        // The maximum sum of a subarray ending at the current position.
+        int currentSum = nums[0];
+
+        // The maximum sum found anywhere in the array.
+        int maximumSum = nums[0];
+
+        for (int i = 1; i < nums.Length; i++)
+        {
+            // Either extend the existing subarray or start a new one
+            // from the current element.
+            currentSum = Math.Max(
+                nums[i],
+                currentSum + nums[i]);
+
+            // Record the largest sum found so far.
+            maximumSum = Math.Max(maximumSum, currentSum);
+        }
+
+        return maximumSum;
+    }
+```
+Complexity
+| Operation | Complexity |
+| --------- | ---------: |
+| Time      |   **O(n)** |
+| Space     |   **O(1)** |
+
+Kadane's algorithm examines each element once. At every position, it decides whether to extend the current subarray or begin a new subarray from the current element.
+
+The algorithm stores only the current sum and the best sum found, resulting in `O(n)` time complexity and `O(1)` additional space.
+
+##### Find Missing Number
+Given an array containing `n - 1` distinct integers in the range `1` to `n`, find the missing number.
+
+You may assume that exactly one number is missing.
+```C#
+Input:
+nums = [1, 2, 3, 5]
+
+Output:
+4
+
+e.g.
+FindMissingNumber([1, 2, 3, 5])          -> 4
+FindMissingNumber([2, 3, 1, 5])          -> 4
+FindMissingNumber([1])                   -> 2
+FindMissingNumber([2])                   -> 1
+FindMissingNumber([1, 2, 4, 5, 6])       -> 3
+```
+Skills
+- Arithmetic series
+- Array traversal
+- `O(n)` traversal
+- `O(1)` extra space
+```C#
+    public static int FindMissingNumber(int[] nums)
+    {
+        ArgumentNullException.ThrowIfNull(nums);
+
+        // The complete sequence contains one more value than the array.
+        int n = nums.Length + 1;
+
+        // Calculate the expected sum of the sequence 1..n.
+        int expectedSum = n * (n + 1) / 2;
+
+        // Calculate the actual sum of the values present.
+        int actualSum = 0;
+
+        foreach (int number in nums)
+        {
+            actualSum += number;
+        }
+
+        return expectedSum - actualSum;
+    }
+```
+Complexity
+| Operation | Complexity |
+| --------- | ---------: |
+| Time      |   **O(n)** |
+| Space     |   **O(1)** |
+
+The algorithm calculates the expected sum of the integers from `1` to `n` using the arithmetic series formula and subtracts the sum of the values present in the array. Each element is visited exactly once, resulting in `O(n)` time complexity and `O(1)` additional space.
+
+> [!TIP]
+>
+> Interview follow-up:
+>
+> An alternative solution uses the bitwise XOR operator. XOR-ing all numbers from `1` to `n` with every element in the array causes matching values to cancel out, leaving only the missing number. This approach also runs in `O(n)` time and `O(1)` space, while avoiding the possibility of integer overflow when summing very large sequences.
+
+##### First Non-Repeating Character
+Description
+```C#
+Input:
+"swiss"
+
+Output:
+'w'
+
+e.g.
+FirstNonRepeatingCharacter("swiss")   -> 'w'
+FirstNonRepeatingCharacter("aabbcc")  -> null
+FirstNonRepeatingCharacter("leetcode")-> 'l'
+FirstNonRepeatingCharacter("aabbcd")  -> 'c'
+FirstNonRepeatingCharacter("")        -> null
+```
+Skills
+- `Dictionary<TKey, TValue>`
+- Character counting
+- `O(n)` traversal
+- Hash table lookup
+```C#
+    public static char? FirstNonRepeatingCharacter(string input)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+
+        Dictionary<char, int> characterCounts = [];
+
+        // Count the occurrences of each character.
+        foreach (char character in input)
+        {
+            if (characterCounts.TryGetValue(character, out int count))
+            {
+                characterCounts[character] = count + 1;
+            }
+            else
+            {
+                characterCounts.Add(character, 1);
+            }
+        }
+
+        // Return the first character that occurs exactly once.
+        foreach (char character in input)
+        {
+            if (characterCounts[character] == 1)
+            {
+                return character;
+            }
+        }
+
+        return null;
+    }
+```
+Complexity
+| Operation | Complexity |
+| --------- | ---------: |
+| Time      |   **O(n)** |
+| Space     |   **O(k)** |
+
+The algorithm makes two passes over the string. The first pass counts the occurrences of each character using a dictionary, and the second pass finds the first character whose count is one.
+
+Each dictionary lookup and update is `O(1)` on average, giving an overall time complexity of `O(n)`, where `n` is the length of the string. The dictionary stores at most k distinct characters, resulting in `O(k)` additional space, where `k` is the size of the character set encountered in the input.
+
+#### Hard
 ##### Next Challenge
 Description
 ```C#
@@ -3888,6 +4090,7 @@ Input:
 Output:
 
 e.g.
+
 ```
 Skills
 - 
