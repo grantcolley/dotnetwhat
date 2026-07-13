@@ -60,7 +60,8 @@
   - [Threads](#threads)
   - [ThreadPool](#threadpool)
   - [Task and Task\<T>](#task-and-taskt)
-  - [ValueTask\<T>](#value-taskt)
+  - [ValueTask\<T>](#valuetaskt)
+  - [Task\<T> vs ValueTask\<T>](#taskt-vs-valuetaskt)
   - [`async/await`](#asyncawait)
       - [`async/await` Scheduling](#asyncawait-scheduling)
       - [Iterating with `async` Enumerables](#iterating-with-async-enumerables)
@@ -1096,8 +1097,69 @@ catch (AggregateException ae)
 |[Task.FromResult\<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.fromresult)|Creates a Task\<TResult> that's completed successfully returning the specified \<TResult>. The method is commonly used when the return value of a task is immediately known without executing a longer code path.|
 |[TaskCompletionSource\<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcompletionsource-1)|Represents the producer side of a [Task\<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1). In many scenarios, it is useful to enable a [Task\<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) to represent an external asynchronous operation. TaskCompletionSource<TResult> is provided for this purpose. It enables the creation of a task that can be handed out to consumers. It doesn't tie up a thread.|
 
-#### Value Task\<T>
+#### ValueTask\<T>
 [Value Task\<T>](https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/) is the struct equivalent of Task\<T>, altough much more limited than Task\<T>. It was created to help improve asynchronous performance where decreased allocation overhead is important.
+
+`ValueTask<T>` is a struct that can represent either:
+- a synchronously available result, or
+- an existing `Task<T>`.
+
+Why does `ValueTask<T>` exist?
+Imagine the following cache. Every cache hit still creates a `Task<Customer>`, which requires an allocation on the heap.
+```C#
+public async Task<Customer> GetCustomerAsync(int id)
+{
+    if (_cache.TryGetValue(id, out var customer))
+        return customer;
+
+    return await LoadCustomerFromDatabaseAsync(id);
+}
+```
+With `ValueTask<Customer>` a cache hit produces no heap allocation.
+```C#
+public ValueTask<Customer> GetCustomerAsync(int id)
+{
+    if (_cache.TryGetValue(id, out var customer))
+        return ValueTask.FromResult(customer);
+
+    return new ValueTask<Customer>(LoadCustomerFromDatabaseAsync(id));
+}
+```
+
+> [!TIP]
+> Calling `.AsTask()` may allocate, reducing the benefit of `ValueTask<T>`.
+
+#### Task\<T> vs ValueTask\<T>
+When should you use each?
+
+Use `Task<T>` (about 95% of the time). Most application code should simply return `Task<T>`.
+
+Examples:
+- ASP.NET Core controllers
+- Web APIs
+- Services
+- Database access
+- File I/O
+- Network I/O
+
+Use `ValueTask<T>` when all of the following are true:
+- the method is called very frequently,
+- it often completes synchronously,
+- profiling shows `Task` allocations are a measurable cost,
+- callers only `await` the result once.
+
+Typical examples include:
+- high-performance libraries
+- networking frameworks
+- parsers
+- channels
+- pipelines
+- caches
+- object pools
+
+Rule of thumb
+- Default to `Task<T>`.
+- Use `ValueTask<T>` only after profiling demonstrates that avoiding `Task` allocations provides a meaningful performance benefit. It is a specialized optimization, not a general replacement for `Task<T>`.
 
 #### `async/await`
 A [Task](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task) exposes a `GetAwaiter` method to which the caller can attach a *Continuation*.
