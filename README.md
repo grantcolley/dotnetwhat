@@ -1098,7 +1098,7 @@ catch (AggregateException ae)
 |[TaskCompletionSource\<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcompletionsource-1)|Represents the producer side of a [Task\<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1). In many scenarios, it is useful to enable a [Task\<TResult>](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1) to represent an external asynchronous operation. TaskCompletionSource<TResult> is provided for this purpose. It enables the creation of a task that can be handed out to consumers. It doesn't tie up a thread.|
 
 #### ValueTask\<T>
-[Value Task\<T>](https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/) is the struct equivalent of Task\<T>, altough much more limited than Task\<T>. It was created to help improve asynchronous performance where decreased allocation overhead is important.
+[Value Task\<T>](https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/) is the struct equivalent of `Task<T>`, altough much more limited than `Task<T>`. It was created to help improve asynchronous performance where decreased allocation overhead is important.
 
 `ValueTask<T>` is a struct that can represent either:
 - a synchronously available result, or
