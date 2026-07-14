@@ -1262,6 +1262,11 @@ If no `SynchronizationContext` exists `await` falls back to the `TaskScheduler.D
 > Read [Iterating with Async Enumerables](https://learn.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8)
 
 ##### Async Scenarios
+If your code implements I/O-bound scenarios to support network data requests, database access, or file system read/writes, asynchronous programming is the best approach. You can also write asynchronous code for CPU-bound scenarios like expensive calculations.
+
+The `Task` and `Task<T>` objects represent the core of asynchronous programming. These objects are used to model asynchronous operations by supporting the `async` and `await` keywords. In most cases, the model is fairly simple for both I/O-bound and CPU-bound scenarios. Inside an async method:
+- I/O-bound code starts an operation represented by a `Task` or `Task<T>` object within the async method.
+- CPU-bound code starts an operation on a background thread with the `Task.Run` method.
 
 > [!TIP]
 >
