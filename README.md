@@ -67,7 +67,8 @@
       - [Iterating with `async` Enumerables](#iterating-with-async-enumerables)
       - [Async Scenarios](#async-scenarios)
   - [Thread Safety](#thread-safety)
-      - [Locks and Mutex](#locks-and-mutex)   
+      - [Locks and Mutex](#locks-and-mutex)
+      - [SemaphoreSlim](#semaphoreslim)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -1289,6 +1290,34 @@ public void Multithread_Increment()
 }
 ```
 
+##### SemaphoreSlim
+`SemaphoreSlim` is a lightweight synchronization primitive in .NET that limits the number of threads (or asynchronous operations) that can access a resource at the same time.
+
+Unlike `lock`, which only allows one thread into a critical section, `SemaphoreSlim` can allow `N` concurrent threads.
+
+A `lock` cannot be awaited, `SemaphoreSlim` was designed specifically to support asynchronous code and can be awaited. Using `SemaphoreSlim` as an async lock is one of the most common uses.
+
+```C#
+private readonly SemaphoreSlim _semaphore = new(initialCount: 1, maxCount: 1);
+
+public async Task DoWorkAsync()
+{
+    await _semaphore.WaitAsync();
+
+    try
+    {
+        // Only one caller can be here.
+    }
+    finally
+    {
+		// Always call Release() in a finally block.
+        _semaphore.Release();
+    }
+}
+```
+> [!WARNING]
+>
+> Always call `Release()` in a `finally` block.
 
 ## What's in the CIL
 
