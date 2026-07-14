@@ -69,6 +69,7 @@
   - [Thread Safety](#thread-safety)
       - [Locks and Mutex](#locks-and-mutex)
       - [SemaphoreSlim](#semaphoreslim)
+  - [FixedWindowRateLimiter](#fixedwindowratelimiter) 
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -1318,6 +1319,44 @@ public async Task DoWorkAsync()
 > [!WARNING]
 >
 > Always call `Release()` in a `finally` block.
+
+#### FixedWindowRateLimiter
+`FixedWindowRateLimiter` is part of the `System.Threading.RateLimiting` namespace (introduced in `.NET 7`). It limits the number of operations allowed during a fixed time window. Once the window expires, the permit count is reset.
+
+It is useful for scenarios such as:
+- Limiting API requests
+- Restricting concurrent background jobs
+- Throttling access to expensive resources
+- Preventing excessive retries
+
+This example allows 5 operations every 10 seconds.
+```C#
+using System;
+using System.Threading.RateLimiting;
+
+FixedWindowRateLimiter rateLimiter = new(
+    new FixedWindowRateLimiterOptions
+    {
+        PermitLimit = 5,
+        Window = TimeSpan.FromSeconds(10),
+        QueueLimit = 0,
+        AutoReplenishment = true
+    });
+
+for (int i = 1; i <= 10; i++)
+{
+    using RateLimitLease lease = await rateLimiter.AcquireAsync();
+
+    if (lease.IsAcquired)
+    {
+        Console.WriteLine($"{DateTime.Now:T} Request {i} allowed");
+    }
+    else
+    {
+        Console.WriteLine($"{DateTime.Now:T} Request {i} rejected");
+    }
+}
+```
 
 ## What's in the CIL
 
