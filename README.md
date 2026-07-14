@@ -762,19 +762,21 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 > Memory accesses to properly aligned data of primitive and Enum types with sizes up to the platform pointer size are always atomic. The value that is observed is always a result of complete read and write operations.
 >
 > Primitive types: `bool`, `char`, `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`, `float32`, `float64`, native `int`, native unsigned `int`.
->
-> Managed references are always aligned to their size on the given platform and accesses are atomic.
->
-> The following methods perform atomic memory accesses regardless of the platform when the location of the variable is managed by the runtime.
-> - `System.Threading.Interlocked` methods
-> - `System.Threading.Volatile` methods
 > 
-> Example: `Volatile.Read<double>(ref location)` on a 32 bit platform is atomic, while an ordinary read of location may not be.
+> Managed references are always aligned to their size on the given platform and accesses are atomic.
 
 ### Atomicity of Variables, Volatility and Interlocking
 
 ##### Atomic
 Atomic simply means a read from memory, or a write to memory will be done in one single step. So, when you assign a variable, the assignment happens in a single step, and likewise with reading a variable i.e. assigning only half a variable value in one step is not atomic, and likewise with reading only half a variable.
+
+> [!TIP]
+> 
+> The following methods perform atomic memory accesses regardless of the platform when the location of the variable is managed by the runtime.
+> - `System.Threading.Interlocked` methods
+> - `System.Threading.Volatile` methods
+> 
+> Example: `Volatile.Read<double>(ref location)` on a 32 bit platform is atomic, while an ordinary read of location may not be.
 
 >  [!Note]
 >
