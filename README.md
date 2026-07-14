@@ -1803,6 +1803,8 @@ The loop variable of a `for` loop will be logically outside the loop, and theref
             sb.Append(funcs[0]().ToString()); // closed variable evaluated when delegate is invoked
             sb.Append(funcs[1]().ToString()); // closed variable evaluated when delegate is invoked
 
+			// IMPORTANT -> because i++ is a post increment, i equals 2 after the for loop is finished.
+
             return sb.ToString(); // returns 22
         }
 ````
