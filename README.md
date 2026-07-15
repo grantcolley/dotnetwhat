@@ -152,6 +152,7 @@
         - [Find Missing Number](#find-missing-number)
         - [First Non-Repeating Character](#first-non-repeating-character)
       - [Hard](#hard)
+      	- [Implement LRU Cache](#implement-lru-cache)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -4319,6 +4320,162 @@ The algorithm makes two passes over the string. The first pass counts the occurr
 Each dictionary lookup and update is `O(1)` on average, giving an overall time complexity of `O(n)`, where `n` is the length of the string. The dictionary stores at most k distinct characters, resulting in `O(k)` additional space, where `k` is the size of the character set encountered in the input.
 
 #### Hard
+##### Implement LRU Cache
+Design a Least Recently Used cache with a fixed capacity.
+
+The cache must support:
+- `Get(key)`: return the value associated with the key, or `-1` if the key does not exist.
+- `Put(key, value)`: insert or update a value.
+- When the cache exceeds its capacity, remove the least recently used item.
+```C#
+Input:
+capacity = 2
+
+Put(1, 10)
+Put(2, 20)
+Get(1)
+Put(3, 30)
+Get(2)
+Put(4, 40)
+Get(1)
+Get(3)
+Get(4)
+
+Output:
+10
+-1
+-1
+30
+40
+
+e.g.
+LruCache cache = new(2);
+
+cache.Put(1, 10);
+cache.Put(2, 20);
+
+cache.Get(1) -> 10
+
+cache.Put(3, 30); // Evicts key 2.
+
+cache.Get(2) -> -1
+
+cache.Put(4, 40); // Evicts key 1.
+
+cache.Get(1) -> -1
+cache.Get(3) -> 30
+cache.Get(4) -> 40
+```
+Skills
+- `Dictionary<TKey, TValue>`
+- `LinkedList<T>`
+- Cache eviction
+- `O(1)` lookup and update
+```C#
+public sealed class LruCache
+{
+    /// <summary>
+    /// Represents a cache entry.
+    /// </summary>
+    private readonly record struct CacheEntry(int Key, int Value);
+
+    private readonly int _capacity;
+
+    // Maps each key to its node in the linked list.
+    private readonly Dictionary<int, LinkedListNode<CacheEntry>> _entries = [];
+
+    // The most recently used item is stored at the front.
+    // The least recently used item is stored at the back.
+    private readonly LinkedList<CacheEntry> _usageOrder = [];
+
+    public LruCache(int capacity)
+    {
+        if (capacity < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity must be greater than zero.");
+        }
+
+        _capacity = capacity;
+    }
+
+    /// <summary>
+    /// Returns the value associated with a key and marks the entry as recently used.
+    /// </summary>
+    public int Get(int key)
+    {
+        if (!_entries.TryGetValue(key, out LinkedListNode<CacheEntry>? node))
+        {
+            return -1;
+        }
+
+        MoveToFront(node);
+
+        return node.Value.Value;
+    }
+
+    /// <summary>
+    /// Inserts or updates a cache entry and marks it as recently used.
+    /// </summary>
+    public void Put(int key, int value)
+    {
+        if (_entries.TryGetValue(key, out LinkedListNode<CacheEntry>? existingNode))
+        {
+            // Update the existing entry.
+            existingNode.Value = new CacheEntry(key, value);
+            MoveToFront(existingNode);
+            return;
+        }
+
+        // Insert the new entry at the front because it is now
+        // the most recently used item.
+        LinkedListNode<CacheEntry> newNode =
+            _usageOrder.AddFirst(new CacheEntry(key, value));
+
+        _entries.Add(key, newNode);
+
+        if (_entries.Count > _capacity)
+        {
+            RemoveLeastRecentlyUsed();
+        }
+    }
+
+    /// <summary>
+    /// Moves an existing entry to the front of the usage list.
+    /// </summary>
+    private void MoveToFront(LinkedListNode<CacheEntry> node)
+    {
+        _usageOrder.Remove(node);
+        _usageOrder.AddFirst(node);
+    }
+
+    /// <summary>
+    /// Removes the least recently used cache entry.
+    /// </summary>
+    private void RemoveLeastRecentlyUsed()
+    {
+        LinkedListNode<CacheEntry>? leastRecentlyUsed = _usageOrder.Last;
+
+        if (leastRecentlyUsed is null)
+        {
+            return;
+        }
+
+        _usageOrder.RemoveLast();
+        _entries.Remove(leastRecentlyUsed.Value.Key);
+    }
+}
+```
+Complexity
+| Operation |       Complexity |
+| --------- | ---------------: |
+| `Get`     | **O(1)** average |
+| `Put`     | **O(1)** average |
+| Space     |  **O(capacity)** |
+
+The dictionary provides constant-time average lookup by key. The linked list maintains usage order and supports constant-time insertion, removal, and movement when a node reference is already known.
+
+The front of the list contains the most recently used entry, while the back contains the least recently used entry. When the cache exceeds its capacity, the final node is removed from both the linked list and dictionary.
+
 ##### Next Challenge
 Description
 ```C#
