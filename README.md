@@ -52,7 +52,10 @@
 - [The Memory Model](#the-memory-model) 
   - [Atomicity of Variables, Volatility and Interlocking](#atomicity-of-variables-volatility-and-interlocking)
       - [Atomic](#atomic)
-      - [Atomicity and Thread Safety](#atomicity-and-thread-safety)
+      - [Interlocked](#interlocked)
+      - [Volatile](#volatile)
+      - [`Interlocked` vs `lock`](#interlocked-vs-lock)
+      - [When to use them?](#when-to-use-them)
 - [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats)
 - [Types and Nullability](#types-and-nullability)
 - [Concurrency](#concurrency)
@@ -765,19 +768,6 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
 > 
 > Managed references are always aligned to their size on the given platform and accesses are atomic.
 
-### Atomicity of Variables, Volatility and Interlocking
-
-##### Atomic
-Atomic simply means a read from memory, or a write to memory will be done in one single step. So, when you assign a variable, the assignment happens in a single step, and likewise with reading a variable i.e. assigning only half a variable value in one step is not atomic, and likewise with reading only half a variable.
-
-> [!TIP]
-> 
-> The following methods perform atomic memory accesses regardless of the platform when the location of the variable is managed by the runtime.
-> - `System.Threading.Interlocked` methods
-> - `System.Threading.Volatile` methods
-> 
-> Example: `Volatile.Read<double>(ref location)` on a 32 bit platform is atomic, while an ordinary read of location may not be.
-
 >  [!Note]
 >
 > The C# Language Specification states:
@@ -796,7 +786,29 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 > 
 > So, read operations of a 64-bit `long` on 64-bit systems are already atomic; however, on a 32-bit system a 64-bit `long` is usually stored as two 32-bit chunks, so read operations are typically done in two 32-bit steps.
 
-##### Atomicity and Thread Safety
+### Atomicity of Variables, Volatility and Interlocking
+
+##### Atomic
+Atomic simply means a read from memory, or a write to memory will be done in one single step. So, when you assign a variable, the assignment happens in a single step, and likewise with reading a variable i.e. assigning only half a variable value in one step is not atomic, and likewise with reading only half a variable.
+
+This looks innocent, but it is not atomic. It actually performs three operations.
+```C#
+count++;
+
+// It is not atomic. It actually performs three operations:
+// Read count
+// Add one
+// Write count
+```
+
+> [!TIP]
+> 
+> The following methods perform atomic memory accesses regardless of the platform when the location of the variable is managed by the runtime.
+> - `System.Threading.Interlocked` methods
+> - `System.Threading.Volatile` methods
+> 
+> Example: `Volatile.Read<double>(ref location)` on a 32 bit platform is atomic, while an ordinary read of location may not be.
+
 > [!Warning]
 >
 > **Atomic reads and writes and thread safety**
@@ -806,6 +818,90 @@ Atomic simply means a read from memory, or a write to memory will be done in one
 >Also, in the case of reference types, the atomicity is only on the reading of the reference, not the object itself, which can be accessed and modified by other threads.
 >
 >Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
+
+##### Interlocked
+`Interlocked` performs atomic read-modify-write operations.
+
+```C#
+// Instead of this (performs three operations):
+count++;
+
+// Do this (performs the increment as one indivisible instruction):
+Interlocked.Increment(ref count);
+```
+`Interlocked` methods:
+```C#
+Interlocked.Increment(ref counter);
+Interlocked.Decrement(ref counter);
+Interlocked.Exchange(ref state, 1);
+Interlocked.CompareExchange(ref state, 1, 0); //Change to 1 only if current value equals 0.
+```
+
+##### Volatile
+volatile tells the compiler and CPU:
+
+> "Always read this value directly from memory, and don't reorder accesses around it."
+
+Example:
+```C#
+private volatile bool _stopRequested;
+
+_stopRequested = true;
+
+while (!_stopRequested)
+{
+    // work
+}
+```
+Without `volatile`, the compiler or CPU might optimise this into:
+```C#
+bool cached = _stopRequested;
+
+while (!cached)
+{
+    // work
+}
+```
+`volatile` prevents that.
+
+`Volatile` guarantees:
+- latest writes become visible
+- reads are not cached in registers
+- memory ordering around the access
+
+##### Interlocked vs lock
+```C#
+// Consider this...
+lock (_gate)
+{
+    count++;
+}
+
+// versus this...
+Interlocked.Increment(ref count);
+```
+`Interlocked` is:
+- much faster
+- no blocking
+- no context switching
+But only works for simple operations.
+
+If you need to update several variables together, use a `lock`.
+
+##### When to use them?
+| Problem                                      | Solution                                                   |
+| -------------------------------------------- | ---------------------------------------------------------- |
+| Simple read/write of a naturally atomic type | Nothing extra (atomicity is already provided)              |
+| Publish a flag between threads               | `volatile` (or `Volatile.Read`/`Volatile.Write`)           |
+| Counter                                      | `Interlocked.Increment()`                                  |
+| Swap references                              | `Interlocked.Exchange()`                                   |
+| One-time initialization                      | `Interlocked.CompareExchange()`                            |
+| Update multiple values consistently          | `lock` or another synchronization primitive                |
+| Queue, cache, dictionary, list modifications | `lock`, `ReaderWriterLockSlim`, or a concurrent collection |
+
+> [!TIP]
+>
+> In new C# code, `volatile` is relatively uncommon. The `System.Threading.Volatile` class (`Volatile.Read` and `Volatile.Write`) is often preferred because it makes memory-ordering intent explicit at the point of access. For most state coordination, you'll more commonly reach for `Interlocked` or a `lock`, depending on whether you need a single atomic operation or to protect a larger critical section.
 
 ## Stack Memory is Thread-safe (with caveats)
 Stack memory is thread-safe per thread because each thread has its own call stack that no other thread can access. This means that local variables, method call frames, and arguments passed to methods are stored in a stack that's private to the thread.
@@ -1278,6 +1374,8 @@ The `Task` and `Task<T>` objects represent the core of asynchronous programming.
 
 #### Thread Safety
 ##### Locks and Mutex
+Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
+
 Mutex, or "mutual exclusion" is synchronizing access to shared state from competing threads by first locking it, then releasing the lock when it is finished. Competing threads must wait for the lock to be release, before accessing the shared state.
 
 ```C#
