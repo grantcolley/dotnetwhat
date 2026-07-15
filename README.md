@@ -120,7 +120,7 @@
     - [Linear Time `O(n)`](#linear-time-on)
     - [Logarithmic Time `O(log n)`](#logarithmic-time-olog-n)
     - [Quadratic Time `O(n²)`](#quadratic-time-on)
-    - [Exponential Time `O(2n)`](#exponential-time-o2n)
+    - [Exponential Time `O(2ⁿ)`](#exponential-time-o2ⁿ)
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
 - [Interview Prep](#interview-prep)
@@ -2782,7 +2782,7 @@ void PrintAllPairs(int[] numbers)
 }
 ```
 
-##### Exponential Time `O(2n)`
+##### Exponential Time `O(2ⁿ)`
 Time doubles with each extra input, resulting in explosive growth, making it extremely slow.
 
 e.g. Recursive Fibonacci, where each call creates two more calls, like a tree branching rapidly.
