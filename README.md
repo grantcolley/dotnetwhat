@@ -2836,7 +2836,7 @@ int Fibonacci(int n)
 ## Interview Prep
 ### Reverse an Array
 `Array.Reverse` has a time complexity of `O(n)`, where `n` is the number of elements being reversed.
-Internally, it swaps elements from the two ends of the range until it reaches the middle
+Internally, it swaps elements from the two ends of the range until it reaches the middle.
 ```C#
 int left = 0;
 int right = array.Length - 1;
@@ -2850,6 +2850,13 @@ while (left < right)
     right--;
 }
 ```
+Swaps elements from the two ends of the range until it reaches the middle.
+- create `while (left < right)` loop that continues until the left position meets the right position.
+- store the left element in a temp variable `int tmp = array[left];`
+- replace left element with right element `array[left] = array[right];`
+- replace right element with tmp variable (original left element) `array[right] = tmp;`
+- increment left `left++;` and decrement right `right--;`
+- continue until left and right are equal
 
 ### Rotate an array
 #### Three-reversal algorithm
