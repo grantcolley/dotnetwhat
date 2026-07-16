@@ -3008,6 +3008,12 @@ The Fibonacci sequence is a famous series of numbers where each number is the su
             return sum;
         }
 ```
+- return `0` and `1` immediately
+- set variables `int prev = 0, next = 1, sum = 0;`
+- for loop starts at 2 `for (int i = 2; i <= n; i++)`
+- sum `sum = prev + next;`, then `prev = next;` and `prev = next;`
+- return final `sum`
+
 **Time Complexity: `O(n)`**
 
 The key part is the loop, which executes `n - 1` times (approximately `n` times).
