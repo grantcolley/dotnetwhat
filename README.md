@@ -153,6 +153,8 @@
         - [First Non-Repeating Character](#first-non-repeating-character)
       - [Hard](#hard)
       	- [Implement LRU Cache](#implement-lru-cache)
+      - [Senior](#senior)
+      	- [Implement Producer/Consumer](#implement-producerconsumer)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -4489,6 +4491,246 @@ Complexity
 The dictionary provides constant-time average lookup by key. The linked list maintains usage order and supports constant-time insertion, removal, and movement when a node reference is already known.
 
 The front of the list contains the most recently used entry, while the back contains the least recently used entry. When the cache exceeds its capacity, the final node is removed from both the linked list and dictionary.
+
+#### Senior
+##### Implement Producer/Consumer
+Implement a thread-safe producer/consumer queue that allows multiple producers to publish items and one or more consumers to process them asynchronously.
+
+The implementation should support cancellation, bounded capacity, backpressure, graceful completion, and exception propagation.
+
+When the channel reaches its capacity, producers asynchronously wait until a consumer makes space available.
+```C#
+Capacity:
+3
+
+Produced:
+1, 2, 3, 4, 5
+
+Consumed:
+1, 2, 3, 4, 5
+
+Test output:
+Produced: 1
+Produced: 2
+Consumed: 1
+Produced: 3
+Consumed: 2
+Produced: 4
+Consumed: 3
+Produced: 5
+Consumed: 4
+Consumed: 5
+Processing completed.
+```
+Skills
+- `Channel<T>`
+- Asynchronous producer/consumer processing
+- Backpressure
+- `CancellationToken`
+- Graceful completion
+```C#
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Channels;
+using System.Threading.Tasks;
+
+/// <summary>
+/// Provides a bounded asynchronous producer/consumer queue.
+/// </summary>
+/// <typeparam name="T">The type of item stored in the queue.</typeparam>
+public sealed class ProducerConsumerQueue<T>
+{
+    private readonly Channel<T> _channel;
+
+    /// <summary>
+    /// Initializes a new bounded producer/consumer queue.
+    /// </summary>
+    /// <param name="capacity">
+    /// The maximum number of items that may be waiting in the queue.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="capacity"/> is less than one.
+    /// </exception>
+    public ProducerConsumerQueue(int capacity)
+    {
+        if (capacity < 1)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(capacity),
+                "Capacity must be greater than zero.");
+        }
+
+        BoundedChannelOptions options = new(capacity)
+        {
+            // Producers wait asynchronously when the queue is full.
+            FullMode = BoundedChannelFullMode.Wait,
+
+            // Allow multiple concurrent producers.
+            SingleWriter = false,
+
+            // Allow multiple concurrent consumers.
+            SingleReader = false,
+
+            // Prevent continuations from running synchronously inside channel operations.
+            AllowSynchronousContinuations = false
+        };
+
+        _channel = Channel.CreateBounded<T>(options);
+    }
+
+    /// <summary>
+    /// Asynchronously writes an item to the queue.
+    /// </summary>
+    /// <param name="item">The item to enqueue.</param>
+    /// <param name="cancellationToken">
+    /// A token used to cancel the write operation.
+    /// </param>
+    /// <returns>A task representing the asynchronous write operation.</returns>
+    public ValueTask WriteAsync(T item, CancellationToken cancellationToken = default)
+    {
+        return _channel.Writer.WriteAsync(item, cancellationToken);
+    }
+
+    /// <summary>
+    /// Reads all items from the queue until it is completed.
+    /// </summary>
+    /// <param name="cancellationToken">
+    /// A token used to cancel reading.
+    /// </param>
+    /// <returns>
+    /// An asynchronous sequence containing queued items.
+    /// </returns>
+    public IAsyncEnumerable<T> ReadAllAsync(CancellationToken cancellationToken = default)
+    {
+        return _channel.Reader.ReadAllAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Marks the queue as complete so that no more items can be written.
+    /// </summary>
+    /// <param name="exception">
+    /// An optional exception that caused production to stop.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the queue was completed by this call; otherwise,
+    /// <c>false</c>.
+    /// </returns>
+    public bool TryComplete(Exception? exception = null)
+    {
+        return _channel.Writer.TryComplete(exception);
+    }
+
+    /// <summary>
+    /// Gets a task that completes when the queue has been fully drained.
+    /// </summary>
+    public Task Completion => _channel.Reader.Completion;
+}
+
+public static class Example
+{
+    /// <summary>
+    /// Runs a producer/consumer demonstration.
+    /// </summary>
+    /// <param name="cancellationToken">
+    /// A token used to cancel the operation.
+    /// </param>
+    /// <returns>A task representing the complete workflow.</returns>
+    public static async Task RunAsync(CancellationToken cancellationToken = default)
+    {
+        ProducerConsumerQueue<int> queue = new(capacity: 3);
+
+        Task producerTask = ProduceAsync(queue, cancellationToken);
+
+        Task[] consumerTasks =
+        [
+            ConsumeAsync(
+                consumerId: 1,
+                queue,
+                cancellationToken),
+
+            ConsumeAsync(
+                consumerId: 2,
+                queue,
+                cancellationToken)
+        ];
+
+        try
+        {
+            await producerTask;
+
+            // Signal that no more items will be written.
+            queue.TryComplete();
+        }
+        catch (Exception exception)
+        {
+            // Complete the channel with the producer exception so consumers
+            // and Completion observe the failure.
+            queue.TryComplete(exception);
+            throw;
+        }
+
+        // Wait for every consumer to finish draining the queue.
+        await Task.WhenAll(consumerTasks);
+
+        // Observe successful completion or any channel exception.
+        await queue.Completion;
+
+        Console.WriteLine("Processing completed.");
+    }
+
+    /// <summary>
+    /// Produces sample values and writes them to the queue.
+    /// </summary>
+    /// <param name="queue">The queue that receives produced values.</param>
+    /// <param name="cancellationToken">
+    /// A token used to cancel production.
+    /// </param>
+    /// <returns>A task representing the producer operation.</returns>
+    private static async Task ProduceAsync(ProducerConsumerQueue<int> queue, CancellationToken cancellationToken)
+    {
+        for (int value = 1; value <= 5; value++)
+        {
+            // WriteAsync waits when the bounded queue is full.
+            await queue.WriteAsync(value, cancellationToken);
+
+            Console.WriteLine($"Produced: {value}");
+        }
+    }
+
+    /// <summary>
+    /// Reads and processes values until the queue is completed.
+    /// </summary>
+    /// <param name="consumerId">The consumer identifier.</param>
+    /// <param name="queue">The queue from which values are read.</param>
+    /// <param name="cancellationToken">
+    /// A token used to cancel consumption.
+    /// </param>
+    /// <returns>A task representing the consumer operation.</returns>
+    private static async Task ConsumeAsync(int consumerId, ProducerConsumerQueue<int> queue, CancellationToken cancellationToken)
+    {
+        await foreach (int value in queue.ReadAllAsync(cancellationToken))
+        {
+            Console.WriteLine($"Consumer {consumerId} consumed: {value}");
+
+            // Simulate asynchronous processing.
+            await Task.Delay(
+                TimeSpan.FromMilliseconds(100),
+                cancellationToken);
+        }
+    }
+}
+```
+Complexity
+| Operation |       Complexity |
+| --------- | ---------------: |
+| Enqueue   | **O(1)** average |
+| Dequeue   | **O(1)** average |
+| Space     |  **O(capacity)** |
+
+Each channel write and read is constant time on average. The bounded channel stores no more than the configured capacity, so queued-item storage is O(capacity).
+
+`BoundedChannelFullMode.Wait` provides backpressure: when the queue is full, producers wait asynchronously rather than dropping items or allocating an unbounded amount of memory. Calling `TryComplete()` prevents further writes while allowing consumers to process all remaining items before they finish.
 
 ##### Next Challenge
 Description
