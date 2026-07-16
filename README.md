@@ -2998,14 +2998,14 @@ The Fibonacci sequence is a famous series of numbers where each number is the su
             {
                 return 1;
             }
-            int a = 0, b = 1, c = 0;
+            int prev = 0, next = 1, sum = 0;
             for (int i = 2; i <= n; i++)
             {
-                c = a + b;
-                a = b;
-                b = c;
+                sum = prev + next;
+                prev = next;
+                next = sum;
             }
-            return c;
+            return sum;
         }
 ```
 **Time Complexity: `O(n)`**
