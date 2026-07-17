@@ -3033,9 +3033,9 @@ Since the work per iteration is constant `O(1) × n = O(n)`
 
 The algorithm uses only three integer variables:
 ```C#
-int a = 0;
-int b = 1;
-int c = 0;
+htt prev = 0;
+int next = 1;
+int sum = 0;
 ```
 Regardless of how large n becomes, it doesn't allocate any additional memory.
 
