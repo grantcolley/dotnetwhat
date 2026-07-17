@@ -3506,7 +3506,7 @@ target = 9
 Output:
 [0, 1]
 
-e.g.
+Test output:
 TwoSum([2, 7, 11, 15], 9)   -> [0, 1]
 TwoSum([3, 2, 4], 6)        -> [1, 2]
 TwoSum([3, 3], 6)           -> [0, 1]
@@ -3559,7 +3559,7 @@ k = 3
 Output:
 [5, 6, 7, 1, 2, 3, 4]
 
-e.g.
+Test output:
 Rotate([1, 2, 3, 4, 5, 6, 7], 3) -> [5, 6, 7, 1, 2, 3, 4]
 Rotate([-1, -100, 3, 99], 2)     -> [3, 99, -1, -100]
 Rotate([1], 10)                  -> [1]
@@ -3630,7 +3630,7 @@ s = "([{}])"
 Output:
 true
 
-e.g.
+Test output:
 IsValid("()")       -> true
 IsValid("()[]{}")   -> true
 IsValid("([{}])")   -> true
@@ -3711,7 +3711,7 @@ Output:
 k = 3
 nums = [1, 2, 3, _, _]
 
-e.g.
+Test output:
 RemoveDuplicates([1, 1, 2])                    -> 2, [1, 2, _]
 RemoveDuplicates([0, 0, 1, 1, 1, 2, 2, 3, 3])  -> 4, [0, 1, 2, 3, _, _, _, _, _]
 RemoveDuplicates([1])                          -> 1, [1]
@@ -3766,7 +3766,7 @@ target = 7
 Output:
 3
 
-e.g.
+Test output:
 BinarySearch([1, 3, 5, 7, 9], 7) -> 3
 BinarySearch([1, 3, 5, 7, 9], 1) -> 0
 BinarySearch([1, 3, 5, 7, 9], 9) -> 4
@@ -3829,7 +3829,7 @@ Input:
 Output:
 "fox brown quick The"
 
-e.g.
+Test output:
 ReverseWords("The quick brown fox") -> "fox brown quick The"
 ReverseWords("Hello World")         -> "World Hello"
 ReverseWords("  a good   example ") -> "example good a"
@@ -3886,7 +3886,7 @@ Input:
 Output:
 "fl"
 
-e.g.
+Test output:
 LongestCommonPrefix(["flower", "flow", "flight"]) -> "fl"
 LongestCommonPrefix(["dog", "racecar", "car"])    -> ""
 LongestCommonPrefix(["interspecies", "interstellar", "interstate"]) -> "inters"
@@ -3946,7 +3946,7 @@ Input:
 Output:
 [[1, 6], [8, 10], [15, 18]]
 
-e.g.
+Test output:
 MergeIntervals([[1, 3], [2, 6], [8, 10], [15, 18]])
 -> [[1, 6], [8, 10], [15, 18]]
 
@@ -4064,7 +4064,7 @@ Output:
     ["bat"]
 ]
 
-e.g.
+Test output:
 GroupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"])
 -> [["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]
 
@@ -4158,7 +4158,7 @@ Output:
 Subarray:
 [4, -1, 2, 1]
 
-e.g.
+Test output:
 MaximumSubarray([-2, 1, -3, 4, -1, 2, 1, -5, 4]) -> 6
 MaximumSubarray([1])                               -> 1
 MaximumSubarray([5, 4, -1, 7, 8])                 -> 23
@@ -4224,7 +4224,7 @@ nums = [1, 2, 3, 5]
 Output:
 4
 
-e.g.
+Test output:
 FindMissingNumber([1, 2, 3, 5])          -> 4
 FindMissingNumber([2, 3, 1, 5])          -> 4
 FindMissingNumber([1])                   -> 2
@@ -4281,7 +4281,7 @@ Input:
 Output:
 'w'
 
-e.g.
+Test output:
 FirstNonRepeatingCharacter("swiss")   -> 'w'
 FirstNonRepeatingCharacter("aabbcc")  -> null
 FirstNonRepeatingCharacter("leetcode")-> 'l'
@@ -4364,7 +4364,7 @@ Output:
 30
 40
 
-e.g.
+Test output:
 LruCache cache = new(2);
 
 cache.Put(1, 10);
