@@ -3964,7 +3964,7 @@ Complexity
 | Time      | **O(n × m)** |
 | Space     |     **O(1)** |
 
-The algorithm starts by assuming the first string is the common prefix. It then compares this prefix against each remaining string, shortening it until a match is found. In the worst case, each character of the prefix may be removed once for each string, resulting in `O(n × m)` time complexity, where `n` is the number of strings and `m` is the length of the shortest string. The algorithm uses only a few local variables, giving it `O(1)` additional space complexity.
+The algorithm starts by assuming the first string is the common prefix. It then compares each character position across all strings. It stops immediately when it finds a mismatch or reaches the end of the first string, resulting in `O(n × m)`, where `n` is the number of strings and `m` is the length of the first string.
 
 ##### Merge Intervals
 Given an array of intervals where each interval is represented as `[start, end]`, merge all overlapping intervals and return the resulting non-overlapping intervals.
