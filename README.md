@@ -3916,35 +3916,49 @@ Skills
 - `O(n × m)` traversal
 > Where `n` is the number of strings and `m` is the length of the shortest string.
 ```C#
-    public static string LongestCommonPrefix(string[] strings)
-    {
-        ArgumentNullException.ThrowIfNull(strings);
-
-        if (strings.Length == 0)
+        public static string LongestCommonPrefix3(string[] strings)
         {
-            return string.Empty;
-        }
-
-        // Assume the first string is the common prefix.
-        string prefix = strings[0];
-
-        // Reduce the prefix until every string starts with it.
-        for (int i = 1; i < strings.Length; i++)
-        {
-            while (!strings[i].StartsWith(prefix, StringComparison.Ordinal))
+            if (strings == null || strings.Length == 0)
             {
-                prefix = prefix[..^1];
+                return string.Empty;
+            }
 
-                if (prefix.Length == 0)
+            string? first = strings[0];
+
+            if (first == null)
+            {
+                return string.Empty;
+            }
+
+			// outer loop over each character in the first string
+            for (int pos = 0; pos < first.Length; pos++)
+            {
+                char expected = first[pos];
+
+				// inner loop over each subsequent string in array
+                for (int i = 1; i < strings.Length; i++)
                 {
-                    return string.Empty;
+                    string? current = strings[i];
+
+                    if (current == null ||
+                        current.Length <= pos ||
+                        current[pos] != expected)
+                    {
+						// return common prefix as soon as we no longer have a match
+                        return first.Substring(0, pos);
+                    }
                 }
             }
-        }
 
-        return prefix;
-    }
+            return first; // return first string as common prefix
+        }
 ```
+Steps
+- outer loop over each character in the first string
+  - inner loop over each subsequent string in array
+	- if any string is null, shorter than current `pos`, char at `pos` doesn't match then `return strings[0].Substring(0, pos);` 
+- if outer loop finished, return the whole first string as common prefix `return strings[0];`
+
 Complexity
 | Operation |   Complexity |
 | --------- | -----------: |
