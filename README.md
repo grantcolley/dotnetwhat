@@ -3700,6 +3700,15 @@ Skills
         return stack.Count == 0;
     }
 ```
+Steps
+- Create a `Stack<char> stack = new();`
+- Iterate over the sequence
+  - if opening parenthesis `push` onto the stack
+  - if closing parenthesis:
+    - if `stack.Count == 0`, then fail
+    - `stack.Pop()` must be the corresponding opening parenthesis, else fail
+- at the end of the sequence `stack.Count` must be 0 to succeed, else fail 
+ 
 Complexity
 | Operation | Complexity |
 | --------- | ---------: |
