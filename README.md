@@ -3541,6 +3541,13 @@ Skills
         throw new InvalidOperationException("No solution exists.");
     }
 ```
+Steps
+- Create `Dictionary<int, int>`
+- Loop through the array and for each item `int complement = target - nums[i];`
+- Check if the complement is in the dictionary `if (seen.TryGetValue(complement, out int index))`
+  	- then return its value and the current element position `return [index, i];`
+  	- else, add the value and its position to the dictionary `seen[nums[i]] = i;`
+
 Complexity
 | Operation | Complexity |
 | --------- | ---------: |
