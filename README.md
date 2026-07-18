@@ -3912,7 +3912,6 @@ LongestCommonPrefix([])                           -> ""
 Skills
 - String manipulation
 - Character comparison
-- `StartsWith()`
 - `O(n × m)` traversal
 > Where `n` is the number of strings and `m` is the length of the shortest string.
 ```C#
