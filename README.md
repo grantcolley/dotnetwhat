@@ -2836,6 +2836,46 @@ int Fibonacci(int n)
 - `O(2ⁿ)`: Unusable beyond ~20 items
 
 ## Interview Prep
+- C# language knowledge
+  - LINQ
+  - yield return
+  - async/await
+  - Task vs ValueTask
+  - lock, Interlocked, volatile
+  - Records vs classes
+  - Generics
+  - readonly struct
+  - CancellationToken
+- Collections
+  - IEnumerable
+  - List
+  - Dictionary
+  - HashSet
+  - Queue
+  - Stack
+  - LinkedList
+  - PriorityQueue<TElement, TPriority>
+  - Span
+  - IReadOnlyList<T>
+- Data structures
+  - Linked Lists
+  - Trees
+  - Graphs (occasionally)
+- Coding Challenge
+  - Arrays and strings
+    - Two Sum
+    - Rotate Array
+    - Reverse Words
+    - Longest Common Prefix 
+  - Algorithms
+    - Binary Search
+    - Merge Intervals
+    - Maximum Subarray
+    - Sliding Window  
+  
+  - Producer-consumer using Channel<T>.
+ 
+
 ### Reverse an Array
 `Array.Reverse` has a time complexity of `O(n)`, where `n` is the number of elements being reversed.
 Internally, it swaps elements from the two ends of the range until it reaches the middle.
