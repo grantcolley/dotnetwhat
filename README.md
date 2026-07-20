@@ -2451,24 +2451,51 @@ A class should have one reason to change. This means it should focus on a single
 
 Example - Instead of one `Invoice` class printing, saving, and calculating everything, responsibilities are split.
 ```C#
-public class Invoice
+// ❌ Violates SRP: OrderService handles persistence, validation, and notifications
+public class OrderService
 {
-    public decimal Total { get; set; }
-}
-
-public class InvoicePrinter
-{
-    public void Print(Invoice invoice)
+    public void PlaceOrder(Order order)
     {
-        Console.WriteLine($"Total: {invoice.Total}");
+        // validate
+        // save to DB
+        // send confirmation email
     }
 }
 
-public class InvoiceRepository
+// ✅ SRP: Each class has one responsibility
+public class OrderValidator
 {
-    public void Save(Invoice invoice)
+    public bool IsValid(Order order) => /* validation logic */;
+}
+
+public class OrderRepository
+{
+    public void Save(Order order) => /* DB logic */;
+}
+
+public class EmailNotifier
+{
+    public void SendConfirmation(Order order) => /* email logic */;
+}
+
+public class OrderService
+{
+    private readonly OrderValidator _validator;
+    private readonly OrderRepository _repo;
+    private readonly EmailNotifier _notifier;
+
+    public OrderService(OrderValidator validator, OrderRepository repo, EmailNotifier notifier)
     {
-        // Save invoice to database
+        _validator = validator;
+        _repo = repo;
+        _notifier = notifier;
+    }
+
+    public void PlaceOrder(Order order)
+    {
+        if (!_validator.IsValid(order)) return;
+        _repo.Save(order);
+        _notifier.SendConfirmation(order);
     }
 }
 ```
@@ -2478,11 +2505,13 @@ Classes should be open for extension but closed for modification. This means you
 
 Example - You can add new discounts without changing `PriceCalculator`.
 ```C#
+// Base abstraction
 public interface IDiscount
 {
     decimal Apply(decimal price);
 }
 
+// Extensions
 public class StudentDiscount : IDiscount
 {
     public decimal Apply(decimal price) => price * 0.9m;
@@ -2493,6 +2522,7 @@ public class SeniorDiscount : IDiscount
     public decimal Apply(decimal price) => price * 0.8m;
 }
 
+// Client code stays unchanged
 public class PriceCalculator
 {
     public decimal Calculate(decimal price, IDiscount discount)
@@ -2501,6 +2531,7 @@ public class PriceCalculator
     }
 }
 ```
+You can add new discount types without touching `PriceCalculator`.
 
 #### L — Liskov Substitution Principle
 A subclass should be able to replace its base class without breaking the program. The issue is about correct behavior when substituting subclasses. It is better to avoid inheritance when the behavior does not truly match.
