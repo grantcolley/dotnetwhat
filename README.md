@@ -3198,8 +3198,14 @@ Which should you use?
 - `HashSet<T>`: Fast existence checks (e.g., "does this item exist?").
 
 ### Sort algorithm
-
-
+| Algorithm      | Best        | Average     | Worst       | Stable  | Notes                                |
+| -------------- | ----------- | ----------- | ----------- | ------- | ------------------------------------ |
+| Bubble Sort    | O(n)        | O(n²)       | O(n²)       | Yes     | Simple, inefficient                  |
+| Selection Sort | O(n²)       | O(n²)       | O(n²)       | No      | Few swaps                            |
+| Insertion Sort | O(n)        | O(n²)       | O(n²)       | Yes     | Good for small or nearly sorted data |
+| Merge Sort     | O(n log n)  | O(n log n)  | O(n log n)  | Yes     | Fast, needs extra memory             |
+| Quick Sort     | O(n log n)  | O(n log n)  | O(n²)       | No      | Very fast in practice                |
+| `Array.Sort()` | O(n log n)* | O(n log n)* | O(n log n)* | Depends | Recommended for most applications    |
 
 ### Currency Converter
 The following class has been written to convert an amount to USD.
