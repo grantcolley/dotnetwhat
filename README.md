@@ -479,6 +479,12 @@ Both Gen0 and Gen2 collections compact the memory, however, the large object hea
 - **Compact:** *relocate objects next to each other to reduce fragmentation of the heap. Then update all references to point to the new locations*
 - **Resume:** *manage threads are allowed to resume*
 
+> [!TIP]
+>
+> Reference Counting
+>
+> Every object stores the number of references pointing to it. When the count reaches zero, the object is immediately freed.
+
 [**Workstation GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#workstation-gc) collection occurs on the user thread that triggered the garbage collection and remains at the same priority.
 
 [**Server GC**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/workstation-server-gc#server-gc) collection occurs on multiple dedicated threads. On Windows, these threads run at `THREAD_PRIORITY_HIGHEST` priority level. A heap and a dedicated thread to perform garbage collection are provided for each logical CPU
