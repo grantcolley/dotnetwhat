@@ -131,8 +131,8 @@
     - [Fibonnaci](#fibonnaci)
       - [Return a single number](#return-a-single-number)
       - [Iterate over a sequence](#iterate-over-a-sequence)
-    - [Search algorithm](#search-algorithm)
-    - [Sort algorithm](#sort-algorithm)
+    - [Search algorithms](#search-algorithms)
+    - [Sort algorithms](#sort-algorithms)
     - [Currency Converter](#currency-converter)
     - [Compute Latest Positions](#compute-latest-positions)
     - [Calculate Moving Average](#calculate-moving-average)
@@ -3184,7 +3184,7 @@ The compiler transforms the method into a state machine that stores these variab
 
 Therefore the extra space is `O(1)`
 
-### Search algorithm
+### Search algorithms
 | Algorithm                             | Requires Sorted Data | Average Time | Worst Time  | Typical Use                   |
 | ------------------------------------- | -------------------- | ------------ | ----------- | ----------------------------- |
 | Linear Search                         | No                   | O(n)         | O(n)        | Small or unsorted collections |
@@ -3197,15 +3197,24 @@ Which should you use?
 - `Dictionary<TKey, TValue>`: Fast lookup by key.
 - `HashSet<T>`: Fast existence checks (e.g., "does this item exist?").
 
-### Sort algorithm
-| Algorithm      | Best        | Average     | Worst       | Stable  | Notes                                |
-| -------------- | ----------- | ----------- | ----------- | ------- | ------------------------------------ |
-| Bubble Sort    | O(n)        | O(n²)       | O(n²)       | Yes     | Simple, inefficient                  |
-| Selection Sort | O(n²)       | O(n²)       | O(n²)       | No      | Few swaps                            |
-| Insertion Sort | O(n)        | O(n²)       | O(n²)       | Yes     | Good for small or nearly sorted data |
-| Merge Sort     | O(n log n)  | O(n log n)  | O(n log n)  | Yes     | Fast, needs extra memory             |
-| Quick Sort     | O(n log n)  | O(n log n)  | O(n²)       | No      | Very fast in practice                |
-| `Array.Sort()` | O(n log n)* | O(n log n)* | O(n log n)* | Depends | Recommended for most applications    |
+### Sort algorithms
+| Algorithm      |  Average     | Worst       | Stable  | Notes                                |
+| -------------- |  ----------- | ----------- | ------- | ------------------------------------ |
+| Bubble Sort    |  O(n²)       | O(n²)       | Yes     | Simple, inefficient                  |
+| Selection Sort |  O(n²)       | O(n²)       | No      | Few swaps                            |
+| Insertion Sort |  O(n²)       | O(n²)       | Yes     | Good for small or nearly sorted data |
+| Merge Sort     |  O(n log n)  | O(n log n)  | Yes     | Fast, needs extra memory             |
+| Quick Sort     |  O(n log n)  | O(n²)       | No      | Very fast in practice                |
+| `Array.Sort()` |  O(n log n)* | O(n log n)* | Depends | Recommended for most applications    |
+
+**Bubble Sort** `O(n²)`
+- Takes for element, loops through the array swapping with next element if it is less. Then goes back to second element and repeats the process until the last element, hence `O(n²)`. 
+
+**Selection Sort** `O(n²)`
+- Finds the smallest element and places it at the beginning, then repeats for the remaining elements, hence `O(n²)`.
+
+**Insertion Sort** `O(n²)`
+- Builds the sorted portion of the array one element at a time.
 
 ### Currency Converter
 The following class has been written to convert an amount to USD.
