@@ -3219,7 +3219,7 @@ Which should you use?
 **Merge Sort** `O(n log n)`
 - Uses the divide-and-conquer approach by splitting the array into halves, sorting them, and merging them back together.
 
-****Quick Sort** `O(n log n)`
+**Quick Sort** `O(n log n)`
 - Chooses a pivot, partitions the array around it, and recursively sorts the partitions.
 
 > [!TIP]
