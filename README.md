@@ -2894,10 +2894,24 @@ int Fibonacci(int n)
   - PriorityQueue<TElement, TPriority>
   - Span
   - IReadOnlyList<T>
-- Data structures
-  - Linked Lists
+- Data Structures
   - Trees
-  - Graphs (occasionally)
+  - Graphs
+- Memory Management & Garbage Collection
+  - What kind of algorithm is applied when garbage collection happens?
+  - What would you do if garbage collection is a performance bottleneck?
+  - What would you do if you have lots of objects in memory?
+  - How would you optimise that?
+  - Object pooling
+  - Memory-related questions around:
+    - Memory<T>
+	- Span<T>
+	- Memory buffers
+  - Memory and garbage collection in high-performance systems
+- Concurrency, Performance & Scalability
+  - Difference between:`async / await`, concurrency and parallelism
+  - Highly scalable systems
+  - Memory and garbage collection in high-performance systems
 - Coding Challenge
   - Arrays and strings
     - Two Sum
@@ -2911,7 +2925,19 @@ int Fibonacci(int n)
     - Sliding Window  
   
   - Producer-consumer using Channel<T>.
- 
+- Debugging & Profiling
+  - How do you debug an API request?
+  - Talking about profiling
+  - How you would make a specific optimisation
+- SQL / Databases
+  - What types of joins are there?
+  - CTE vs temporary tables
+  - What is a view?
+  - Can you put an index on a view?
+  - How do you debug a query to make it faster?
+  - Types of indexes
+  - Clustered vs non-clustered indexes
+  - Why use an index?
 
 ### Reverse an Array
 `Array.Reverse` has a time complexity of `O(n)`, where `n` is the number of elements being reversed.
