@@ -3205,7 +3205,7 @@ Which should you use?
 | Insertion Sort |  O(n²)       | O(n²)       | Yes     | Good for small or nearly sorted data |
 | Merge Sort     |  O(n log n)  | O(n log n)  | Yes     | Fast, needs extra memory             |
 | Quick Sort     |  O(n log n)  | O(n²)       | No      | Very fast in practice                |
-| `Array.Sort()` |  O(n log n)* | O(n log n)* | Depends | Recommended for most applications    |
+| `Array.Sort()` |  O(n log n)  | O(n log n)  | Depends | Recommended for most applications    |
 
 **Bubble Sort** `O(n²)`
 - Takes for element, loops through the array swapping with next element if it is less. Then goes back to second element and repeats the process until the last element, hence `O(n²)`. 
@@ -3215,6 +3215,16 @@ Which should you use?
 
 **Insertion Sort** `O(n²)`
 - Builds the sorted portion of the array one element at a time.
+
+**Merge Sort** `O(n log n)`
+- Uses the divide-and-conquer approach by splitting the array into halves, sorting them, and merging them back together.
+
+****Quick Sort** `O(n log n)`
+- Chooses a pivot, partitions the array around it, and recursively sorts the partitions.
+
+> [!TIP]
+>
+> The exact algorithm used by `Array.Sort()` is an optimized implementation (an introspective sort), which combines Quick Sort, Heap Sort, and Insertion Sort for excellent real-world performance.
 
 ### Currency Converter
 The following class has been written to convert an amount to USD.
