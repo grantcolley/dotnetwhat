@@ -130,9 +130,9 @@
       - [Copy to new array](#copy-to-new-array) 
     - [Fibonnaci](#fibonnaci)
       - [Return a single number](#return-a-single-number)
-      - [Iterate over a sequence](#iterate-over-a-sequence)       
-    - [Sort algorithm](#sort-algorithm)
+      - [Iterate over a sequence](#iterate-over-a-sequence)
     - [Search algorithm](#search-algorithm)
+    - [Sort algorithm](#sort-algorithm)
     - [Currency Converter](#currency-converter)
     - [Compute Latest Positions](#compute-latest-positions)
     - [Calculate Moving Average](#calculate-moving-average)
@@ -3184,9 +3184,22 @@ The compiler transforms the method into a state machine that stores these variab
 
 Therefore the extra space is `O(1)`
 
+### Search algorithm
+| Algorithm                             | Requires Sorted Data | Average Time | Worst Time  | Typical Use                   |
+| ------------------------------------- | -------------------- | ------------ | ----------- | ----------------------------- |
+| Linear Search                         | No                   | O(n)         | O(n)        | Small or unsorted collections |
+| Binary Search                         | Yes                  | O(log n)     | O(log n)    | Large sorted collections      |
+| Hash Lookup (`Dictionary`, `HashSet`) | No                   | O(1)         | O(n) (rare) | Fast key-based lookups        |
+
+Which should you use?
+- Linear Search: Small collections or unsorted data.
+- Binary Search: Large, sorted collections.
+- `Dictionary<TKey, TValue>`: Fast lookup by key.
+- `HashSet<T>`: Fast existence checks (e.g., "does this item exist?").
+
 ### Sort algorithm
 
-### Search algorithm
+
 
 ### Currency Converter
 The following class has been written to convert an amount to USD.
