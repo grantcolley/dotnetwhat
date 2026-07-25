@@ -248,7 +248,7 @@ Both Windows and Linux `32-bit` are limited to 4GB total address space.
 ## Memory
 
 ### Variables
-[**Variables**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables) are simply named storage locations in memory. C# is a type-safe language, and the C# compiler guarantees that values stored in variables are always of the appropriate type. Variables store [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) and [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), the main difference between them are the way they are handled in memory.
+[**Variables**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/variables) are simply named storage locations in memory. C# is a type-safe language, and the C# compiler guarantees that values stored in variables are always of the appropriate type. Variables store [**value types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) and references to [**reference types**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/reference-types), the main difference between them are the way they are handled in memory.
 
 ### Value Types
 [**Value type**](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-types) objects include numeric types (`int`, `decimal` etc.), `char`, `bool`, `enum` and `DateTime`. Custom value types can be created using a [struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/struct).
