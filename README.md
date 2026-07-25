@@ -2877,15 +2877,16 @@ int Fibonacci(int n)
 
 ## Interview Prep
 - C# language knowledge
-  - LINQ
-  - yield return
-  - async/await
-  - Task vs ValueTask
-  - lock, Interlocked, volatile
-  - Records vs classes
-  - Generics
-  - readonly struct
-  - CancellationToken
+  - `LINQ` - type-safe way to query and manipulate data from collections.
+  - `yield return` - returns elements one at a time from an iterator, enabling lazy evaluation.
+  - `async/await` - enables asynchronous, non-blocking code by allowing methods to pause while awaiting long-running operations without blocking the calling thread.
+  - `Task` vs `ValueTask` - Use `Task` for most asynchronous methods; use `ValueTask` when operations frequently complete synchronously to reduce allocations and improve performance.
+  - `lock`, `Interlocked`, `volatile` - `lock` provides thread safety, `Interlocked` provides atomic operations, `volatile` ensures a fields is always read from and written to main memory, improving visability across threads, but not making operations atomic.
+  - Records vs classes - Records are immutable, with built-in value equality, classes are mutable with reference-based equality and behavior.
+  - Generics - Enables reusable, type-safe code that works with different data types.
+  - `readonly struct` - A value type whose fields cannot be modified after construction, improving immutability.
+  - `CancellationToken` - lightweight mechanism for cooperatively cancelling asynchronous or long-running operations by allowing code to detect and respond to cancellation requests.
+
 - Collections
   - IEnumerable
   - List
