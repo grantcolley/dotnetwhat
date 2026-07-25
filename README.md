@@ -3185,15 +3185,15 @@ The compiler transforms the method into a state machine that stores these variab
 Therefore the extra space is `O(1)`
 
 ### Search algorithms
-| Algorithm                             | Requires Sorted Data | Average Time | Worst Time  | Typical Use                   |
-| ------------------------------------- | -------------------- | ------------ | ----------- | ----------------------------- |
-| Linear Search                         | No                   | O(n)         | O(n)        | Small or unsorted collections |
-| Binary Search                         | Yes                  | O(log n)     | O(log n)    | Large sorted collections      |
-| Hash Lookup (`Dictionary`, `HashSet`) | No                   | O(1)         | O(n) (rare) | Fast key-based lookups        |
+| Algorithm                               | Requires Sorted Data | Average Time | Worst Time  | Typical Use                   |
+| --------------------------------------- | -------------------- | ------------ | ----------- | ----------------------------- |
+| Linear Search                           | No                   | O(n)         | O(n)        | Small or unsorted collections |
+| Binary Search (sorted collections only) | Yes                  | O(log n)     | O(log n)    | Large sorted collections only |
+| Hash Lookup (`Dictionary`, `HashSet`)   | No                   | O(1)         | O(n) (rare) | Fast key-based lookups        |
 
 Which should you use?
 - Linear Search: Small collections or unsorted data.
-- Binary Search: Large, sorted collections.
+- Binary Search: Large, sorted collections only.
 - `Dictionary<TKey, TValue>`: Fast lookup by key.
 - `HashSet<T>`: Fast existence checks (e.g., "does this item exist?").
 
@@ -3913,6 +3913,11 @@ Complexity
 The algorithm uses two pointers: one to read through the array and one to write the next unique value. Each element is examined exactly once, resulting in `O(n)` time complexity. Since the duplicates are removed in-place without allocating another array, the extra space complexity is `O(1)`.
 
 ##### Binary Search
+
+> [!IMPORTANT]
+>
+> Binary search only works on sorted collections.
+
 Given a sorted array of integers and a target value, return the index of the target if it exists; otherwise, return `-1`.
 ```C#
 Input:
