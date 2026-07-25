@@ -3367,6 +3367,23 @@ Complexity
 | Time      | **O(n²)**     |
 
 #### Merge Sort
+Description
+```C#
+Input:
+
+Output:
+
+e.g.
+
+```
+Skills
+- 
+```C#
+```
+Complexity
+| Operation |       Complexity |
+| --------- | ---------------: |
+|           |                  |
 
 ### Currency Converter
 The following class has been written to convert an amount to USD.
@@ -4997,6 +5014,9 @@ Skills
 ```C#
 ```
 Complexity
+| Operation |       Complexity |
+| --------- | ---------------: |
+|           |                  |
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
