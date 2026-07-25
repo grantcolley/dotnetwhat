@@ -2877,30 +2877,32 @@ int Fibonacci(int n)
 
 ## Interview Prep
 - C# language knowledge
-  - `LINQ` - type-safe way to query and manipulate data from collections.
-  - `yield return` - returns elements one at a time from an iterator.
-  - `async/await` - enables asynchronous, non-blocking code by allowing methods to pause while awaiting long-running operations without blocking the calling thread.
-  - `Task` vs `ValueTask` - Use `Task` for most asynchronous methods; use `ValueTask` when operations frequently complete synchronously to reduce allocations and improve performance.
-  - `lock`, `Interlocked`, `volatile` - `lock` provides thread safety for multiple operations that must be performed as a single atomic unit, `Interlocked` provides thread-safe atomic operations on shared variables without using locks, `volatile` ensures a fields is always read from and written to main memory, improving visability across threads, but not making operations atomic.
-  - `record` vs `class` - Records are immutable, with built-in value equality, classes are mutable with reference-based equality and behavior.
-  - Generics - Enables reusable, type-safe code that works with different data types.
-  - `readonly struct` - A value type whose fields cannot be modified after construction, improving immutability.
-  - `CancellationToken` - lightweight mechanism for cooperatively cancelling asynchronous or long-running operations by allowing code to detect and respond to cancellation requests.
+  - `LINQ`: type-safe way to query and manipulate data from collections.
+  - `yield return`: returns elements one at a time from an iterator.
+  - `async/await`: enables asynchronous, non-blocking code by allowing methods to pause while awaiting long-running operations without blocking the calling thread.
+  - `Task` vs `ValueTask`: Use `Task` for most asynchronous methods; use `ValueTask` when operations frequently complete synchronously to reduce allocations and improve performance.
+  - `lock`, `Interlocked`, `volatile`: `lock` provides thread safety for multiple operations that must be performed as a single atomic unit, `Interlocked` provides thread-safe atomic operations on shared variables without using locks, `volatile` ensures a fields is always read from and written to main memory, improving visability across threads, but not making operations atomic.
+  - `record` vs `class`: Records are immutable, with built-in value equality, classes are mutable with reference-based equality and behavior.
+  - Generics: Enables reusable, type-safe code that works with different data types.
+  - `readonly struct`: A value type whose fields cannot be modified after construction, improving immutability.
+  - `CancellationToken`: lightweight mechanism for cooperatively cancelling asynchronous or long-running operations by allowing code to detect and respond to cancellation requests.
 
 - Collections
-  - `IEnumerable<T>` - forward-only, read-only sequence of items that can be iterated over.
-  - `List<T>` - a resizable, strongly typed collection that provides fast indexed access.
-  - `IReadOnlyList<T>` - An interface representing a read-only, indexable collection that allows items to be accessed but not modified.
-  - `Dictionary<T>`- key-value collection that provides fast lookups, inserts, and updates using unique keys, with `O(1)` complexity.
-  - `HashSet<T>` - A collection of unique items that provides fast `O(1)` lookups, inserts, and removals while automatically preventing duplicates.
-  - `Queue<T>` - A FIFO (First-In, First-Out) collection that adds (`Enqueue`) items to the end and removes (`Dequeue`) them from the front.
-  - `Stack<T>` - A LIFO (Last-In, First-Out) collection that adds (`Push`) and removes (`Pop`) items from the top of the stack.
-  - `LinkedList<T>` - A doubly linked list that provides efficient `O(1)` insertions and removals at known positions, but slower `O(n)` indexed access and searches.
-  - `PriorityQueue<TElement, TPriority>` - A collection that removes items based on priority rather than insertion order, with the element having the highest priority (lowest priority value by default) dequeued first.
-  - `Span<T>` - A lightweight, stack-only type that provides a fast, memory-safe view over contiguous data without allocating or copying memory.
+  - `IEnumerable<T>`: forward-only, read-only sequence of items that can be iterated over.
+  - `List<T>`: a resizable, strongly typed collection that provides fast indexed access.
+  - `IReadOnlyList<T>`: An interface representing a read-only, indexable collection that allows items to be accessed but not modified.
+  - `Dictionary<T>`: key-value collection that provides fast lookups, inserts, and updates using unique keys, with `O(1)` complexity.
+  - `HashSet<T>`: A collection of unique items that provides fast `O(1)` lookups, inserts, and removals while automatically preventing duplicates.
+  - `Queue<T>`: A FIFO (First-In, First-Out) collection that adds (`Enqueue`) items to the end and removes (`Dequeue`) them from the front.
+  - `Stack<T>`: A LIFO (Last-In, First-Out) collection that adds (`Push`) and removes (`Pop`) items from the top of the stack.
+  - `LinkedList<T>`: A doubly linked list that provides efficient `O(1)` insertions and removals at known positions, but slower `O(n)` indexed access and searches.
+  - `PriorityQueue<TElement, TPriority>`: A collection that removes items based on priority rather than insertion order, with the element having the highest priority (lowest priority value by default) dequeued first.
+  - `Span<T>`: A lightweight, stack-only type that provides a fast, memory-safe view over contiguous data without allocating or copying memory.
+
 - Data Structures
   - Trees
   - Graphs
+
 - Memory Management & Garbage Collection
   - What kind of algorithm is applied when garbage collection happens?
   - What would you do if garbage collection is a performance bottleneck?
@@ -2908,14 +2910,15 @@ int Fibonacci(int n)
   - How would you optimise that?
   - Object pooling
   - Memory-related questions around:
-    - `Memory<T>` - A lightweight `struct` that provides a fast, memory-safe view over contiguous data that, unlike `Span<T>`, can be stored on the heap (e.g. captured by a lambda), passed across `await` boundaries, and used in asynchronous code.
-	- `Span<T>` - A lightweight, `ref struct` that provides a fast, memory-safe view over contiguous data without allocating or copying memory.
-	- Memory buffers
+    - `Memory<T>`: A lightweight `struct` that provides a fast, memory-safe view over contiguous data that, unlike `Span<T>`, can be stored on the heap (e.g. captured by a lambda), passed across `await` boundaries, and used in asynchronous code.
+	- `Span<T>`: A lightweight, `ref struct` that provides a fast, memory-safe view over contiguous data without allocating or copying memory.
+	- Memory buffers: A contiguous block of memory used to temporarily store data, such as an array of bytes, characters, or other values. `Span<T>` and `Memory<T>` provide efficient, allocation-free views over these buffers.
   - Memory and garbage collection in high-performance systems
 - Concurrency, Performance & Scalability
   - Difference between:`async / await`, concurrency and parallelism
   - Highly scalable systems
   - Memory and garbage collection in high-performance systems
+
 - Coding Challenge
   - Arrays and strings
     - Two Sum
@@ -2928,10 +2931,12 @@ int Fibonacci(int n)
     - Maximum Subarray
     - Sliding Window  
   - Producer-consumer using Channel<T>.
+
 - Debugging & Profiling
   - How do you debug an API request?
   - Talking about profiling
   - How you would make a specific optimisation
+
 - SQL / Databases
   - What types of joins are there?
   - CTE vs temporary tables
