@@ -3367,23 +3367,120 @@ Complexity
 | Time      | **O(n²)**     |
 
 #### Merge Sort
-Description
+How Merge Sort Works
+1. Divide the array into two halves.
+2. Recursively sort each half.
+3. Merge the two sorted halves into one sorted array.
 ```C#
 Input:
+nums = [38, 27, 43, 3, 9, 82, 10]
 
 Output:
+3 9 10 27 38 43 82
 
 e.g.
-
+arr = [38, 27, 43, 3, 9, 82, 10];
+MergeSort(int[] arr, 0, arr.Length - 1) -> 3 9 10 27 38 43 82
 ```
 Skills
-- 
+- Merge sort
+- `O(n log n)` sort
 ```C#
+    public static void MergeSort(int[] arr, int left, int right)
+    {
+        if (left >= right)
+            return;
+
+        int mid = left + (right - left) / 2;
+
+        // Sort left half
+        MergeSort(arr, left, mid);
+
+        // Sort right half
+        MergeSort(arr, mid + 1, right);
+
+        // Merge the sorted halves
+        Merge(arr, left, mid, right);
+    }
+
+    public static void Merge(int[] arr, int left, int mid, int right)
+    {
+        int leftSize = mid - left + 1;
+        int rightSize = right - mid;
+
+        int[] leftArray = new int[leftSize];
+        int[] rightArray = new int[rightSize];
+
+        // Copy data into temporary arrays
+        Array.Copy(arr, left, leftArray, 0, leftSize);
+        Array.Copy(arr, mid + 1, rightArray, 0, rightSize);
+
+        int i = 0, j = 0, k = left;
+
+        // Merge the two arrays
+        while (i < leftSize && j < rightSize)
+        {
+            if (leftArray[i] <= rightArray[j])
+            {
+                arr[k] = leftArray[i];
+                i++;
+            }
+            else
+            {
+                arr[k] = rightArray[j];
+                j++;
+            }
+            k++;
+        }
+
+        // Copy remaining elements
+        while (i < leftSize)
+        {
+            arr[k] = leftArray[i];
+            i++;
+            k++;
+        }
+
+        while (j < rightSize)
+        {
+            arr[k] = rightArray[j];
+            j++;
+            k++;
+        }
+    }
 ```
 Complexity
 | Operation |       Complexity |
 | --------- | ---------------: |
-|           |                  |
+|  Time     | **O(n log n)**   |
+|  Space    | **O(n)**         |
+
+The key idea is that Merge Sort first divides the array into smaller pieces until each piece has one element, then merges those pieces back together in sorted order. This divide-and-conquer approach is what gives Merge Sort its `O(n log n)` performance.
+
+```
+Split into halves:
+
+               [38,27,43,3,9,82,10]
+                  /             \
+          [38,27,43,3]       [9,82,10]
+           /      \            /     \
+      [38,27]   [43,3]     [9,82]   [10]
+       /   \      /  \       /  \
+    [38][27]  [43][3]   [9][82]
+
+Merge back together:
+
+[38][27]   → [27,38]
+[43][3]    → [3,43]
+[9][82]    → [9,82]
+
+[27,38] + [3,43]   → [3,27,38,43]
+[9,82]  + [10]     → [9,10,82]
+
+[3,27,38,43] + [9,10,82]
+        ↓
+[3,9,10,27,38,43,82]
+```
 
 ### Currency Converter
 The following class has been written to convert an amount to USD.
