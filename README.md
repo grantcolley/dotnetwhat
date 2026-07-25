@@ -132,7 +132,11 @@
       - [Return a single number](#return-a-single-number)
       - [Iterate over a sequence](#iterate-over-a-sequence)
     - [Search algorithms](#search-algorithms)
+	  - [Linear Search](#linear-search)
+      - [Binary Search](#binary-search)
     - [Sort algorithms](#sort-algorithms)
+      - [Bubble Sort](#bubble-sort)
+      - [Merge Sort](#merge-sort)
     - [Currency Converter](#currency-converter)
     - [Compute Latest Positions](#compute-latest-positions)
     - [Calculate Moving Average](#calculate-moving-average)
@@ -142,7 +146,6 @@
         - [Rotate Array](#rotate-array)
         - [Valid Parentheses](#valid-parentheses)
         - [Remove Duplicates from Sorted Array](#remove-duplicates-from-sorted-array)
-        - [Binary Search](#binary-search)
       - [Medium](#medium)
       	- [Reverse Words](#reverse-words)
         - [Longest Common Prefix](#longest-common-prefix)
@@ -3197,6 +3200,106 @@ Which should you use?
 - `Dictionary<TKey, TValue>`: Fast lookup by key.
 - `HashSet<T>`: Fast existence checks (e.g., "does this item exist?").
 
+#### Linear Search
+Checks each element one by one until it finds the target.
+```C#
+Input:
+nums = [4, 8, 15, 16, 23, 42]
+target = 15
+
+Output:
+2
+
+Test output:
+LinearSearch([4, 8, 15, 16, 23, 42], 15) -> 2
+```
+Skills
+- Linear search
+- `O(n)` lookup
+- Unsorted arrays
+```C#
+    public static int LinearSearch(int[] arr, int target)
+    {
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (arr[i] == target)
+                return i;
+        }
+
+        return -1; // Not found
+    }
+```
+Complexity
+| Operation |   Complexity |
+| --------- | ------------ |
+| Time      | **O(n)**     |
+
+#### Binary Search
+
+> [!IMPORTANT]
+>
+> Binary search only works on sorted collections.
+
+Given a sorted array of integers and a target value, return the index of the target if it exists; otherwise, return `-1`.
+```C#
+Input:
+nums = [1, 3, 5, 7, 9]
+target = 7
+
+Output:
+3
+
+Test output:
+BinarySearch([1, 3, 5, 7, 9], 7) -> 3
+BinarySearch([1, 3, 5, 7, 9], 1) -> 0
+BinarySearch([1, 3, 5, 7, 9], 9) -> 4
+BinarySearch([1, 3, 5, 7, 9], 4) -> -1
+BinarySearch([], 5)              -> -1
+```
+Skills
+- Binary search
+- Divide and conquer
+- `O(log n)` lookup
+- Sorted arrays
+```C#
+    public static int BinarySearch(int[] nums, int target)
+    {
+        ArgumentNullException.ThrowIfNull(nums);
+
+        int left = 0;
+        int right = nums.Length - 1;
+
+        while (left <= right)
+        {
+            // Prevent integer overflow when calculating the midpoint.
+            int middle = left + ((right - left) / 2);
+
+            if (nums[middle] == target)
+            {
+                return middle;
+            }
+
+            if (nums[middle] < target)
+            {
+                left = middle + 1;
+            }
+            else
+            {
+                right = middle - 1;
+            }
+        }
+
+        return -1;
+    }
+```
+Complexity
+| Operation |   Complexity |
+| --------- | -----------: |
+| Time      | **O(log n)** |
+| Space     |     **O(1)** |
+
+Binary search repeatedly halves the search range until the target is found or no elements remain. Since the search space is reduced by half on each iteration, the algorithm runs in `O(log n)` time while requiring only `O(1)` additional space. It is one of the most efficient algorithms for searching a sorted array.
+
 ### Sort algorithms
 | Algorithm      |  Average     | Worst       | Stable  | Notes                                |
 | -------------- |  ----------- | ----------- | ------- | ------------------------------------ |
@@ -3225,6 +3328,45 @@ Which should you use?
 > [!TIP]
 >
 > The exact algorithm used by `Array.Sort()` is an optimized implementation (an introspective sort), which combines Quick Sort, Heap Sort, and Insertion Sort for excellent real-world performance.
+
+#### Bubble Sort
+Compares adjacent elements and swaps them if they are in the wrong order. It repeats this until the array is sorted.
+```C#
+Input:
+nums = [64, 34, 25, 12, 22, 11, 90]
+
+Output:
+11 12 22 25 34 64 90
+
+Test output:
+BubbleSort([64, 34, 25, 12, 22, 11, 90]) -> 11 12 22 25 34 64 90
+```
+Skills
+- Bubble Sort
+- `O(n²)` sort
+```C#
+    public static void BubbleSort(int[] arr)
+    {
+        for (int i = 0; i < arr.Length - 1; i++)
+        {
+            for (int j = 0; j < arr.Length - i - 1; j++)
+            {
+                if (arr[j] > arr[j + 1])
+                {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+    }
+```
+Complexity
+| Operation |   Complexity |
+| --------- | ------------ |
+| Time      | **O(n²)**     |
+
+#### Merge Sort
 
 ### Currency Converter
 The following class has been written to convert an amount to USD.
@@ -3911,72 +4053,6 @@ Complexity
 | Space     |   **O(1)** |
 
 The algorithm uses two pointers: one to read through the array and one to write the next unique value. Each element is examined exactly once, resulting in `O(n)` time complexity. Since the duplicates are removed in-place without allocating another array, the extra space complexity is `O(1)`.
-
-##### Binary Search
-
-> [!IMPORTANT]
->
-> Binary search only works on sorted collections.
-
-Given a sorted array of integers and a target value, return the index of the target if it exists; otherwise, return `-1`.
-```C#
-Input:
-nums = [1, 3, 5, 7, 9]
-target = 7
-
-Output:
-3
-
-Test output:
-BinarySearch([1, 3, 5, 7, 9], 7) -> 3
-BinarySearch([1, 3, 5, 7, 9], 1) -> 0
-BinarySearch([1, 3, 5, 7, 9], 9) -> 4
-BinarySearch([1, 3, 5, 7, 9], 4) -> -1
-BinarySearch([], 5)              -> -1
-```
-Skills
-- Binary search
-- Divide and conquer
-- `O(log n)` lookup
-- Sorted arrays
-```C#
-    public static int BinarySearch(int[] nums, int target)
-    {
-        ArgumentNullException.ThrowIfNull(nums);
-
-        int left = 0;
-        int right = nums.Length - 1;
-
-        while (left <= right)
-        {
-            // Prevent integer overflow when calculating the midpoint.
-            int middle = left + ((right - left) / 2);
-
-            if (nums[middle] == target)
-            {
-                return middle;
-            }
-
-            if (nums[middle] < target)
-            {
-                left = middle + 1;
-            }
-            else
-            {
-                right = middle - 1;
-            }
-        }
-
-        return -1;
-    }
-```
-Complexity
-| Operation |   Complexity |
-| --------- | -----------: |
-| Time      | **O(log n)** |
-| Space     |     **O(1)** |
-
-Binary search repeatedly halves the search range until the target is found or no elements remain. Since the search space is reduced by half on each iteration, the algorithm runs in `O(log n)` time while requiring only `O(1)` additional space. It is one of the most efficient algorithms for searching a sorted array.
 
 #### Medium
 ##### Reverse Words
