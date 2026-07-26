@@ -788,7 +788,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618
 
 [Memory\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.memory-1) is similar to [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) in that it provides a type-safe representation of a contiguous region of memory, however, it is a regular `struct`, not a `ref struct`, so can be placed on the managed heap. This means it doesn't share the same restrictions as [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) and can be a field in a class or used across `await` and `yield` boundaries. `Memory<T>` is fast for the same reasons as `Span<T>` — it provides a view over existing memory rather than allocating or copying data.
 
-The trade-off is that `Memory<T>` has a little more overhead because it can safely exist on the heap and be used across await boundaries.
+The trade-off is that `Memory<T>` has a little more overhead because it can safely exist on the heap and be used across `await` boundaries.
 
 The following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618ccf2d8f0eef09fa42f3971b1e03aa0108d/tests/TestCases.cs#L60) shows how an immutable string, can be mutated by directly accessing it in memory using `Memory<T>` and `Span<T>`.
 
