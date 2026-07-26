@@ -784,7 +784,7 @@ In the following [C# code](https://github.com/grantcolley/dotnetwhat/blob/15f618
 ```
 
 #### Memory\<T> and Span\<T>
-[Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) is a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) that provides a type-safe representation of a contiguous region of memory. 
+[Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) is a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) that provides a type-safe representation of a contiguous region of memory. A span is just a view over existing memory. Creating a span doesn't allocate a new array. That's what makes `Span<T>` fast, because it avoids allocations and copying while providing direct access to contiguous memory. It references the original data instead of creating a duplicate.
 
 [Memory\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.memory-1) is similar to [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) in that it provides a type-safe representation of a contiguous region of memory, however, it is a regular `struct`, not a `ref struct`, so can be placed on the managed heap. This means it doesn't share the same restrictions as [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) and can be a field in a class or used across `await` and `yield` boundaries.
 
@@ -2284,6 +2284,8 @@ Status s = (Status)42;   // perfectly legal
 -->
 
 #### Span\<T>
+A [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) is just a view over existing memory. Creating a [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) doesn't allocate a new array. That's what makes `Span<T>` fast, because it avoids allocations and copying while providing direct access to contiguous memory. It references the original data instead of creating a duplicate.
+
 [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) is a [ref struct](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) that provides type-safe access to a contiguous region of memory. [Ref structs](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/ref-struct) can only be allocated on the stack and not the heap. [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) can, however, point to heap memory, stack memory and unmanaged memory. [Span\<T>](https://learn.microsoft.com/en-us/dotnet/api/system.span-1) can wrap an entire contiguous block of memory or it can point to any contiguous range within it, using [slicing](https://learn.microsoft.com/en-us/dotnet/api/system.span-1?view=net-7.0#spant-and-slices).
 
 >  [!Note]
