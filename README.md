@@ -580,11 +580,22 @@ If you use unmanaged resources you should implement the [**dispose pattern**](ht
 
 > [!NOTE]
 >
-> Why `Dispose()` should NOT be virtual:
+> Why `Dispose()` should *NOT* be virtual:
 > - It's part of the IDisposable interface, which defines void `Dispose()` as the method signature.
 > - Consumers of your class or framework code expect a non-overridable, predictable behavior.
 > - Making it virtual would allow derived classes to override and forget to call `base.Dispose()`, breaking the cleanup chain.
 > - The correct extensibility point is `Dispose(bool disposing)`, which safely allows subclasses to add their own cleanup logic while preserving the disposal sequence.
+
+> [!NOTE]
+>
+> Why `protected virtual Dispose(bool disposing)` *SHOULD* be virtual
+> - This method is not the public contract.
+> - It is the customization point for derived classes.
+> - must be virtual so derived classes can extend cleanup logic safely.
+> - derived classes are responsible for calling `base.Dispose(true)`.
+
+> [!WARNING]
+> The pattern where `Dispose()` is non‑virtual and `Dispose(bool)` is virtual relies on developer discipline to call the base implementation, If you don’t call `base.Dispose(disposing)`, the base class’s cleanup is skipped.
 
 ```C#
     public class Foo: IDisposable
