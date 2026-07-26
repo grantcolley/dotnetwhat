@@ -56,7 +56,10 @@
       - [Volatile](#volatile)
       - [`Interlocked` vs `lock`](#interlocked-vs-lock)
       - [When to use them?](#when-to-use-them)
-- [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats)
+  - [Thread Safety](#thread-safety)
+      - [Locks and Mutex](#locks-and-mutex)
+      - [SemaphoreSlim](#semaphoreslim)
+      - [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats)
 - [Types and Nullability](#types-and-nullability)
 - [Concurrency](#concurrency)
   - [Parallelism vs Concurrency vs Asynchronous](#parallelism-vs-concurrency-vs-asynchronous)
@@ -69,10 +72,7 @@
       - [`async/await` Scheduling](#asyncawait-scheduling)
       - [Iterating with `async` Enumerables](#iterating-with-async-enumerables)
       - [Async Scenarios](#async-scenarios)
-  - [Thread Safety](#thread-safety)
-      - [Locks and Mutex](#locks-and-mutex)
-      - [SemaphoreSlim](#semaphoreslim)
-  - [FixedWindowRateLimiter](#fixedwindowratelimiter) 
+      - [FixedWindowRateLimiter](#fixedwindowratelimiter) 
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -915,7 +915,55 @@ If you need to update several variables together, use a `lock`.
 >
 > In new C# code, `volatile` is relatively uncommon. The `System.Threading.Volatile` class (`Volatile.Read` and `Volatile.Write`) is often preferred because it makes memory-ordering intent explicit at the point of access. For most state coordination, you'll more commonly reach for `Interlocked` or a `lock`, depending on whether you need a single atomic operation or to protect a larger critical section.
 
-## Stack Memory is Thread-safe (with caveats)
+#### Thread Safety
+##### Locks and Mutex
+Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
+
+Mutex, or "mutual exclusion" is synchronizing access to shared state from competing threads by first locking it, then releasing the lock when it is finished. Competing threads must wait for the lock to be release, before accessing the shared state.
+
+```C#
+private object _lockObj = new object();
+private int _counter = 0;
+
+public void Multithread_Increment()
+{
+    lock(_lockObj)
+    {
+        _counter++;
+    }
+}
+```
+
+##### SemaphoreSlim
+`SemaphoreSlim` is a lightweight synchronization primitive in .NET that limits the number of threads (or asynchronous operations) that can access a resource at the same time.
+
+Unlike `lock`, which only allows one thread into a critical section, `SemaphoreSlim` can allow `N` concurrent threads.
+
+A `lock` cannot be awaited, `SemaphoreSlim` was designed specifically to support asynchronous code and can be awaited. Using `SemaphoreSlim` as an async lock is one of the most common uses.
+
+```C#
+private readonly SemaphoreSlim _semaphore = new(initialCount: 1, maxCount: 1);
+
+public async Task DoWorkAsync()
+{
+    await _semaphore.WaitAsync();
+
+    try
+    {
+        // Only one caller can be here.
+    }
+    finally
+    {
+		// Always call Release() in a finally block.
+        _semaphore.Release();
+    }
+}
+```
+> [!WARNING]
+>
+> Always call `Release()` in a `finally` block.
+
+##### Stack Memory is Thread-safe (with caveats)
 Stack memory is thread-safe per thread because each thread has its own call stack that no other thread can access. This means that local variables, method call frames, and arguments passed to methods are stored in a stack that's private to the thread.
 
 There are caveats to be aware of:
@@ -1383,54 +1431,6 @@ The `Task` and `Task<T>` objects represent the core of asynchronous programming.
 > [!TIP]
 >
 > Read [Async scenarios](https://learn.microsoft.com/en-us/dotnet/csharp/asynchronous-programming/async-scenarios)
-
-#### Thread Safety
-##### Locks and Mutex
-Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
-
-Mutex, or "mutual exclusion" is synchronizing access to shared state from competing threads by first locking it, then releasing the lock when it is finished. Competing threads must wait for the lock to be release, before accessing the shared state.
-
-```C#
-private object _lockObj = new object();
-private int _counter = 0;
-
-public void Multithread_Increment()
-{
-    lock(_lockObj)
-    {
-        _counter++;
-    }
-}
-```
-
-##### SemaphoreSlim
-`SemaphoreSlim` is a lightweight synchronization primitive in .NET that limits the number of threads (or asynchronous operations) that can access a resource at the same time.
-
-Unlike `lock`, which only allows one thread into a critical section, `SemaphoreSlim` can allow `N` concurrent threads.
-
-A `lock` cannot be awaited, `SemaphoreSlim` was designed specifically to support asynchronous code and can be awaited. Using `SemaphoreSlim` as an async lock is one of the most common uses.
-
-```C#
-private readonly SemaphoreSlim _semaphore = new(initialCount: 1, maxCount: 1);
-
-public async Task DoWorkAsync()
-{
-    await _semaphore.WaitAsync();
-
-    try
-    {
-        // Only one caller can be here.
-    }
-    finally
-    {
-		// Always call Release() in a finally block.
-        _semaphore.Release();
-    }
-}
-```
-> [!WARNING]
->
-> Always call `Release()` in a `finally` block.
 
 #### FixedWindowRateLimiter
 `FixedWindowRateLimiter` is part of the `System.Threading.RateLimiting` namespace (introduced in `.NET 7`). It limits the number of operations allowed during a fixed time window. Once the window expires, the permit count is reset.
