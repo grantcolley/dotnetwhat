@@ -19,6 +19,7 @@
   - [Variables](#variables) 
   - [Value Types](#value-types) 
   - [Reference Types](#reference-types)
+  - [Types and Nullability](#types-and-nullability)
   - [Memory Allocation](#memory-allocation)
   	- [Stack Memory](#stack-memory)
   	- [Heap Memory](#heap-memory)
@@ -60,7 +61,6 @@
       - [Locks and Mutex](#locks-and-mutex)
       - [SemaphoreSlim](#semaphoreslim)
       - [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats)
-- [Types and Nullability](#types-and-nullability)
 - [Concurrency](#concurrency)
   - [Parallelism vs Concurrency vs Asynchronous](#parallelism-vs-concurrency-vs-asynchronous)
   - [Threads](#threads)
@@ -288,6 +288,72 @@ When value type variables are assigned from one variable to another, or as an ar
 > The house is a reference type object in heap memory. The address is the reference pointing to where that object is located in heap memory. The piece of paper is the variable containing the address pointing to the object in heap memory. 
 > 
 > If you copy the same address to another piece of paper (another variable), you now have two variables pointing to the same object in heap memory. If you were to paint the door of the house green, both pieces of paper still point to the same house, which now has a green door.
+
+### Types and Nullability
+Reference types can be assigned the literal `null`, meaning it doesn't point to any object on the heap.
+
+Value types on the other hand must contain a value, and so a bitwise zeroing occurs when it is default-initialized - which basically means the runtime sets all its bits in memory to zero. So the default for both `int` and `bool` is effectively `0`, which in the case of `bool` is the same as `false`.
+
+You can create a nullable Value type using a special struct `Nullable<T>` e.g. `Nullable<int>`. A bitwise zeroing occurs when a `Nullable<T>` is default-initialized, setting both `value` and `hasFlag` to zero. While the default for `value` is still a bitwise zeroing, it gives the appearance of being `null` because it isn't accessible.
+
+> [!Note]
+>
+> Local variables that are `Nullable<T>` are still allocated on the stack.
+
+> [!Important]
+>
+> When the variable is set to another value a new instance of `Nullable<T>` is created.
+>
+> ```C#
+> int? n = default;
+> Console.WriteLine(n.HasValue); // False
+> 
+> n = 5;
+> Console.WriteLine(n.HasValue); // True
+> Console.WriteLine(n.Value);    // 5
+> ```
+
+> [!Tip]
+>
+> `Nullable<T>` value types are particularly useful when working with databases and nullable data types.
+
+```C#
+namespace System
+{
+    [Serializable]
+    public struct Nullable<T> where T : struct
+    {
+        private bool hasValue;
+        internal T value;
+
+        public Nullable(T value)
+        {
+            this.value = value;
+            this.hasValue = true;
+        }
+
+        public bool HasValue
+        {
+            get { return hasValue; }
+        }
+
+        public T Value
+        {
+            get
+            {
+                if (!hasValue)
+                    throw new InvalidOperationException("Nullable object must have a value.");
+                return value;
+            }
+        }
+
+        public static implicit operator Nullable<T>(T value)
+        {
+            return new Nullable<T>(value); // changing the value creates a new instance
+        }
+    }
+}
+```
 
 ### Memory Allocation
 .NET uses both stack and heap because it needs fast automatic memory for execution (stack) and flexible shared memory for objects and data structures (heap).
@@ -995,72 +1061,6 @@ There are caveats to be aware of:
 >    });
 >}
 > ```
-
-## Types and Nullability
-Reference types can be assigned the literal `null`, meaning it doesn't point to any object on the heap.
-
-Value types on the other hand must contain a value, and so a bitwise zeroing occurs when it is default-initialized - which basically means the runtime sets all its bits in memory to zero. So the default for both `int` and `bool` is effectively `0`, which in the case of `bool` is the same as `false`.
-
-You can create a nullable Value type using a special struct `Nullable<T>` e.g. `Nullable<int>`. A bitwise zeroing occurs when a `Nullable<T>` is default-initialized, setting both `value` and `hasFlag` to zero. While the default for `value` is still a bitwise zeroing, it gives the appearance of being `null` because it isn't accessible.
-
-> [!Note]
->
-> Local variables that are `Nullable<T>` are still allocated on the stack.
-
-> [!Important]
->
-> When the variable is set to another value a new instance of `Nullable<T>` is created.
->
-> ```C#
-> int? n = default;
-> Console.WriteLine(n.HasValue); // False
-> 
-> n = 5;
-> Console.WriteLine(n.HasValue); // True
-> Console.WriteLine(n.Value);    // 5
-> ```
-
-> [!Tip]
->
-> `Nullable<T>` value types are particularly useful when working with databases and nullable data types.
-
-```C#
-namespace System
-{
-    [Serializable]
-    public struct Nullable<T> where T : struct
-    {
-        private bool hasValue;
-        internal T value;
-
-        public Nullable(T value)
-        {
-            this.value = value;
-            this.hasValue = true;
-        }
-
-        public bool HasValue
-        {
-            get { return hasValue; }
-        }
-
-        public T Value
-        {
-            get
-            {
-                if (!hasValue)
-                    throw new InvalidOperationException("Nullable object must have a value.");
-                return value;
-            }
-        }
-
-        public static implicit operator Nullable<T>(T value)
-        {
-            return new Nullable<T>(value); // changing the value creates a new instance
-        }
-    }
-}
-```
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
