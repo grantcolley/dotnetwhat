@@ -75,6 +75,10 @@
   - [Choosing the right construct](#choosing-the-right-construct)
   - [Locks and Mutex](#locks-and-mutex)
   - [SemaphoreSlim](#semaphoreslim)
+  - [Channel\<T>](#channelt)
+  - [ConcurrentDictionary\<TKey,TValue>](#concurrentdictionarytkeytvalue)
+  - [ConcurrentQueue\<T>](#concurrentqueuet)
+  - [ConcurrentStack\<T>](#concurrentstackt)
 - [Concurrency](#concurrency)
   - [Parallelism vs Concurrency vs Asynchronous](#parallelism-vs-concurrency-vs-asynchronous)
   - [Threads](#threads)
@@ -1210,6 +1214,14 @@ public async Task DoWorkAsync()
 > [!WARNING]
 >
 > Always call `Release()` in a `finally` block.
+
+#### Channel\<T>
+
+#### ConcurrentDictionary\<TKey,TValue>
+
+#### ConcurrentQueue\<T>
+
+#### ConcurrentStack\<T>
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
