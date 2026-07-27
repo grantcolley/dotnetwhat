@@ -1216,12 +1216,82 @@ public async Task DoWorkAsync()
 > Always call `Release()` in a `finally` block.
 
 #### Channel\<T>
+Key points:
+- `Channel<T>` provides an asynchronous, thread-safe producer/consumer queue.
+- Use `Writer.WriteAsync()` to asynchronously write an item to the channel.
+- Use `Reader.ReadAsync()` to asynchronously read the next available item from the channel.
+- `ReadAsync()` waits until an item is available, making `Channel<T>` well-suited for asynchronous workflows.
+```C#
+private readonly Channel<decimal> _channel = Channel.CreateUnbounded<decimal>();
+
+public async Task ProcessTransactionAsync()
+{
+    // Write a transaction to the channel.
+    await _channel.Writer.WriteAsync(1000m);
+
+    // Read the next transaction from the channel.
+    decimal amount = await _channel.Reader.ReadAsync();
+
+    // Process the transaction.
+}
+```
 
 #### ConcurrentDictionary\<TKey,TValue>
+Key points:
+- `ConcurrentDictionary<TKey, TValue>` is thread-safe for concurrent reads and writes.
+- `GetOrAdd()` atomically returns the existing value or adds a new one if the key doesn't exist.
+- `AddOrUpdate()` atomically adds a new value or updates an existing one.
+```C#
+ConcurrentDictionary<string, decimal> balances = new ConcurrentDictionary<string, decimal>();
+
+// Add a new account with an initial balance of 1000
+decimal balance = balances.GetOrAdd("account1", 1000m);
+
+// Update the balance of the account by adding 1000
+balance = balances.AddOrUpdate("account1", 1000m, (key, oldValue) => oldValue + 1000m);
+```
 
 #### ConcurrentQueue\<T>
+Key points:
+- `ConcurrentQueue<T>` is thread-safe for concurrent enqueue and dequeue operations.
+- Use `Enqueue()` to add an item to the end of the queue.
+- Use `TryDequeue()` to atomically remove an item from the front of the queue if one is available.
+```C#
+private readonly ConcurrentQueue<decimal> _transactions = new();
+
+public void ProcessTransaction()
+{
+    // Add a transaction to the end of the queue.
+    _transactions.Enqueue(1000m);
+
+    // Remove the transaction from the front of the queue.
+    if (_transactions.TryDequeue(out decimal amount))
+    {
+        // Process the transaction.
+    }
+}
+```
 
 #### ConcurrentStack\<T>
+Key points:
+- `ConcurrentStack<T>` is thread-safe for concurrent push and pop operations.
+- Use `Push()` to add an item to the top of the stack.
+- Use `TryPop()` to atomically remove an item from the top of the stack if one is available.
+```C#
+private readonly ConcurrentStack<decimal> _transactions = new();
+
+public void ProcessTransaction()
+{
+    // Push a transaction onto the top of the stack.
+    _transactions.Push(1000m);
+
+    // Pop the transaction from the top of the stack.
+    if (_transactions.TryPop(out decimal amount))
+    {
+        // Process the transaction.
+    }
+}
+```
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
