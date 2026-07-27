@@ -59,6 +59,20 @@
       - [`Interlocked` vs `lock`](#interlocked-vs-lock)
       - [When to use them?](#when-to-use-them)
 - [Thread Safety](#thread-safety)
+  - [Thread-Safe Constructs](#thread-safe-constructs)
+    - [Mutual Exclusion](#mutual-exclusion)
+    - [Semaphores](#semaphores)
+    - [Reader/Writer Locks](#readerwriter-locks)
+    - [Atomic Operations](#atomic-operations)
+    - [Memory Visibility](#memory-visibility)
+    - [Thread-safe Collections](#thread-safe-collections)
+    - [Synchronisation Primitives](#synchronisation-primitives)
+    - [Async Synchronisation](#async-synchronisation)
+    - [Task Parallel Library (TPL)](#task-parallel-library-tpl)
+    - [Thread-safe Lazy Initialisation](#thread-safe-lazy-initialisation)
+    - [Immutable Collections](#immutable-collections)
+    - [Cancellation](#cancellation)
+  - [Choosing the right construct](#choosing-the-right-construct)
   - [Locks and Mutex](#locks-and-mutex)
   - [SemaphoreSlim](#semaphoreslim)
 - [Concurrency](#concurrency)
@@ -1030,6 +1044,126 @@ If you need to update several variables together, use a `lock`.
 > In new C# code, `volatile` is relatively uncommon. The `System.Threading.Volatile` class (`Volatile.Read` and `Volatile.Write`) is often preferred because it makes memory-ordering intent explicit at the point of access. For most state coordination, you'll more commonly reach for `Interlocked` or a `lock`, depending on whether you need a single atomic operation or to protect a larger critical section.
 
 ### Thread Safety
+#### Thread-Safe Constructs
+##### Mutual Exclusion
+Allow only one thread at a time.
+| Construct  | When to use                                | Notes                                                              |
+| ---------- | ------------------------------------------ | ------------------------------------------------------------------ |
+| `lock`     | Protect shared data                        | Most common. Wraps `Monitor`. Fast and simple.                     |
+| `Monitor`  | Same as `lock`, but with advanced features | Supports `TryEnter`, `Pulse`, `Wait`.                              |
+| `Mutex`    | Synchronise across processes               | Much slower than `lock`. Can be named.                             |
+| `SpinLock` | Very short critical sections               | Avoid unless profiling proves beneficial. Burns CPU while waiting. |
+
+##### Semaphores
+Allow `N` concurrent threads.
+| Construct       | Use case                   |
+| --------------- | -------------------------- |
+| `SemaphoreSlim` | Preferred within a process |
+| `Semaphore`     | Cross-process semaphore    |
+
+##### Reader/Writer Locks
+Useful when reads greatly outnumber writes.
+| Construct              | Notes                           |
+| ---------------------- | ------------------------------- |
+| `ReaderWriterLockSlim` | Multiple readers, single writer |
+| `ReaderWriterLock`     | Legacy; avoid                   |
+
+##### Atomic Operations
+Avoid locks for simple operations.
+| Construct     | Operations                                       |
+| ------------- | ------------------------------------------------ |
+| `Interlocked` | Increment, decrement, exchange, compare-and-swap |
+
+##### Memory Visibility
+| Construct                              | Purpose                                      |
+| -------------------------------------- | -------------------------------------------- |
+| `volatile`                             | Prevents compiler/CPU reordering for a field |
+| `Volatile.Read()` / `Volatile.Write()` | Explicit memory barriers                     |
+
+##### Thread-safe Collections
+| Collection                          | Use                              |
+| ----------------------------------- | -------------------------------- |
+| `ConcurrentDictionary<TKey,TValue>` | Shared dictionary                |
+| `ConcurrentQueue<T>`                | Producer/consumer queue          |
+| `ConcurrentStack<T>`                | Thread-safe stack                |
+| `ConcurrentBag<T>`                  | Unordered collection             |
+| `BlockingCollection<T>`             | Producer/consumer with blocking  |
+| `ConcurrentExclusiveSchedulerPair`  | Read/write style task scheduling |
+
+##### Synchronisation Primitives
+| Construct              | Purpose                          |
+| ---------------------- | -------------------------------- |
+| `ManualResetEventSlim` | Signal many waiting threads      |
+| `ManualResetEvent`     | Kernel version                   |
+| `AutoResetEvent`       | Wake one waiting thread          |
+| `CountdownEvent`       | Wait until N operations complete |
+| `Barrier`              | Synchronise phases of work       |
+
+##### Async Synchronisation
+Designed for `async/await`.
+| Construct                 | Notes                                    |
+| ------------------------- | ---------------------------------------- |
+| `SemaphoreSlim`           | Main async lock                          |
+| `Channel<T>`              | High-performance async producer/consumer |
+| `TaskCompletionSource<T>` | Async signalling                         |
+| `AsyncLocal<T>`           | Async context storage                    |
+
+##### Task Parallel Library (TPL)
+Higher-level abstractions.
+| Construct                 | Purpose                       |
+| ------------------------- | ----------------------------- |
+| `Task`                    | Unit of asynchronous work     |
+| `Task.Run()`              | Queue work                    |
+| `Parallel.For()`          | Parallel loops                |
+| `Parallel.ForEach()`      | Parallel enumeration          |
+| `Parallel.ForEachAsync()` | Async parallel work (.NET 6+) |
+| `Task.WhenAll()`          | Wait for multiple tasks       |
+| `Task.WhenAny()`          | First task wins               |
+| `CancellationToken`       | Cooperative cancellation      |
+
+##### Thread-safe Lazy Initialisation
+| Construct         | Purpose                |
+| ----------------- | ---------------------- |
+| `Lazy<T>`         | Initialise once safely |
+| `LazyInitializer` | Alternative helper     |
+
+##### Immutable Collections
+Rather than synchronising, avoid mutation.
+| Construct                 | Purpose              |
+| ------------------------- | -------------------- |
+| `CancellationTokenSource` | Creates cancellation |
+| `CancellationToken`       | Pass to operations   |
+
+##### Cancellation
+| Construct                 | Purpose              |
+| ------------------------- | -------------------- |
+| `CancellationTokenSource` | Creates cancellation |
+| `CancellationToken`       | Pass to operations   |
+
+##### Choosing the right construct
+| Scenario                       | Recommended construct                                  |
+| ------------------------------ | ------------------------------------------------------ |
+| Protect a simple shared object | `lock`                                                 |
+| Simple counter                 | `Interlocked`                                          |
+| Limit concurrent operations    | `SemaphoreSlim`                                        |
+| Many readers, few writers      | `ReaderWriterLockSlim`                                 |
+| Producer/consumer              | `Channel<T>` or `BlockingCollection<T>`                |
+| Thread-safe dictionary         | `ConcurrentDictionary`                                 |
+| One-time initialisation        | `Lazy<T>`                                              |
+| Wait for multiple tasks        | `Task.WhenAll`                                         |
+| Async mutual exclusion         | `SemaphoreSlim` (or an async lock wrapper built on it) |
+| Cross-process synchronisation  | `Mutex` or `Semaphore`                                 |
+| Immutable shared state         | `System.Collections.Immutable`                         |
+
+**General guidance**
+Modern .NET applications generally prefer higher-level abstractions over manual thread management:
+- Prefer `async/await` and `Task` over creating `Thread` instances directly.
+- Use `lock` for straightforward mutual exclusion within a process.
+- Use `Interlocked` for simple atomic state changes to avoid `lock` overhead.
+- Use `SemaphoreSlim` to throttle concurrency, especially in asynchronous code.
+- Reach for concurrent or immutable collections before adding explicit locking around standard collections.
+- Only use lower-level primitives such as `SpinLock`, `volatile`, or `Monitor.Wait/Pulse` when you have a specific need and understand their trade-offs.
+
 #### Locks and Mutex
 Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
 
