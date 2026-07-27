@@ -50,6 +50,7 @@
       - [unsafe and fixed](#unsafe-and-fixed)
       - [Memory\<T> and Span\<T>](#memoryt-and-spant)
   - [Manually Allocating Memory on the Stack](#manually-allocating-memory-on-the-stack)
+  - [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats)
 - [The Memory Model](#the-memory-model) 
   - [Atomicity of Variables, Volatility and Interlocking](#atomicity-of-variables-volatility-and-interlocking)
       - [Atomic](#atomic)
@@ -57,10 +58,9 @@
       - [Volatile](#volatile)
       - [`Interlocked` vs `lock`](#interlocked-vs-lock)
       - [When to use them?](#when-to-use-them)
-  - [Thread Safety](#thread-safety)
-      - [Locks and Mutex](#locks-and-mutex)
-      - [SemaphoreSlim](#semaphoreslim)
-      - [Stack Memory is Thread-safe (with caveats)](#stack-memory-is-thread-safe-with-caveats)
+- [Thread Safety](#thread-safety)
+  - [Locks and Mutex](#locks-and-mutex)
+  - [SemaphoreSlim](#semaphoreslim)
 - [Concurrency](#concurrency)
   - [Parallelism vs Concurrency vs Asynchronous](#parallelism-vs-concurrency-vs-asynchronous)
   - [Threads](#threads)
@@ -849,6 +849,38 @@ The [preferred approach](https://github.com/grantcolley/dotnetwhat/blob/810ce351
             }
 ```
 
+### Stack Memory is Thread-safe (with caveats)
+Stack memory is thread-safe per thread because each thread has its own call stack that no other thread can access. This means that local variables, method call frames, and arguments passed to methods are stored in a stack that's private to the thread.
+
+There are caveats to be aware of:
+- **Captured variables in closures:** local variable captured by a lambda or anonymous method might get hoisted to the heap, and not remain stack-allocated.
+- **Ref/out parameters and unsafe code:** passing references (e.g., `ref`, `out`, or pointers) from the stack to another thread, breaks thread-safety.
+- **Async/await:** local variables declared before an `await` might be moved to the heap, invalidating stack-safety.
+
+> [!WARNING]
+>
+> Stack memory is thread-local and not shared by design. However, you can break this isolation by doing something like:
+>
+> async/await
+> ```C#
+> async Task Demo()
+> {
+>     int counter = 0;
+>     await Task.Delay(100); // 'counter' may now be on the heap
+>     counter++;
+> }
+> ```
+>
+> Ref/out
+> ```C#
+> void Dangerous(ref int x)
+> {
+>    Task.Run(() =>
+>    {
+>        x = 42; // Accessing another thread's stack memory
+>    });
+>}
+> ```
 
 ## The Memory Model
 
@@ -997,8 +1029,8 @@ If you need to update several variables together, use a `lock`.
 >
 > In new C# code, `volatile` is relatively uncommon. The `System.Threading.Volatile` class (`Volatile.Read` and `Volatile.Write`) is often preferred because it makes memory-ordering intent explicit at the point of access. For most state coordination, you'll more commonly reach for `Interlocked` or a `lock`, depending on whether you need a single atomic operation or to protect a larger critical section.
 
-#### Thread Safety
-##### Locks and Mutex
+### Thread Safety
+#### Locks and Mutex
 Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
 
 Mutex, or "mutual exclusion" is synchronizing access to shared state from competing threads by first locking it, then releasing the lock when it is finished. Competing threads must wait for the lock to be release, before accessing the shared state.
@@ -1016,7 +1048,7 @@ public void Multithread_Increment()
 }
 ```
 
-##### SemaphoreSlim
+#### SemaphoreSlim
 `SemaphoreSlim` is a lightweight synchronization primitive in .NET that limits the number of threads (or asynchronous operations) that can access a resource at the same time.
 
 Unlike `lock`, which only allows one thread into a critical section, `SemaphoreSlim` can allow `N` concurrent threads.
@@ -1044,39 +1076,6 @@ public async Task DoWorkAsync()
 > [!WARNING]
 >
 > Always call `Release()` in a `finally` block.
-
-##### Stack Memory is Thread-safe (with caveats)
-Stack memory is thread-safe per thread because each thread has its own call stack that no other thread can access. This means that local variables, method call frames, and arguments passed to methods are stored in a stack that's private to the thread.
-
-There are caveats to be aware of:
-- **Captured variables in closures:** local variable captured by a lambda or anonymous method might get hoisted to the heap, and not remain stack-allocated.
-- **Ref/out parameters and unsafe code:** passing references (e.g., `ref`, `out`, or pointers) from the stack to another thread, breaks thread-safety.
-- **Async/await:** local variables declared before an `await` might be moved to the heap, invalidating stack-safety.
-
-> [!WARNING]
->
-> Stack memory is thread-local and not shared by design. However, you can break this isolation by doing something like:
->
-> async/await
-> ```C#
-> async Task Demo()
-> {
->     int counter = 0;
->     await Task.Delay(100); // 'counter' may now be on the heap
->     counter++;
-> }
-> ```
->
-> Ref/out
-> ```C#
-> void Dangerous(ref int x)
-> {
->    Task.Run(() =>
->    {
->        x = 42; // Accessing another thread's stack memory
->    });
->}
-> ```
 
 ## Concurrency
 The operating system runs code on threads. Threads execute independently from each other and are each allocated stack memory for their context. This is where a method's local variables and arguments are stored.
