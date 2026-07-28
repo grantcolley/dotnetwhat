@@ -964,7 +964,7 @@ count++;
 >Locking limits access to a variable to a single thread at a time and is the safest way to prevent race conditions and ensure data consistency when multiple threads attempt to read or write shared data concurrently.
 
 ##### Interlocked
-`Interlocked` performs atomic read-modify-write operations.
+`Interlocked` performs thread-safe atomic read-modify-write operations.
 
 ```C#
 // Instead of this (performs three operations):
@@ -982,7 +982,7 @@ Interlocked.CompareExchange(ref state, 1, 0); //Change to 1 only if current valu
 ```
 
 ##### Volatile
-`volatile` tells the compiler and CPU:
+`volatile` doesn't make operations on it thread-safe, rather it tells the compiler and CPU:
 
 > "Always read this value directly from memory, and don't reorder accesses around it."
 
@@ -1012,6 +1012,10 @@ while (!cached)
 - latest writes become visible
 - reads are not cached in registers
 - memory ordering around the access
+
+> [!TIP]
+>
+> `Volatile.Read` is useful when one thread publishes a value and another thread consumes it. 
 
 ##### Interlocked vs lock
 ```C#
