@@ -69,10 +69,10 @@
     - [Synchronisation Primitives](#synchronisation-primitives)
     - [Async Synchronisation](#async-synchronisation)
     - [Task Parallel Library (TPL)](#task-parallel-library-tpl)
-    - [Cross-process synchronisation](#cross-process-synchronisation)
     - [Thread-safe Lazy Initialisation](#thread-safe-lazy-initialisation)
     - [Immutable Collections](#immutable-collections)
     - [Cancellation](#cancellation)
+    - [Cross-process synchronisation](#cross-process-synchronisation)
   - [Choosing the right construct](#choosing-the-right-construct)
   - [Locks and Mutex](#locks-and-mutex)
   - [SemaphoreSlim](#semaphoreslim)
@@ -1130,23 +1130,6 @@ Higher-level abstractions.
 | `Task.WhenAny()`          | First task wins               |
 | `CancellationToken`       | Cooperative cancellation      |
 
-##### Cross-process synchronisation
-Named `Mutex` and `Semaphore` are backed by a named operating system kernel object. The operating system will either create a new named kernel object, or return a handle to the existing kernel object if one already exists. A handle is simply an identifier that lets your process access an operating system object.
-
-Conceptually it looks like this:
-```
-                 Operating System
-        +-----------------------------+
-        |   Mutex "Global\MyMutex"    |
-        |   Owner: Process A/Thread 5 |
-        +-----------------------------+
-              ^                  ^
-              |                  |
-          Handle A           Handle B
-              |                  |
-          Process A          Process B
-```
-
 ##### Thread-safe Lazy Initialisation
 | Construct         | Purpose                |
 | ----------------- | ---------------------- |
@@ -1165,6 +1148,23 @@ Rather than synchronising, avoid mutation.
 | ------------------------- | -------------------- |
 | `CancellationTokenSource` | Creates cancellation |
 | `CancellationToken`       | Pass to operations   |
+
+##### Cross-process synchronisation
+Named `Mutex` and `Semaphore` are backed by a named operating system kernel object. The operating system will either create a new named kernel object, or return a handle to the existing kernel object if one already exists. A handle is simply an identifier that lets your process access an operating system object.
+
+Conceptually it looks like this:
+```
+                 Operating System
+        +-----------------------------+
+        |   Mutex "Global\MyMutex"    |
+        |   Owner: Process A/Thread 5 |
+        +-----------------------------+
+              ^                  ^
+              |                  |
+          Handle A           Handle B
+              |                  |
+          Process A          Process B
+```
 
 ##### Choosing the right construct
 | Scenario                       | Recommended construct                                  |
