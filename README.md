@@ -1190,6 +1190,12 @@ public void Multithread_Increment()
 }
 ```
 
+> [!TIP]
+>
+> Why can't `lock` be used with `async\await`?
+> - It is thread-affine — the thread that enters the lock must also exit it.
+> - - It blocks the current thread until the lock is available.
+
 #### SemaphoreSlim
 `SemaphoreSlim` is a lightweight synchronization primitive in .NET that limits the number of threads (or asynchronous operations) that can access a resource at the same time.
 
