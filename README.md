@@ -1137,10 +1137,10 @@ Higher-level abstractions.
 
 ##### Immutable Collections
 Rather than synchronising, avoid mutation.
-| Construct                 | Purpose              |
-| ------------------------- | -------------------- |
-| `CancellationTokenSource` | Creates cancellation |
-| `CancellationToken`       | Pass to operations   |
+- `ImmutableArray<T>`
+- `ImmutableList<T>`
+- `ImmutableDictionary<TKey,TValue>`
+- `ImmutableHashSet<T>`
 
 ##### Cancellation
 | Construct                 | Purpose              |
