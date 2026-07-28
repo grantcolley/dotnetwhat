@@ -982,7 +982,7 @@ Interlocked.CompareExchange(ref state, 1, 0); //Change to 1 only if current valu
 ```
 
 ##### Volatile
-volatile tells the compiler and CPU:
+`volatile` tells the compiler and CPU:
 
 > "Always read this value directly from memory, and don't reorder accesses around it."
 
