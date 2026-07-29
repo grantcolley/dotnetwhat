@@ -1964,13 +1964,15 @@ We can see in the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_C
 #### Lambda
 A [Lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression is used to create an anonymous function. Input parameters go to the left of the [lambda operator](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-operator) `=>` while the lambda expression or statement block goes on the right.
 
-An [expression lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#expression-lambdas) returns the result of the expression. A [statement lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#statement-lambdas) resembles an expression lambda except that its statements are enclosed in braces.
-
-Lambda expressions can be used in any code that requires instances of delegate types or expression trees, for example as an argument to the [Task.Run(Action)](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run?view=net-7.0#system-threading-tasks-task-run(system-action)) or when you write [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/).
-
+An [expression lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#expression-lambdas) returns the result of the expression. 
+```C#
+(input-parameters) => expression
+```
+A [statement lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions#statement-lambdas) resembles an expression lambda except that its statements are enclosed in braces.
 ```C#
  (input parameters) => expression / { /* statement block */ }
 ```
+Lambda expressions can be used in any code that requires instances of delegate types or expression trees, for example as an argument to the [Task.Run(Action)](https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.run?view=net-7.0#system-threading-tasks-task-run(system-action)) or when you write [LINQ](https://learn.microsoft.com/en-us/dotnet/csharp/linq/).
 
 In the following [example](https://github.com/grantcolley/dotnetwhat/blob/main/src/Multiplier.cs) we use lambda to multiply two parameters and return the result. We can see in [IL Disassembler](https://learn.microsoft.com/en-us/dotnet/framework/tools/ildasm-exe-il-disassembler) the compiler converts the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression into a private nested container class (inside the red box), with a ``System.Func`3<int32,int32,int32>`` [delegate](https://learn.microsoft.com/en-us/dotnet/api/system.func-3), and a method `<Multiply>b__0_0 : int32(int32,int32)` for the multiplication routine. The final listing shows the [**CIL instructions**](https://en.wikipedia.org/wiki/List_of_CIL_instructions) output for the original `Multiply(int32 value1, int32 value2)` that consumes the [lambda](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/lambda-expressions) expression.
 
