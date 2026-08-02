@@ -5409,10 +5409,14 @@ Benefits:
 - Cleaner code
 - Better maintainability
 
+> [!TIP]
+>
+> You bind a ViewModel to a WPF View by assigning the View’s `DataContext` to an instance of the ViewModel.
+
 #### 4. What is Data Binding?
 Data Binding connects UI controls to data. Updates to the data automatically reflect in the UI, and vice-versa.
 
-#### 5. What is DataContext?
+#### 5. What is `DataContext`?
 `DataContext` in WPF is the default data source for all data bindings within a UI element and its children. When you set `DataContext` on a element, every child element automatically inherits that same context.
 ```C#
 DataContext = new MainViewModel();
@@ -5425,7 +5429,7 @@ public string Title { get; set; }
 <TextBlock Text="{Binding Title}" />
 ```
 
-#### 6. What is INotifyPropertyChanged?
+#### 6. What is `INotifyPropertyChanged`?
 It notifies the UI when a property changes. Without this interface, the UI won't refresh automatically.
 ```C#
 public class Person : INotifyPropertyChanged
@@ -5446,14 +5450,65 @@ public class Person : INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 }
 ```
+#### 7. Explain 4 different ways to bind a `ViewModel` to a `View`
+- Set `DataContext` in code‑behind (View‑first)
 
-#### 7. What is ObservableCollection?
+This is the simplest and most common approach for small apps.
+```C#
+public partial class MainWindow : Window
+{
+    public MainWindow()
+    {
+        InitializeComponent();
+        DataContext = new MainViewModel();
+    }
+}
+```
+
+- Set `DataContext` in XAML
+
+Useful for simple screens or design‑time support.
+```XAML
+<UserControl x:Class="MyApp.Views.LoginView"
+             xmlns:vm="clr-namespace:MyApp.ViewModels">
+
+    <UserControl.DataContext>
+        <vm:LoginViewModel />
+    </UserControl.DataContext>
+
+    <Grid>
+        <TextBlock Text="{Binding Message}" />
+    </Grid>
+</UserControl>
+```
+
+- Use a `ViewModel` `Locator` (DI / IoC)
+
+Common in larger apps using dependency injection (Prism, MVVM Light, CommunityToolkit.MVVM). The `locator` resolves the `ViewModel` from a DI container.
+```XAML
+<UserControl DataContext="{Binding LoginViewModel, Source={StaticResource Locator}}" />
+```
+
+- Advanced: ViewModel‑first with `DataTemplates`
+
+Instead of directly binding a `View` to a `ViewModel`, you bind a `ContentControl` to a `ViewModel`, and WPF chooses the correct `View` automatically using a `DataTemplate`. In this example, when `CurrentViewModel` is a `DashboardViewModel`, WPF renders `DashboardView`.
+```C#
+<Window.Resources>
+    <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+        <views:DashboardView />
+    </DataTemplate>
+</Window.Resources>
+
+<ContentControl Content="{Binding CurrentViewModel}" />
+```
+
+#### 8. What is `ObservableCollection`?
 It automatically updates the UI when items are added or removed.
 ```C#
 ObservableCollection<Employee> Employees
 ```
 
-#### 8. What is ICommand?
+#### 9. What is `ICommand`?
 Commands replace button click events in MVVM. `RelayCommand` is a reusable implementation of `ICommand`.
 
 ```C#
@@ -5465,11 +5520,11 @@ Save();
 ```
 
 ```XML
-/* Clieck event handled by Save() in ViweModel */
+/* Click event handled by Save() in ViweModel */
 <Button Command="{Binding SaveCommand}" />
 ```
 
-#### 9. Explain Dependency Property
+#### 10. Explain Dependency Property
 Dependency Properties are special WPF properties that wrap regular properties and support:
 - Binding
 - Animation
@@ -5485,7 +5540,14 @@ public static readonly DependencyProperty TitleProperty =
         typeof(MyControl));
 ```
 
-#### 10. What are Attached Properties?
+#### 11. WPF gives you three specific mechanisms you can register to react when a `DependencyProperty` changes.
+| Mechanism 				| When it fires                       | Purpose                      |
+| ------------------------- | ----------------------------------- | ---------------------------- |
+| `ValidateValueCallback`   | First, before coercion and storage  | Reject invalid values        |
+| `CoerceValueCallback`     | Second, before storing the value    |	Adjust or override the value |
+| `PropertyChangedCallback` | Last, after the value changes       |	React to changes             |
+
+#### 12. What are Attached Properties?
 Attached properties let one class “attach” extra information to another class, usually for layout or behaviour.
 They are a key part of WPF’s flexibility and one of the reasons XAML can express complex UI behaviour without messy inheritance chains.
 
@@ -5496,13 +5558,13 @@ E.g. `Grid.Row` is an attached property that doesn't belong to Button.
 </Grid>
 ```
 
-#### 11. What is a UserControl?
+#### 13. What is a `UserControl`?
 A reusable custom UI component.
 ```
 Customer.xaml
 ```
 
-#### 12. What is ResourceDictionary?
+#### 14. What is `ResourceDictionary`?
 Stores reusable resources e.g. `Styles`, `Colors`, `Templates`, `Brushes`
 ```XAML
 <ResourceDictionary>
@@ -5512,14 +5574,14 @@ Stores reusable resources e.g. `Styles`, `Colors`, `Templates`, `Brushes`
 </ResourceDictionary>
 ```
 
-#### 12. StaticResource vs DynamicResource
+#### 15. `StaticResource` vs `DynamicResource`
 `StaticResource` is loaded once. `DynamicResource` can change during runtime (useful for themes).
 ```XAML
 Background="{StaticResource MainBrush}"
 Background="{DynamicResource MainBrush}"
 ```
 
-#### 13. What are Styles?
+#### 16. What are Styles?
 A reusable collection of property settings that you apply to controls to give them a consistent appearance.
 ```XML
 <Style TargetType="Button">
@@ -5527,17 +5589,17 @@ A reusable collection of property settings that you apply to controls to give th
 </Style>
 ```
 
-#### 14. What is a ControlTemplate?
+#### 17. What is a `ControlTemplate`?
 Changes how a control looks e.g. make a `Button` look circular without changing functionality.
 
-#### 15. Difference between ControlTemplate and DataTemplate
+#### 18. Difference between ControlTemplate and DataTemplate
 | ControlTemplate            | DataTemplate            |
 | -------------------------- | ----------------------- |
 | Changes control appearance | Changes data appearance |
 | Button                     | ListBox Item            |
 | Control UI                 | Data UI                 |
 
-#### 16. What is DataTemplate?
+#### 19. What is DataTemplate?
 Defines how data should be visually represented.
 ```XML
 <DataTemplate DataType="{x:Type local:Person}">
@@ -5548,28 +5610,28 @@ Defines how data should be visually represented.
 </DataTemplate>
 ```
 
-#### 17. What is a Value Converter?
+#### 20. What is a Value Converter?
 Converts data during binding.
 ```C#
 Visibility="{Binding IsVisible,
              Converter={StaticResource BoolConverter}}"
 ```
 
-#### 18. Binding Modes
-- OneWay
-- TwoWay
-- OneTime
-- OneWayToSource
-- Default
+#### 21. Binding Modes
+- `OneWay`
+- `TwoWay`
+- `OneTime`
+- `OneWayToSource`
+- `Default`
 
-#### 19. Explain `ItemsControl`.
+#### 22. Explain `ItemsControl`.
 Base class for:
 - ListBox
 - ComboBox
 - ListView
 - TreeView
 
-#### 20. What is Dispatcher?
+#### 23. What is `Dispatcher`?
 Only the UI thread can update UI controls.
 ```C#
 Dispatcher.Invoke(() =>
@@ -5578,24 +5640,24 @@ Dispatcher.Invoke(() =>
 });
 ```
 
-#### 21. What is Virtualization?
+#### 24. What is Virtualization?
 Only visible rows are created.
 Benefits:
 - Faster loading
 - Lower memory usage
 - Better scrolling performance
 
-#### 22. Explain Routed Events.
+#### 25. Explain Routed Events.
 Events travel through the visual tree.
-- Bubbling: bubbles upwards e.g. `Button.Click`
-- Tunneling: tunnels downwards e.g. `PreviewMouseDown`
-- Direct: no routing occurs e.g. `MouseEnter`
+- `Bubbling`: bubbles upwards e.g. `Button.Click`
+- `Tunneling`: tunnels downwards e.g. `PreviewMouseDown`
+- `Direct`: no routing occurs e.g. `MouseEnter`
 
-#### 23. What is Visual Tree vs Logical Tree?
+#### 26. What is Visual Tree vs Logical Tree?
 - Logical Tree: Represents the application's logical structure.
 - Visual Tree: Represents every rendered visual element.
 
-#### 24. Explain Prism or CommunityToolkit.Mvvm.
+#### 27. Explain Prism or CommunityToolkit.Mvvm.
 Popular MVVM frameworks that provide:
 - Navigation
 - Dependency Injection
@@ -5606,20 +5668,20 @@ Popular MVVM frameworks that provide:
 
 They reduce boilerplate code in large WPF applications.
 
-#### 25. How do you debug binding errors?
+#### 28. How do you debug binding errors?
 Check the Output window in Visual Studio for binding error messages. Common issues include:
 - Incorrect property names
 - Missing `DataContext`
 - Incorrect binding paths
 - Missing `INotifyPropertyChanged`
 
-#### 26. What is the difference between `DependencyObject` and `INotifyPropertyChanged`?
+#### 29. What is the difference between `DependencyObject` and `INotifyPropertyChanged`?
 - `DependencyObject` is the base class for WPF objects that use dependency properties.
 - `INotifyPropertyChanged` is used in ViewModels and models to notify the UI about property changes.
 
 Use dependency properties for custom controls, and `INotifyPropertyChanged` for ViewModels in MVVM.
 
-#### 27. What are some WPF performance best practices?
+#### 30. What are some WPF performance best practices?
 - Use UI virtualization for large lists.
 - Prefer `ObservableCollection<T>` for bound collections.
 - Avoid unnecessary `UpdateSourceTrigger=PropertyChanged`.
@@ -5629,7 +5691,7 @@ Use dependency properties for custom controls, and `INotifyPropertyChanged` for 
 - Use Freezable objects (e.g., brushes) when appropriate.
 - Avoid memory leaks by unsubscribing from events or using weak event patterns.
 
-#### 28. Common Scenario-Based Questions
+#### 31. Common Scenario-Based Questions
 `Q`: Why isn't my UI updating after changing a property?
 
 `A`: The property likely doesn't raise `PropertyChanged`, or the `DataContext`/binding path is incorrect.
