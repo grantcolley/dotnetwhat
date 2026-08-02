@@ -177,6 +177,7 @@
       	- [Implement LRU Cache](#implement-lru-cache)
       - [Senior](#senior)
       	- [Implement Producer/Consumer](#implement-producerconsumer)
+	- [WPF](#wpf)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -5383,6 +5384,267 @@ Complexity
 | Operation |       Complexity |
 | --------- | ---------------: |
 |           |                  |
+
+### WPF
+#### 1. What is WPF?
+WPF (Windows Presentation Foundation) is Microsoft's UI framework for building Windows desktop applications. It uses XAML for UI design and C# for application logic.
+Features include:
+- XAML-based UI
+- Data Binding
+- MVVM architecture
+- Styling and Templates
+
+#### 2. What is XAML?
+XAML (eXtensible Application Markup Language) is an XML-based language used to define UI elements. Instead of creating controls in C#, you declare them in XAML.
+
+#### 3. What is MVVM?
+MVVM stands for:
+- Model: business data
+- View: XAML UI
+- ViewModel: Bridge between Model and View
+
+Benefits:
+- Separation of concerns
+- Easy testing
+- Cleaner code
+- Better maintainability
+
+#### 4. What is Data Binding?
+Data Binding connects UI controls to data. Updates to the data automatically reflect in the UI, and vice-versa.
+
+#### 5. What is DataContext?
+`DataContext` in WPF is the default data source for all data bindings within a UI element and its children. When you set `DataContext` on a element, every child element automatically inherits that same context.
+```C#
+DataContext = new MainViewModel();
+
+public string Title { get; set; }
+```
+
+```XML
+/* TextBlock binds to Title in ViewModel */
+<TextBlock Text="{Binding Title}" />
+```
+
+#### 6. What is INotifyPropertyChanged?
+It notifies the UI when a property changes. Without this interface, the UI won't refresh automatically.
+```C#
+public class Person : INotifyPropertyChanged
+{
+    private string _name;
+
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            PropertyChanged?.Invoke(this,
+                new PropertyChangedEventArgs(nameof(Name)));
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+}
+```
+
+#### 7. What is ObservableCollection?
+It automatically updates the UI when items are added or removed.
+```C#
+ObservableCollection<Employee> Employees
+```
+
+#### 8. What is ICommand?
+Commands replace button click events in MVVM. `RelayCommand` is a reusable implementation of `ICommand`.
+
+```C#
+public ICommand SaveCommand { get; }
+
+SaveCommand = new RelayCommand(Save);
+
+Save();
+```
+
+```XML
+/* Clieck event handled by Save() in ViweModel */
+<Button Command="{Binding SaveCommand}" />
+```
+
+#### 9. Explain Dependency Property
+Dependency Properties are special WPF properties that wrap regular properties and support:
+- Binding
+- Animation
+- Styling
+- Default values
+- Change notifications
+
+```C#
+public static readonly DependencyProperty TitleProperty =
+    DependencyProperty.Register(
+        "Title",
+        typeof(string),
+        typeof(MyControl));
+```
+
+#### 10. What are Attached Properties?
+Attached properties let one class “attach” extra information to another class, usually for layout or behaviour.
+They are a key part of WPF’s flexibility and one of the reasons XAML can express complex UI behaviour without messy inheritance chains.
+
+E.g. `Grid.Row` is an attached property that doesn't belong to Button.
+```XML
+<Grid>
+    <Button Grid.Row="1"/>
+</Grid>
+```
+
+#### 11. What is a UserControl?
+A reusable custom UI component.
+```
+Customer.xaml
+```
+
+#### 12. What is ResourceDictionary?
+Stores reusable resources e.g. `Styles`, `Colors`, `Templates`, `Brushes`
+```XAML
+<ResourceDictionary>
+	<Style TargetType="Button">
+		/* style settings */
+	</Style>
+</ResourceDictionary>
+```
+
+#### 12. StaticResource vs DynamicResource
+`StaticResource` is loaded once. `DynamicResource` can change during runtime (useful for themes).
+```XAML
+Background="{StaticResource MainBrush}"
+Background="{DynamicResource MainBrush}"
+```
+
+#### 13. What are Styles?
+A reusable collection of property settings that you apply to controls to give them a consistent appearance.
+```XML
+<Style TargetType="Button">
+    <Setter Property="FontSize" Value="18"/>
+</Style>
+```
+
+#### 14. What is a ControlTemplate?
+Changes how a control looks e.g. make a `Button` look circular without changing functionality.
+
+#### 15. Difference between ControlTemplate and DataTemplate
+| ControlTemplate            | DataTemplate            |
+| -------------------------- | ----------------------- |
+| Changes control appearance | Changes data appearance |
+| Button                     | ListBox Item            |
+| Control UI                 | Data UI                 |
+
+#### 16. What is DataTemplate?
+Defines how data should be visually represented.
+```XML
+<DataTemplate DataType="{x:Type local:Person}">
+    <StackPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding Name}" Margin="5"/>
+        <TextBlock Text="{Binding Age}" Margin="5"/>
+    </StackPanel>
+</DataTemplate>
+```
+
+#### 17. What is a Value Converter?
+Converts data during binding.
+```C#
+Visibility="{Binding IsVisible,
+             Converter={StaticResource BoolConverter}}"
+```
+
+#### 18. Binding Modes
+- OneWay
+- TwoWay
+- OneTime
+- OneWayToSource
+- Default
+
+#### 19. Explain `ItemsControl`.
+Base class for:
+- ListBox
+- ComboBox
+- ListView
+- TreeView
+
+#### 20. What is Dispatcher?
+Only the UI thread can update UI controls.
+```C#
+Dispatcher.Invoke(() =>
+{
+    Status = "Done";
+});
+```
+
+#### 21. What is Virtualization?
+Only visible rows are created.
+Benefits:
+- Faster loading
+- Lower memory usage
+- Better scrolling performance
+
+#### 22. Explain Routed Events.
+Events travel through the visual tree.
+- Bubbling: bubbles upwards e.g. `Button.Click`
+- Tunneling: tunnels downwards e.g. `PreviewMouseDown`
+- Direct: no routing occurs e.g. `MouseEnter`
+
+#### 23. What is Visual Tree vs Logical Tree?
+- Logical Tree: Represents the application's logical structure.
+- Visual Tree: Represents every rendered visual element.
+
+#### 24. Explain Prism or CommunityToolkit.Mvvm.
+Popular MVVM frameworks that provide:
+- Navigation
+- Dependency Injection
+- Commands
+- Observable properties
+- Messaging
+- Dialog services
+
+They reduce boilerplate code in large WPF applications.
+
+#### 25. How do you debug binding errors?
+Check the Output window in Visual Studio for binding error messages. Common issues include:
+- Incorrect property names
+- Missing `DataContext`
+- Incorrect binding paths
+- Missing `INotifyPropertyChanged`
+
+#### 26. What is the difference between `DependencyObject` and `INotifyPropertyChanged`?
+- `DependencyObject` is the base class for WPF objects that use dependency properties.
+- `INotifyPropertyChanged` is used in ViewModels and models to notify the UI about property changes.
+
+Use dependency properties for custom controls, and `INotifyPropertyChanged` for ViewModels in MVVM.
+
+#### 27. What are some WPF performance best practices?
+- Use UI virtualization for large lists.
+- Prefer `ObservableCollection<T>` for bound collections.
+- Avoid unnecessary `UpdateSourceTrigger=PropertyChanged`.
+- Reuse styles and templates.
+- Perform long-running work with `async/await`.
+- Minimize the visual tree depth.
+- Use Freezable objects (e.g., brushes) when appropriate.
+- Avoid memory leaks by unsubscribing from events or using weak event patterns.
+
+#### 28. Common Scenario-Based Questions
+`Q`: Why isn't my UI updating after changing a property?
+
+`A`: The property likely doesn't raise `PropertyChanged`, or the `DataContext`/binding path is incorrect.
+
+`Q`: Why use `ObservableCollection<T>` instead of `List<T>`?
+
+`A`: `ObservableCollection<T>` notifies the UI when items are added or removed, while `List<T>` does not.
+
+`Q`: How would you keep the UI responsive while loading data from a database?
+
+`A`: Use asynchronous methods (`async/await`) to perform the database call off the UI thread, then update the bound data on completion.
+
+`Q`: How do you unit test a WPF application?
+
+`A`: Focus on testing the ViewModels, business logic, and services. Keep code-behind minimal by following MVVM, making most application logic testable without the UI.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
