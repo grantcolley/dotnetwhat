@@ -122,7 +122,13 @@
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
 - [CI/CD](#cicd)
-- [Unit Testing](#unit-testing)
+- [Testing](#testing)
+ 	- [Testing](#unit-testing)
+  		- [Testing frameworks](#testing-frameworks)
+  		- [Mocking](#mocking) 
+    - [TDD](#tdd) 
+    - [BDD](#bdd) 
+    - [TDD vs BDD](#tdd-vs-bdd) 
 - [REST](#rest)
 - [ASP.NET Core Web API middleware pipeline](#aspnet-core-web-api-middleware-pipeline)
 - [S.O.L.I.D Principles](#solid-principles)
@@ -2724,7 +2730,108 @@ Typical CI/CD Pipeline
 - If tests pass, the application is packaged.
 - The package is deployed to a staging environment (Continuous Delivery) or directly to production (Continuous Deployment).
 
-## Unit Testing
+## Testing
+### Unit Testing
+#### Testing frameworks
+Testing frameworks that provide the infrastructure for defining and running tests.
+| Framework  | Typical syntax | What it is                                     |
+| ---------- | -------------- | ---------------------------------------------- |
+| **NUnit**  | `[Test]`       | Popular general-purpose .NET testing framework |
+| **MSTest** | `[TestMethod]` | Microsoft's testing framework                  |
+| **xUnit**  | `[Fact]`       | Very popular modern .NET testing framework     |
+They all solve roughly the same problem, using a familiar pattern:
+```C#
+//Arrange
+
+//Act
+
+//Assert
+```
+#### Mocking
+Mocking libraries are useful when the class you're testing depends on other things. One reason interfaces and dependency injection are so common in C# applications is it makes testing easier using mocking.
+\
+Mocking libraries include: `Moq`, `NSubstitute`, and `FakeItEasy`.
+\
+The following test says: When `PlaceOrder()` is called, verify that `SendConfirmation()` was called exactly once.
+```C#
+[Test]
+public void PlaceOrder_SendsConfirmationEmail()
+{
+    var emailMock = new Mock<IEmailService>();
+
+    var service = new OrderService(emailMock.Object);
+
+    var order = new Order
+    {
+        CustomerEmail = "customer@example.com"
+    };
+
+    service.PlaceOrder(order);
+
+    emailMock.Verify(
+        x => x.SendConfirmation("customer@example.com"),
+        Times.Once);
+}
+```
+### TDD
+TDD — Test-Driven Development usually follows:
+```
+Write a failing test
+        ↓
+Write enough code to make it pass
+        ↓
+Refactor
+        ↓
+Repeat
+```
+### BDD
+BDD stands for Behavior-Driven Development. It’s a way of designing and testing software by describing how the system should behave from the user or business point of view.
+\
+Instead of thinking mainly in terms of methods and classes, BDD asks:
+> “Given this situation, when something happens, what should the system do?”
+
+A common BDD format is:
+```
+Given some starting condition
+When an action happens
+Then an expected result should occur
+```
+For example, for an online shop:
+```
+Given a customer has £100 in their account
+When they purchase an item costing £30
+Then their balance should be £70
+```
+That maps quite naturally to a test:
+```
+[Test]
+public void Purchase_ReducesCustomerBalance()
+{
+    // Given
+    var customer = new Customer(balance: 100);
+
+    // When
+    customer.Purchase(30);
+
+    // Then
+    Assert.That(customer.Balance, Is.EqualTo(70));
+}
+```
+BDD is also often used for higher-level business scenarios. For example:
+```
+Feature: Login
+
+Scenario: User enters the correct password
+    Given the user has a registered account
+    When they enter the correct password
+    Then they should be logged in
+```
+This style is called Gherkin, and tools such as `Reqnroll` or historically `SpecFlow` can turn those scenarios into executable .NET tests.
+
+### TDD vs BDD
+> TDD: “Does this unit of code work correctly?”
+> 
+> BDD: “Does the system behave the way the user/business expects?”
 
 ## REST
 **REST (Representational State Transfer)** is a widely used architectural style for designing networked applications, particularly APIs, that allows client-server communication using HTTP methods like `GET`, `POST`, `PUT`, and `DELETE`. It was introduced to improve web efficiency through constraints like statelessness, uniform interfaces, and cacheability. 
