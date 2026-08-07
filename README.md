@@ -2711,12 +2711,98 @@ GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscript
 Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
 
 ## CI/CD
+CI/CD stands for Continuous Integration and Continuous Delivery/Continuous Deployment. It is a DevOps practice that automates building, testing, and deploying software.
+
+- **Continuous Integration (CI):** Developers frequently merge code into a shared repository. Each change automatically triggers a build and automated tests to catch bugs early and ensure the new code integrates correctly.
+- **Continuous Delivery (CD):** After passing all tests, the application is automatically prepared for release. Deployment to production still requires a manual approval.
+- **Continuous Deployment (CD):** Goes one step further by automatically deploying every successful change to production without manual intervention.
+
+Typical CI/CD Pipeline
+- Developer commits code to a Git repository.
+- CI server (e.g., GitHub Actions, Azure DevOps, Jenkins) builds the application.
+- Automated tests are run.
+- If tests pass, the application is packaged.
+- The package is deployed to a staging environment (Continuous Delivery) or directly to production (Continuous Deployment).
 
 ## Unit Testing
 
 ## REST
-**REST (REpresentational State Transfer)** is a widely used architectural style for designing networked applications, particularly APIs, that allows client-server communication using HTTP methods like `GET`, `POST`, `PUT`, and `DELETE`. It was introduced by Roy Fielding in 2000 to improve web efficiency through constraints like statelessness, uniform interfaces, and cacheability. 
+**REST (Representational State Transfer)** is a widely used architectural style for designing networked applications, particularly APIs, that allows client-server communication using HTTP methods like `GET`, `POST`, `PUT`, and `DELETE`. It was introduced to improve web efficiency through constraints like statelessness, uniform interfaces, and cacheability. 
 
+**REST APIs use HTTP methods**
+\
+These methods tell the server what you want to do:
+| Method     | Meaning              | Example              | URL                             |
+| ---------- | -------------------- | -------------------- | ------------------------------- |
+| **GET**    | Read data            | Get a list of users  | `GET /users` and `GET /users/3` |
+| **POST**   | Create new data      | Create a new account | `POST /users`                   |
+| **PUT**    | Update existing data | Change your profile  | `PUT /users/3`                  |
+| **DELETE** | Remove data          | Delete a post        | `DELETE /users/3`               |
+
+Here are the key REST principles:
+1. Resources are the focus
+REST is built around resources (things), not actions. The `URL` identifies the resource, while the `HTTP method` describes the action.
+\
+Good REST `GET /users/42` as apposed to `GET /getUser?id=42`.
+
+2. HTTP methods have specific meanings
+REST expects methods to be used consistently:
+- GET → retrieve data
+- POST → create something
+- PUT → replace/update something
+- PATCH → partially update something
+- DELETE → remove something
+
+Using POST for everything technically works, but it isn't considered RESTful.
+
+3. Statelessness
+This is one of the biggest REST principles.
+\
+Every request contains everything the server needs to process it. The server doesn't rely on remembering previous requests. Each request stands on its own.
+\
+For example:
+```
+GET /orders/123
+Authorization: Bearer abc123
+```
+
+4. Standard response codes
+REST APIs use HTTP status codes consistently:
+- `200 OK` – Success
+- `201 Created` – Resource created
+- `204 No Content` – Success, nothing to return
+- `400 Bad Request` – Client error
+- `401 Unauthorized` – Authentication required
+- `404 Not Found` – Resource doesn't exist
+- `500 Internal` Server Error – Server problem
+
+5. Representations
+The server sends a representation of the resource, usually JSON.
+Request `GET /users/42`
+\
+Response (The JSON is the representation of the user resource):
+```JSON
+{
+  "id": 42,
+  "name": "Alice"
+}
+```
+
+6. Predictable URLs
+REST APIs are designed to be intuitive.
+\
+The URLs identify resources, while the HTTP method expresses what you want to do with them.
+```
+GET    /users
+GET    /users/42
+POST   /users
+PUT    /users/42
+DELETE /users/42
+
+GET    /users/42/orders
+POST   /users/42/orders
+```
+ 
 ## ASP.NET Core Web API middleware pipeline
 he ASP.NET Core Web API middleware pipeline is the sequence of middleware components that process every HTTP request and response.
 
