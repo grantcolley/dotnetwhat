@@ -2745,7 +2745,7 @@ Codex – OpenAI’s coding agent. Visual Studio Code offers the best integratio
 │  ChatGPT                      GitHub Copilot                     Custom App      │
 │                                                                                  │
 │  ┌────────────────────────────────────────────────────────────────────────────┐  │
-│  │ User Interface (Chat / IDE / Web / Mobile)                                 │  │
+│  │ User Interface (Chat / IDE (Visual Studio, VS Code) / Web / Mobile)        │  │
 │  ├────────────────────────────────────────────────────────────────────────────┤  │
 │  │ Agent                                                                      │  │
 │  │ • Understands the goal                                                     │  │
