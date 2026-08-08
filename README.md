@@ -151,6 +151,15 @@
     - [Exponential Time `O(2ⁿ)`](#exponential-time-o2ⁿ)
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
+- [Design Patterns](#design-patterns)
+	- [Strategy](#strategy)
+ 	- [Factory Method](#factory-method)
+ 	- [Decorator](#decorator)
+ 	- [Adapter](#adapter)
+ 	- [Observer](#observer)
+ 	- [Chain of Responsibility](#chain-of-responsibility)
+ 	- [Builder](#builder)
+ 	- [Singleton](#adapter)
 - [Interview Prep](#interview-prep)
 	- [Reverse an Array](#reverse-an-array)
 	- [Rotate an array](#rotate-an-array)
@@ -3608,6 +3617,573 @@ int Fibonacci(int n)
 - `O(n)`: Grows steadily
 - `O(n²)`: Slows down fast with large input
 - `O(2ⁿ)`: Unusable beyond ~20 items
+
+## Design Patterns
+| Pattern                     | Memory aid                 | Key concepts           |
+| --------------------------- | -------------------------- | ------------------------------------- |
+| **Strategy**                | **Choose behavior**        | Interfaces, DI, Open/Closed Principle |
+| **Factory Method**          | **Create object**          | Object creation                       |
+| **Decorator**               | **Add behavior**           | Behavior composition                  |
+| **Adapter**                 | **Translate interface**    | Third-party / legacy integration      |
+| **Observer**                | **Broadcast**              | Events, delegates, publish/subscribe  |
+| **Chain of Responsibility** | **Pipeline**               | Middleware, processing pipelines      |
+| **Builder**                 | **Construct step by step** | Complex construction, fluent APIs     |
+| **Singleton**               | **One instance**           | Thread safety, DI lifetime            |
+
+### Strategy
+The Strategy Pattern is a behavioral design pattern that lets you define several ways of performing an operation, put each implementation behind the same interface, and switch between them without changing the code that uses them.
+
+A useful mental model is:
+> Strategy = “I need to perform X, but there are multiple ways of doing X.”
+
+```C#
+// First define the common contract:
+
+public interface IDiscountStrategy
+{
+    decimal CalculateDiscount(decimal price);
+}
+
+// Then create different strategies:
+
+public class RegularDiscount : IDiscountStrategy
+{
+    public decimal CalculateDiscount(decimal price)
+    {
+        return price * 0.05m;
+    }
+}
+
+public class PremiumDiscount : IDiscountStrategy
+{
+    public decimal CalculateDiscount(decimal price)
+    {
+        return price * 0.10m;
+    }
+}
+
+// Now the checkout service depends on the abstraction:
+
+public class CheckoutService
+{
+    private readonly IDiscountStrategy _discountStrategy;
+
+    public CheckoutService(IDiscountStrategy discountStrategy)
+    {
+        _discountStrategy = discountStrategy;
+    }
+
+    public decimal CalculateTotal(decimal price)
+    {
+        var discount = _discountStrategy.CalculateDiscount(price);
+
+        return price - discount;
+    }
+}
+```
+```C#
+// Usage - We can choose the strategy when creating the service.
+
+var strategy = new PremiumDiscount();
+
+var checkout = new CheckoutService(strategy);
+
+var total = checkout.CalculateTotal(100);
+
+Console.WriteLine(total); // 90
+```
+
+### Factory Method
+The Factory Method is a creational design pattern that moves object creation behind a method, so the code using an object doesn't need to know the concrete class being instantiated. Instead of scattering `new SomeClass()` etc. through the application, creation is delegated to a factory method.
+
+A useful mental model is:
+> Factory Method = “I need an object that does X, but I don't want the caller to decide exactly which concrete class to instantiate.”
+
+```C#
+// First, define the abstraction that our application works with:
+
+public interface INotification
+{
+    void Send(string message);
+}
+
+// Then concrete implementations:
+
+public class EmailNotification : INotification
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending email: {message}");
+    }
+}
+
+public class SmsNotification : INotification
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Sending SMS: {message}");
+    }
+}
+
+// Now we introduce an creator:
+
+public abstract class NotificationCreator
+{
+    public abstract INotification CreateNotification();
+
+    public void Notify(string message)
+    {
+        var notification = CreateNotification();
+
+        notification.Send(message);
+    }
+}
+
+// And concrete creators decide what gets instantiated:
+
+public class EmailNotificationCreator : NotificationCreator
+{
+    public override INotification CreateNotification()
+    {
+        return new EmailNotification();
+    }
+}
+
+public class SmsNotificationCreator : NotificationCreator
+{
+    public override INotification CreateNotification()
+    {
+        return new SmsNotification();
+    }
+}
+```
+
+```C#
+// Usage: NotificationCreator doesn't know whether it gets an EmailNotification, SmsNotification,
+// or something else. The subclass decides.
+
+NotificationCreator creator = new EmailNotificationCreator();
+
+creator.Notify("Your order has shipped.");
+```
+
+**Factory Method vs Simple Factory**
+Technically, this is usually called a Simple Factory, not the classic GoF Factory Method pattern.
+```C#
+public class NotificationFactory
+{
+    public INotification Create(string type)
+    {
+        return type switch
+        {
+            "email" => new EmailNotification(),
+            "sms" => new SmsNotification(),
+            _ => throw new ArgumentException("Unknown type")
+        };
+    }
+}
+```
+
+**Factory Method vs Strategy**
+They can look similar because both usually involve interfaces and multiple implementations. The difference is their intent.
+
+Strategy is about behavior:
+> "Which algorithm should I use?"
+
+Factory Method is about object creation:
+> "Which object should be created?"
+
+### Decorator
+The Decorator Pattern is a structural design pattern that lets you add behavior to an object by wrapping it, without modifying the original class.
+
+A useful mental model is:
+> Decorator = “I want to add functionality around an existing operation without changing the class that implements it.”
+
+```C#
+// First, define an interface:
+public interface INotifier
+{
+    void Send(string message);
+}
+
+// And the real implementation:
+public class EmailNotifier : INotifier
+{
+    public void Send(string message)
+    {
+        Console.WriteLine($"Email: {message}");
+    }
+}
+
+// Then we create a decorator that implements the same interface,
+// and it contains another object implementing that interface:
+
+public class LoggingNotifierDecorator : INotifier
+{
+    private readonly INotifier _inner;
+
+    public LoggingNotifierDecorator(INotifier inner)
+    {
+        _inner = inner;
+    }
+
+    public void Send(string message)
+    {
+        Console.WriteLine("About to send notification");
+
+        _inner.Send(message);
+
+        Console.WriteLine("Notification sent");
+    }
+}
+```
+```C#
+// Usage:
+
+// Instead of:
+INotifier notifier = new EmailNotifier();
+
+// We wrap it:
+INotifier notifier = new LoggingNotifierDecorator(new EmailNotifier());
+```
+
+### Adapter
+The Adapter Pattern is a structural design pattern that allows two classes with incompatible interfaces to work together.
+
+A useful mental model is:
+> Adapter = “I have something that does what I need, but its interface doesn't match what my application expects.”
+
+This comes up constantly when integrating third-party libraries, external APIs, and legacy code.
+
+For example, imagine your code directly depends on a third-party SDK. To decouple your business logic from the third-party SDK your application defines the interface it wants. That way you can later switch providers.
+
+```C#
+// This is a third-party class that we cannot or don't want to modify:
+
+public class StripeClient
+{
+    public void MakePayment(decimal value)
+    {
+        Console.WriteLine($"Stripe payment: £{value}");
+    }
+}
+```
+```C#
+// Our application expects:
+
+public interface IPaymentGateway
+{
+    void Pay(decimal amount);
+}
+
+// We create an adapter:
+
+public class StripeAdapter : IPaymentGateway
+{
+    private readonly StripeClient _stripeClient;
+
+    public StripeAdapter(StripeClient stripeClient)
+    {
+        _stripeClient = stripeClient;
+    }
+
+    public void Pay(decimal amount)
+    {
+        _stripeClient.MakePayment(amount);
+    }
+}
+
+// Now our business service only depends on our abstraction:
+
+public class CheckoutService
+{
+    private readonly IPaymentGateway _paymentGateway;
+
+    public CheckoutService(IPaymentGateway paymentGateway)
+    {
+        _paymentGateway = paymentGateway;
+    }
+
+    public void Checkout(decimal amount)
+    {
+        _paymentGateway.Pay(amount);
+    }
+}
+```
+```C#
+// Usage:
+
+var stripeClient = new StripeClient();
+
+IPaymentGateway gateway = new StripeAdapter(stripeClient);
+
+var checkout = new CheckoutService(gateway);
+
+checkout.Checkout(100);
+```
+
+### Observer
+The Observer Pattern is a behavioral design pattern where one object—the subject/publisher—notifies multiple interested objects—the observers/subscribers—when something changes.
+
+A useful mental model is:
+> Observer = “Something happened; whoever is interested should be notified.”
+
+```C#
+// Define an observer:
+
+public interface IOrderObserver
+{
+    void OrderPlaced(Order order);
+}
+
+// Create some observers:
+
+public class EmailObserver : IOrderObserver
+{
+    public void OrderPlaced(Order order)
+    {
+        Console.WriteLine(
+            $"Sending confirmation for order {order.Id}");
+    }
+}
+
+public class InventoryObserver : IOrderObserver
+{
+    public void OrderPlaced(Order order)
+    {
+        Console.WriteLine(
+            $"Updating inventory for order {order.Id}");
+    }
+}
+
+// Now create the publisher:
+
+public class OrderService
+{
+    private readonly List<IOrderObserver> _observers = new();
+
+    public void Subscribe(IOrderObserver observer)
+    {
+        _observers.Add(observer);
+    }
+
+    public void Unsubscribe(IOrderObserver observer)
+    {
+        _observers.Remove(observer);
+    }
+
+    public void PlaceOrder(Order order)
+    {
+        Console.WriteLine("Saving order");
+
+        // Save order...
+
+        foreach (var observer in _observers)
+        {
+            observer.OrderPlaced(order);
+        }
+    }
+}
+```
+```C#
+// Usage - Register observers:
+
+var orderService = new OrderService();
+
+orderService.Subscribe(new EmailObserver());
+orderService.Subscribe(new InventoryObserver());
+orderService.Subscribe(new AnalyticsObserver());
+
+orderService.PlaceOrder(new Order { Id = 123 });
+```
+
+**C# has Observer-like behavior built in**
+\
+C# events and delegates provide a natural implementation of the Observer Pattern.
+
+### Chain of Responsibility
+The Chain of Responsibility (CoR) is a behavioral design pattern where a request is passed through a sequence of handlers, and each handler can process the request and then either pass it to the next handler or stop the chain.
+
+A useful mental model is:
+> Chain of Responsibility = “Pass this request through a pipeline of handlers.”
+
+```C#
+// First define a base handler:
+
+public abstract class Handler
+{
+    private Handler? _next;
+
+    public Handler SetNext(Handler next)
+    {
+        _next = next;
+        return next;
+    }
+
+    public virtual void Handle(Request request)
+    {
+        _next?.Handle(request);
+    }
+}
+
+// Then create some handlers:
+
+public class ValidationHandler : Handler
+{
+    public override void Handle(Request request)
+    {
+        Console.WriteLine("Validation passed");
+        base.Handle(request);
+    }
+}
+
+public class AuthenticationHandler : Handler
+{
+    public override void Handle(Request request)
+    {
+        Console.WriteLine("Authentication passed");
+        base.Handle(request);
+    }
+}
+
+public class AuthorizationHandler : Handler
+{
+    public override void Handle(Request request)
+    {
+        Console.WriteLine("Authorization passed");
+        base.Handle(request);
+    }
+}
+```
+```C#
+var validation = new ValidationHandler();
+var authentication = new AuthenticationHandler();
+var authorization = new AuthorizationHandler();
+
+validation
+    .SetNext(authentication)
+    .SetNext(authorization);
+
+var request = new Request(){ /* stuff */ };
+
+validation.Handle(request);
+```
+
+### Builder
+The Builder Pattern is a creational design pattern used to construct a complex object step by step, separating the construction process from the final object.
+
+A useful mental model is:
+> Builder = “This object has many pieces/options, and I want a clean way to construct it.”
+
+```C#
+// The object we ultimately want is:
+
+public class Report
+{
+    public string Title { get; init; } = "";
+    public string Header { get; init; } = "";
+    public string Body { get; init; } = "";
+    public string Footer { get; init; } = "";
+    public bool IncludePageNumbers { get; init; }
+}
+
+// Now create a builder:
+public class ReportBuilder
+{
+    private string _title = "";
+    private string _header = "";
+    private string _body = "";
+    private string _footer = "";
+    private bool _includePageNumbers;
+
+    public ReportBuilder WithTitle(string title)
+    {
+        _title = title;
+        return this;
+    }
+
+    public ReportBuilder WithHeader(string header)
+    {
+        _header = header;
+        return this;
+    }
+
+    public ReportBuilder WithBody(string body)
+    {
+        _body = body;
+        return this;
+    }
+
+    public ReportBuilder WithFooter(string footer)
+    {
+        _footer = footer;
+        return this;
+    }
+
+    public ReportBuilder WithPageNumbers()
+    {
+        _includePageNumbers = true;
+        return this;
+    }
+
+    public Report Build()
+    {
+        return new Report
+        {
+            Title = _title,
+            Header = _header,
+            Body = _body,
+            Footer = _footer,
+            IncludePageNumbers = _includePageNumbers
+        };
+    }
+}
+```
+```C#
+// Usage:
+
+var report = new ReportBuilder()
+    .WithTitle("Sales Report")
+    .WithHeader("Q4 Results")
+    .WithBody("Sales increased by 12%.")
+    .WithFooter("Confidential")
+    .WithPageNumbers()
+    .Build();
+```
+
+The chained version is generally called a fluent API. A Builder often uses a fluent interface because it makes step-by-step construction pleasant.
+
+Important distinction:
+> Builder and fluent APIs are related, but they're not the same thing.
+
+### Singleton
+The Singleton Pattern is a creational design pattern that ensures a class has only one instance and provides a way to access that instance.
+
+A useful mental model is:
+> Singleton = “There should be exactly one shared instance of this object.”
+
+```C#
+public sealed class Singleton
+{
+	// The CLR guarantees that static initialization is thread-safe.
+    private static readonly Singleton _instance = new Singleton();
+
+	// The empty static constructor affects the CLR's type initialization semantics.
+    static Singleton()
+    {
+        // Not strictly necessary.
+        // This prevents beforefieldinit, giving stricter
+		// initialization timing - initialization occurs
+		// before the first static member access (or instance creation).
+    }
+
+    private Singleton()
+    {
+    }
+
+    public static Singleton Instance => _instance;
+}
+```
 
 ## Interview Prep
 - C# language knowledge
