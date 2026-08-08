@@ -118,6 +118,7 @@
   - [Query Operators](#query-operators)
   - [Deferred Execution](#deferred-execution)
   - [Fluent Syntax vs Query Expressions](#fluent-syntax-vs-query-expressions)
+- [ASP.NET Core Web API middleware pipeline](#aspnet-core-web-api-middleware-pipeline)
 - [AI in the IDE](#ai-in-the-ide)
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
@@ -132,7 +133,6 @@
     - [BDD](#bdd) 
     - [TDD vs BDD](#tdd-vs-bdd) 
 - [REST](#rest)
-- [ASP.NET Core Web API middleware pipeline](#aspnet-core-web-api-middleware-pipeline)
 - [S.O.L.I.D Principles](#solid-principles)
   - [S — Single Responsibility Principle](#s--single-responsibility-principle)
   - [O — Open/Closed Principle](#o--openclosed-principle)
@@ -2711,6 +2711,93 @@ IEnumerable<string> query = from n in names
 							select n.ToUpper();
 ```
 
+## ASP.NET Core Web API middleware pipeline
+The ASP.NET Core Web API middleware pipeline is the sequence of middleware components that process every HTTP request and response.
+
+Each middleware can:
+- Inspect the incoming request.
+- Perform work before passing the request to the next middleware.
+- Short-circuit the pipeline (stop further processing and return a response).
+- Perform work on the outgoing response after the next middleware completes.
+
+The order in which middleware is registered is critical, because requests flow top-to-bottom, while responses flow bottom-to-top.
+
+```C#
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+// 1. Exception handling
+app.UseExceptionHandler("/error");
+
+// 2. HTTPS redirection
+app.UseHttpsRedirection();
+
+// 3. Static files (optional)
+app.UseStaticFiles();
+
+// 4. Routing
+app.UseRouting();
+
+// 5. Authentication
+app.UseAuthentication();
+
+// 6. Authorization
+app.UseAuthorization();
+
+// 7. Endpoint mapping
+app.MapControllers();
+
+app.Run();
+```
+Recommended registration order
+| Order | Middleware                                            | Why it comes here                                                                                |
+| ----- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1     | Exception handling (`UseExceptionHandler`)            | Catches exceptions from everything after it.                                                     |
+| 2     | HSTS (`UseHsts`)                                      | Adds Strict-Transport-Security headers (typically in production).                                |
+| 3     | HTTPS Redirection (`UseHttpsRedirection`)             | Redirects HTTP requests to HTTPS before other processing.                                        |
+| 4     | Static Files (`UseStaticFiles`)                       | Serves static content without involving routing or authentication (unless configured otherwise). |
+| 5     | Routing (`UseRouting`)                                | Determines which endpoint matches the request.                                                   |
+| 6     | CORS (`UseCors`)                                      | Usually after routing and before authentication/authorization.                                   |
+| 7     | Authentication (`UseAuthentication`)                  | Identifies the user.                                                                             |
+| 8     | Authorization (`UseAuthorization`)                    | Checks permissions based on the authenticated user.                                              |
+| 9     | Endpoint execution (`MapControllers`, `MapGet`, etc.) | Executes the matched controller or endpoint.                                                     |
+
+A request flows:
+```
+Client
+   ↓
+Exception Handler
+   ↓
+HTTPS
+   ↓
+Routing
+   ↓
+Authentication
+   ↓
+Authorization
+   ↓
+Controller
+```
+The response flows back in the opposite direction:
+```
+Controller
+   ↑
+Authorization
+   ↑
+Authentication
+   ↑
+Routing
+   ↑
+HTTPS
+   ↑
+Exception Handler
+   ↑
+Client
+```
+
 ## AI in the IDE
 #### GitHub Copilot Chat
 GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscription does not include Copilot Pro.
@@ -3098,93 +3185,7 @@ DELETE /users/42
 GET    /users/42/orders
 POST   /users/42/orders
 ```
- 
-## ASP.NET Core Web API middleware pipeline
-he ASP.NET Core Web API middleware pipeline is the sequence of middleware components that process every HTTP request and response.
 
-Each middleware can:
-- Inspect the incoming request.
-- Perform work before passing the request to the next middleware.
-- Short-circuit the pipeline (stop further processing and return a response).
-- Perform work on the outgoing response after the next middleware completes.
-
-The order in which middleware is registered is critical, because requests flow top-to-bottom, while responses flow bottom-to-top.
-
-```C#
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
-
-var app = builder.Build();
-
-// 1. Exception handling
-app.UseExceptionHandler("/error");
-
-// 2. HTTPS redirection
-app.UseHttpsRedirection();
-
-// 3. Static files (optional)
-app.UseStaticFiles();
-
-// 4. Routing
-app.UseRouting();
-
-// 5. Authentication
-app.UseAuthentication();
-
-// 6. Authorization
-app.UseAuthorization();
-
-// 7. Endpoint mapping
-app.MapControllers();
-
-app.Run();
-```
-Recommended registration order
-| Order | Middleware                                            | Why it comes here                                                                                |
-| ----- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| 1     | Exception handling (`UseExceptionHandler`)            | Catches exceptions from everything after it.                                                     |
-| 2     | HSTS (`UseHsts`)                                      | Adds Strict-Transport-Security headers (typically in production).                                |
-| 3     | HTTPS Redirection (`UseHttpsRedirection`)             | Redirects HTTP requests to HTTPS before other processing.                                        |
-| 4     | Static Files (`UseStaticFiles`)                       | Serves static content without involving routing or authentication (unless configured otherwise). |
-| 5     | Routing (`UseRouting`)                                | Determines which endpoint matches the request.                                                   |
-| 6     | CORS (`UseCors`)                                      | Usually after routing and before authentication/authorization.                                   |
-| 7     | Authentication (`UseAuthentication`)                  | Identifies the user.                                                                             |
-| 8     | Authorization (`UseAuthorization`)                    | Checks permissions based on the authenticated user.                                              |
-| 9     | Endpoint execution (`MapControllers`, `MapGet`, etc.) | Executes the matched controller or endpoint.                                                     |
-
-A request flows:
-```
-Client
-   ↓
-Exception Handler
-   ↓
-HTTPS
-   ↓
-Routing
-   ↓
-Authentication
-   ↓
-Authorization
-   ↓
-Controller
-```
-The response flows back in the opposite direction:
-```
-Controller
-   ↑
-Authorization
-   ↑
-Authentication
-   ↑
-Routing
-   ↑
-HTTPS
-   ↑
-Exception Handler
-   ↑
-Client
-```
 ## S.O.L.I.D Principles
 **SOLID** is a set of five object-oriented design principles that help make C# code easier to maintain, test, and extend.
 
