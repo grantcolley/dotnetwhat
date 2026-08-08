@@ -118,7 +118,7 @@
   - [Query Operators](#query-operators)
   - [Deferred Execution](#deferred-execution)
   - [Fluent Syntax vs Query Expressions](#fluent-syntax-vs-query-expressions)
-- [AI Agents in the IDE](#ai-agents-in-the-ide)
+- [AI in the IDE](#ai-in-the-ide)
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
 - [CI/CD](#cicd)
@@ -2709,12 +2709,75 @@ IEnumerable<string> query = from n in names
 							select n.ToUpper();
 ```
 
-## AI Agents in the IDE
+## AI in the IDE
 #### GitHub Copilot Chat
 GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscription does not include Copilot Pro.
 
 #### OpenAI Codex
 Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
+
+So how dos it all fit together?
+
+```
+                                        AI Providers
+                ┌───────────────────────────────────────────────────┐
+                │ OpenAI │ Anthropic │ Google │ Meta │ Mistral │ .. │
+                └───────────────────────────────────────────────────┘
+                                      │
+                                      │ Provides
+                                      ▼
+                ┌───────────────────────────────────────────────────┐
+                │ LLMs                                              │
+                │ GPT-5.x │ Claude │ Gemini │ Llama │ Mistral │ ... │
+                │                                                   │
+                │ • Reasons                                         │
+                │ • Writes                                          │
+                │ • Explains                                        │
+                │ • Decides which tools to use                      │
+                └───────────────────────────────────────────────────┘
+                                      ▲
+                     Prompts          │         Tool results
+                                      │
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                                Host Application                                  │
+│                                                                                  │
+│  ChatGPT                      GitHub Copilot                     Custom App      │
+│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐  │
+│  │ User Interface (Chat / IDE / Web / Mobile)                                 │  │
+│  ├────────────────────────────────────────────────────────────────────────────┤  │
+│  │ Agent                                                                      │  │
+│  │ • Understands the goal                                                     │  │
+│  │ • Creates a plan                                                           │  │
+│  │ • Decides next steps                                                       │  │
+│  │ • Maintains task state                                                     │  │
+│  │ • Requests tools                                                           │  │
+│  ├────────────────────────────────────────────────────────────────────────────┤  │
+│  │ MCP Client                                                                 │  │
+│  │ • Executes tool requests                                                   │  │
+│  │ • Manages authentication                                                   │  │
+│  │ • Handles approvals                                                        │  │
+│  │ • Talks MCP protocol                                                       │  │
+│  └────────────────────────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                               MCP Protocol
+                                      │
+                                      ▼
+                ┌───────────────────────────────────────────────────┐
+                │                 MCP Servers                       │
+                ├───────────────────────────────────────────────────┤
+                │ GitHub                                            │
+                │ Azure DevOps                                      │
+                │ SQL Databases                                     │
+                │ File Systems                                      │
+                │ Docker                                            │
+                │ SharePoint                                        │
+                │ Jira                                              │
+                │ REST APIs                                         │
+                │ Local tools                                       │
+                └───────────────────────────────────────────────────┘
+```
 
 ## CI/CD
 CI/CD stands for Continuous Integration and Continuous Delivery/Continuous Deployment. It is a DevOps practice that automates building, testing, and deploying software.
