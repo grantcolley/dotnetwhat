@@ -122,6 +122,7 @@
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
   	- [How does it fit together?](#how-does-it-fit-together)
+  	- [MCP Protocol](#mcp-protocol)
 - [CI/CD](#cicd)
 - [Testing](#testing)
  	- [Testing](#unit-testing)
@@ -2791,11 +2792,12 @@ Imagine you're the product owner asking for a new feature.
 | **Agent**                             | The tech lead or engineering manager                   | Breaks work into tasks, decides what to do next, reviews progress              |
 | **MCP Client**                        | The engineering coordinator                            | Contacts other teams and systems when information is needed                    |
 | **MCP Servers**                       | GitHub, Azure DevOps, SQL, Docker, APIs, documentation | The engineering tools and services that provide information or perform actions |
+
 A typical request
 \
 You ask:
 > "Fix the login bug and create a pull request."
-\
+
 The system behaves like this:
 ```
 You
@@ -2839,7 +2841,6 @@ Shows you the completed work.
 **The important distinction**
 \
 This is the part that often "clicks" for people:
-\
 - The LLM is the software developer. It can write code and solve problems, but it doesn't directly access your repositories or infrastructure.
 - The Agent is the tech lead. It decides what needs to happen next and coordinates the overall workflow.
 - The MCP Client is the engineering coordinator. It knows how to interact with GitHub, Azure DevOps, databases, Docker, and other tools.
@@ -2848,6 +2849,61 @@ This is the part that often "clicks" for people:
 
 **One-line summary**
 > Think of GitHub Copilot as a development team in your IDE: the LLM is the developer, the agent is the tech lead, the MCP client is the engineering coordinator, and the MCP servers are the engineering tools and systems they use to get the job done.
+
+#### MCP protocol
+MCP (Model Context Protocol) is a standard way for AI applications to communicate with external tools and data sources.
+
+> MCP is the common language/rules that the engineering coordinator (**MCP client**) uses to communicate with all the engineering systems (**MCP servers**).
+
+MCP standardizes the connection between AI applications and tools. It defines rules for things such as:
+- **Discovering tools** — "What can you do?"
+- **Describing tools** — "I have a tool called search_issues and these are its parameters."
+- **Calling tools** — "Run search_issues with repository X."
+- **Returning results** — "Here are the matching issues."
+- **Accessing resources** — files, documents, database information, etc.
+- **Passing context** between the AI application and external systems.
+
+MCP messages use `JSON-RPC 2.0`. An example of an MCP client asking a server to call a tool might look like:
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "get_issue",
+    "arguments": {
+      "issue": 123
+    }
+  }
+}
+```
+Conceptually:
+```
+MCP Client
+    │
+    │  "Call get_issue(123)"
+    │
+    ▼
+MCP Server
+    │
+    ▼
+GitHub API
+```
+And the MCP server might return:
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Issue #123: Login button fails"
+      }
+    ]
+  }
+}
+```
 
 ## CI/CD
 CI/CD stands for Continuous Integration and Continuous Delivery/Continuous Deployment. It is a DevOps practice that automates building, testing, and deploying software.
