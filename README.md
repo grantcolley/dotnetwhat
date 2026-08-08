@@ -121,6 +121,7 @@
 - [AI in the IDE](#ai-in-the-ide)
 	- [GitHub Copilot Chat](#github-copilot-chat)
  	- [OpenAI Codex](#openai-codex)
+  	- [How does it fit together?](#how-does-it-fit-together)
 - [CI/CD](#cicd)
 - [Testing](#testing)
  	- [Testing](#unit-testing)
@@ -2716,7 +2717,7 @@ GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscript
 #### OpenAI Codex
 Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
 
-So how dos it all fit together?
+#### How does it fit together?
 
 ```
                                         AI Providers
@@ -2778,6 +2779,75 @@ So how dos it all fit together?
                 │ Local tools                                       │
                 └───────────────────────────────────────────────────┘
 ```
+**Software development analogy**
+\
+Imagine you're the product owner asking for a new feature.
+| Architecture                          | Software development analogy                           | Responsibility                                                                 |
+| ------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| **OpenAI / Anthropic / Google**       | Software companies that employ developers              | Build the AI technology                                                        |
+| **GPT-5.x / Claude / Gemini / Llama** | A senior software developer                            | Writes code, explains code, reasons through problems                           |
+| **ChatGPT**                           | A general engineering workspace                        | Lets you collaborate on many different kinds of work                           |
+| **GitHub Copilot**                    | A specialist development environment inside your IDE   | Optimized for coding tasks                                                     |
+| **Agent**                             | The tech lead or engineering manager                   | Breaks work into tasks, decides what to do next, reviews progress              |
+| **MCP Client**                        | The engineering coordinator                            | Contacts other teams and systems when information is needed                    |
+| **MCP Servers**                       | GitHub, Azure DevOps, SQL, Docker, APIs, documentation | The engineering tools and services that provide information or perform actions |
+A typical request
+\
+You ask:
+> "Fix the login bug and create a pull request."
+\
+The system behaves like this:
+```
+You
+ │
+ ▼
+GitHub Copilot
+"I need the login bug fixed."
+ │
+ ▼
+Agent (Tech Lead)
+"Let's inspect the code, run the tests, identify the issue,
+fix it, verify it, then create a PR."
+ │
+ ▼
+LLM (Senior Developer)
+"I think the authentication middleware is the problem."
+ │
+ ▼
+MCP Client (Engineering Coordinator)
+"Let me retrieve the repository, test results,
+GitHub issues, and CI status."
+ │
+ ▼
+GitHub • Azure DevOps • Test Runner • Docker • SQL
+ │
+ ▼
+Information comes back
+ │
+ ▼
+LLM
+"Here's the fix."
+ │
+ ▼
+Agent
+"Run the tests again... all green. Create the PR."
+ │
+ ▼
+GitHub Copilot
+Shows you the completed work.
+```
+**The important distinction**
+\
+This is the part that often "clicks" for people:
+\
+- The LLM is the software developer. It can write code and solve problems, but it doesn't directly access your repositories or infrastructure.
+- The Agent is the tech lead. It decides what needs to happen next and coordinates the overall workflow.
+- The MCP Client is the engineering coordinator. It knows how to interact with GitHub, Azure DevOps, databases, Docker, and other tools.
+- The MCP Servers are the engineering systems. They own the repositories, pipelines, databases, containers, and services.
+- ChatGPT or GitHub Copilot is your development environment. It's the application where you collaborate with the AI and where all of these components come together.
+
+**One-line summary**
+> Think of GitHub Copilot as a development team in your IDE: the LLM is the developer, the agent is the tech lead, the MCP client is the engineering coordinator, and the MCP servers are the engineering tools and systems they use to get the job done.
 
 ## CI/CD
 CI/CD stands for Continuous Integration and Continuous Delivery/Continuous Deployment. It is a DevOps practice that automates building, testing, and deploying software.
