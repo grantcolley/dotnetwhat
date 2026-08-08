@@ -140,6 +140,15 @@
   - [I — Interface Segregation Principle](#i--interface-segregation-principle)
   - [D — Dependency Inversion Principle](#d--dependency-inversion-principle)
   - [Difference Between LSP and ISP](#difference-between-lsp-and-isp)
+- [Design Patterns](#design-patterns)
+	- [Strategy](#strategy)
+ 	- [Factory Method](#factory-method)
+ 	- [Decorator](#decorator)
+ 	- [Adapter](#adapter)
+ 	- [Observer](#observer)
+ 	- [Chain of Responsibility](#chain-of-responsibility)
+ 	- [Builder](#builder)
+ 	- [Singleton](#adapter)
 - [Big *O*](#big-o)
   - [TL;DR](#tldr)
   - [Rules of Thumb](#rules-of-thumb)
@@ -151,15 +160,6 @@
     - [Exponential Time `O(2ⁿ)`](#exponential-time-o2ⁿ)
   - [Big *O* Growth Comparison Table](#big-o-growth-comparison-table)
   - [Big *O* Summary](#big-o-summary)
-- [Design Patterns](#design-patterns)
-	- [Strategy](#strategy)
- 	- [Factory Method](#factory-method)
- 	- [Decorator](#decorator)
- 	- [Adapter](#adapter)
- 	- [Observer](#observer)
- 	- [Chain of Responsibility](#chain-of-responsibility)
- 	- [Builder](#builder)
- 	- [Singleton](#adapter)
 - [Interview Prep](#interview-prep)
 	- [Reverse an Array](#reverse-an-array)
 	- [Rotate an array](#rotate-an-array)
@@ -3463,161 +3463,6 @@ The key difference is:
 | LSP       | Inheritance correctness | Subclass changes expected behavior         | “Can I safely use the child anywhere the parent is expected?” |
 | ISP       | Interface design        | Classes forced to implement unused methods | “Am I forcing classes to implement things they don’t need?”   |
 
-## Big *O*
-Big *O* notation is a way to describe how fast or slow your code runs as the input size grows. It gives you a basic idea of your code's performance and scalability.
-
-It doesn't measure actual time (like milliseconds); it measures how the number of operations grows relative to the input size.
-
-#### TL;DR
-| Big O          | Meaning                                                  | Example                                                         |
-| -------------- | -------------------------------------------------------- | --------------------------------------------------------------- |
-| **O(1)**       | Constant time – super fast, doesn’t depend on input size | `list[0];` or `dictionary.ContainsKey("foo")`                   |
-| **O(n)**       | Linear – time grows with input size                      | `foreach (var item in list) { ... }`                            |
-| **O(n²)**      | Quadratic – nested loops, gets slow fast                 | `foreach (var a in list) foreach (var b in list) { ... }`       |
-| **O(log n)**   | Logarithmic – very efficient, divide and conquer         | Binary search: `list.BinarySearch(item);`                       |
-| **O(n log n)** | Typical of efficient sorts                               | `list.Sort();` (uses TimSort in .NET)                           |
-| **O(2ⁿ)**      | Exponential – extremely slow for large inputs            | Recursive solutions like solving the Fibonacci sequence naively |
-
-#### Rules of Thumb:
-- Favor `O(1)` and `O(log n)` when you can.
-- Be cautious with `O(n²)` and worse – especially with nested loops.
-
-> [!IMPORTANT]
-> 
-> **Is 2n Big O of n?**
->
-> Before we get started, it's important to remember that the "big O" in **Big O** stands for order of, so we are really only concerned with changes in the order of magnitude. This means we don't have to worry about constants. It also means that `O(n)`, `O(2n)`, `O(10n)` are all just `O(n)`.
-
-#### Big *O* with Code Examples
-##### Constant Time `O(1)`
-Doesn’t depend on input size. You know exactly where the item is so go straight to it.
-
-e.g. Accessing an element in an array by index. Fast, no matter how big the array is. You know exactly where the item is so go straight to it.
-```C#
-int[] array = {1, 2, 3, 4, 5};
-
-int GetValue(int index)
-{
-    return array[index]; // Always takes the same amount of time
-}
-```
-
-##### Linear Time `O(n)`
-Time grows linearly with input size. Items are not sorted so check one by one from start to finish.
-
-e.g. Looping through a list or array, checking each item one by one from start to finish.
-```C#
-int[] array = {1, 2, 3, 4, 5};
-
-bool Contains(int value)
-{
-    foreach (var item in array)
-    {
-        if (item == value) return true;
-    }
-
-    return false;
-}
-```
-
-##### Logarithmic Time `O(log n)`
-Every step of the algorithm cuts the problem in half so instead of checking every item, you’re skipping a big chunk with each move. Super fast even with big input sizes. Typical used in binary search.
-
-e.g. Binary search in a sorted array. Each loop cuts the array size in half
-```C#
-int[] sortedArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-
-int BinarySearch(int value)
-{
-    int left = 0;
-    int right = sortedArray.Length - 1;
-
-    while (left <= right)
-    {
-        int mid = (left + right) / 2;
-
-        if (sortedArray[mid] == value)
-            return mid;
-        else if (sortedArray[mid] < value)
-            left = mid + 1;
-        else
-            right = mid - 1;
-    }
-
-    return -1;
-}
-```
-
-##### Quadratic Time `O(n²)`
-The work your code does grows a lot faster than the input size grows. Specifically, if you double the input, the work grows four times. If you triple it, it grows nine times — like squaring the size. Typically used in some sorting algorithms like bubble sort or selection sort
-
-e.g. Nested loops over the same data set. Gets much slower as numbers grows.
-- If `numbers = 10`, it prints 100 lines.
-- If `numbers = 100`, it prints 10,000 lines!
-```C#
-void PrintAllPairs(int[] numbers)
-{
-    foreach (var a in numbers)
-    {
-        foreach (var b in numbers)
-        {
-            Console.WriteLine($"{a}, {b}");
-        }
-    }
-}
-```
-
-##### Exponential Time `O(2ⁿ)`
-Time doubles with each extra input, resulting in explosive growth, making it extremely slow.
-
-e.g. Recursive Fibonacci, where each call creates two more calls, like a tree branching rapidly.
-```C#
-int Fibonacci(int n)
-{
-    if (n <= 1) return n;
-    return Fibonacci(n - 1) + Fibonacci(n - 2);
-}
-```
-> [!TIP]
-> 
-> The Fibonacci sequence is the series of numbers where each number is the sum of the two preceding numbers.
->
-> e.g. `0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610`
-> 
-> Here is a more efficient implementation of Fibonacci which can be called like this `foreach (int i in Fib())`
-> ```C#
-> public static IEnumerable<int> Fibonacci()
-> {
->    int prev = 0, next = 1;
->     yield return prev;
->     yield return next;
-> 
->     while (true)
->     {
->         int sum = prev + next;
->         yield return sum;
->         prev = next;
->         next = sum;
->     }
-> }
-> ```
-
-#### Big O Growth Comparison Table
-| **Big O**    | **Name**    | **Example** in English | **C# Code Pattern**          | **Growth for n = 10, 20, 30** |
-| ------------ | ----------- | ---------------------- | ---------------------------- | ----------------------------- |
-| **O(1)**     | Constant    | Always takes same time | `dict.ContainsKey(key)`      | 1, 1, 1                       |
-| **O(log n)** | Logarithmic | Cuts problem in half   | Binary Search                | \~4, \~5, \~6                 |
-| **O(n)**     | Linear      | One step per item      | `foreach (var item in list)` | 10, 20, 30                    |
-| **O(n²)**    | Quadratic   | Compare every pair     | Nested loops                 | 100, 400, 900                 |
-| **O(2ⁿ)**    | Exponential | Try all combinations   | Recursive brute-force        | 1,024; 1,048,576; >1 billion  |
-
-#### Big *O* Summary
-- `O(1)`: Super fast, doesn't care about size
-- `O(log n)`: Excellent, scales well
-- `O(n)`: Grows steadily
-- `O(n²)`: Slows down fast with large input
-- `O(2ⁿ)`: Unusable beyond ~20 items
-
 ## Design Patterns
 | Pattern                     | Memory aid                 | Key concepts           |
 | --------------------------- | -------------------------- | ------------------------------------- |
@@ -4184,6 +4029,161 @@ public sealed class Singleton
     public static Singleton Instance => _instance;
 }
 ```
+
+## Big *O*
+Big *O* notation is a way to describe how fast or slow your code runs as the input size grows. It gives you a basic idea of your code's performance and scalability.
+
+It doesn't measure actual time (like milliseconds); it measures how the number of operations grows relative to the input size.
+
+#### TL;DR
+| Big O          | Meaning                                                  | Example                                                         |
+| -------------- | -------------------------------------------------------- | --------------------------------------------------------------- |
+| **O(1)**       | Constant time – super fast, doesn’t depend on input size | `list[0];` or `dictionary.ContainsKey("foo")`                   |
+| **O(n)**       | Linear – time grows with input size                      | `foreach (var item in list) { ... }`                            |
+| **O(n²)**      | Quadratic – nested loops, gets slow fast                 | `foreach (var a in list) foreach (var b in list) { ... }`       |
+| **O(log n)**   | Logarithmic – very efficient, divide and conquer         | Binary search: `list.BinarySearch(item);`                       |
+| **O(n log n)** | Typical of efficient sorts                               | `list.Sort();` (uses TimSort in .NET)                           |
+| **O(2ⁿ)**      | Exponential – extremely slow for large inputs            | Recursive solutions like solving the Fibonacci sequence naively |
+
+#### Rules of Thumb:
+- Favor `O(1)` and `O(log n)` when you can.
+- Be cautious with `O(n²)` and worse – especially with nested loops.
+
+> [!IMPORTANT]
+> 
+> **Is 2n Big O of n?**
+>
+> Before we get started, it's important to remember that the "big O" in **Big O** stands for order of, so we are really only concerned with changes in the order of magnitude. This means we don't have to worry about constants. It also means that `O(n)`, `O(2n)`, `O(10n)` are all just `O(n)`.
+
+#### Big *O* with Code Examples
+##### Constant Time `O(1)`
+Doesn’t depend on input size. You know exactly where the item is so go straight to it.
+
+e.g. Accessing an element in an array by index. Fast, no matter how big the array is. You know exactly where the item is so go straight to it.
+```C#
+int[] array = {1, 2, 3, 4, 5};
+
+int GetValue(int index)
+{
+    return array[index]; // Always takes the same amount of time
+}
+```
+
+##### Linear Time `O(n)`
+Time grows linearly with input size. Items are not sorted so check one by one from start to finish.
+
+e.g. Looping through a list or array, checking each item one by one from start to finish.
+```C#
+int[] array = {1, 2, 3, 4, 5};
+
+bool Contains(int value)
+{
+    foreach (var item in array)
+    {
+        if (item == value) return true;
+    }
+
+    return false;
+}
+```
+
+##### Logarithmic Time `O(log n)`
+Every step of the algorithm cuts the problem in half so instead of checking every item, you’re skipping a big chunk with each move. Super fast even with big input sizes. Typical used in binary search.
+
+e.g. Binary search in a sorted array. Each loop cuts the array size in half
+```C#
+int[] sortedArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+int BinarySearch(int value)
+{
+    int left = 0;
+    int right = sortedArray.Length - 1;
+
+    while (left <= right)
+    {
+        int mid = (left + right) / 2;
+
+        if (sortedArray[mid] == value)
+            return mid;
+        else if (sortedArray[mid] < value)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1;
+}
+```
+
+##### Quadratic Time `O(n²)`
+The work your code does grows a lot faster than the input size grows. Specifically, if you double the input, the work grows four times. If you triple it, it grows nine times — like squaring the size. Typically used in some sorting algorithms like bubble sort or selection sort
+
+e.g. Nested loops over the same data set. Gets much slower as numbers grows.
+- If `numbers = 10`, it prints 100 lines.
+- If `numbers = 100`, it prints 10,000 lines!
+```C#
+void PrintAllPairs(int[] numbers)
+{
+    foreach (var a in numbers)
+    {
+        foreach (var b in numbers)
+        {
+            Console.WriteLine($"{a}, {b}");
+        }
+    }
+}
+```
+
+##### Exponential Time `O(2ⁿ)`
+Time doubles with each extra input, resulting in explosive growth, making it extremely slow.
+
+e.g. Recursive Fibonacci, where each call creates two more calls, like a tree branching rapidly.
+```C#
+int Fibonacci(int n)
+{
+    if (n <= 1) return n;
+    return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+```
+> [!TIP]
+> 
+> The Fibonacci sequence is the series of numbers where each number is the sum of the two preceding numbers.
+>
+> e.g. `0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610`
+> 
+> Here is a more efficient implementation of Fibonacci which can be called like this `foreach (int i in Fib())`
+> ```C#
+> public static IEnumerable<int> Fibonacci()
+> {
+>    int prev = 0, next = 1;
+>     yield return prev;
+>     yield return next;
+> 
+>     while (true)
+>     {
+>         int sum = prev + next;
+>         yield return sum;
+>         prev = next;
+>         next = sum;
+>     }
+> }
+> ```
+
+#### Big O Growth Comparison Table
+| **Big O**    | **Name**    | **Example** in English | **C# Code Pattern**          | **Growth for n = 10, 20, 30** |
+| ------------ | ----------- | ---------------------- | ---------------------------- | ----------------------------- |
+| **O(1)**     | Constant    | Always takes same time | `dict.ContainsKey(key)`      | 1, 1, 1                       |
+| **O(log n)** | Logarithmic | Cuts problem in half   | Binary Search                | \~4, \~5, \~6                 |
+| **O(n)**     | Linear      | One step per item      | `foreach (var item in list)` | 10, 20, 30                    |
+| **O(n²)**    | Quadratic   | Compare every pair     | Nested loops                 | 100, 400, 900                 |
+| **O(2ⁿ)**    | Exponential | Try all combinations   | Recursive brute-force        | 1,024; 1,048,576; >1 billion  |
+
+#### Big *O* Summary
+- `O(1)`: Super fast, doesn't care about size
+- `O(log n)`: Excellent, scales well
+- `O(n)`: Grows steadily
+- `O(n²)`: Slows down fast with large input
+- `O(2ⁿ)`: Unusable beyond ~20 items
 
 ## Interview Prep
 - C# language knowledge
