@@ -199,6 +199,7 @@
       - [Senior](#senior)
       	- [Implement Producer/Consumer](#implement-producerconsumer)
 	- [WPF](#wpf)
+- [Kafka](#kafka)
 - [Glossary](#glossary)
 - [References](#references)
   - [.NET Blogs](#net-blogs)
@@ -6825,6 +6826,160 @@ Use dependency properties for custom controls, and `INotifyPropertyChanged` for 
 `Q`: How do you unit test a WPF application?
 
 `A`: Focus on testing the ViewModels, business logic, and services. Keep code-behind minimal by following MVVM, making most application logic testable without the UI.
+
+## Kafka
+Apache Kafka is a distributed event-streaming platform. In a C#/.NET application, you typically use Kafka when one service needs to publish events or messages that other services can consume asynchronously.
+
+Suppose you have an e-commerce system. When an order is created, your Orders API could publish an OrderCreated event to Kafka:
+```
+Orders API
+    │
+    │ OrderCreated
+    ▼
+┌───────────────────┐
+│ Kafka             │
+│ topic: orders     │
+└───────────────────┘
+    │        │
+    ▼        ▼
+Email      Inventory
+Service    Service
+```
+
+**Kafka concepts mapped to C#**
+A producer is C# code that sends messages to Kafka. A consumer is C# code that reads them. A `topic` is a named stream of messages, such as orders, payments, or user-events.
+
+Messages in a `topic` are split into partitions. Partitions let Kafka process messages in parallel and scale across multiple consumers.
+
+A consumer group is especially important. Imagine three instances of your C# worker service:
+```
+orders topic
+ ├── Partition 0 → Worker 1
+ ├── Partition 1 → Worker 2
+ └── Partition 2 → Worker 3
+```
+If all three workers belong to the same consumer group, Kafka distributes partitions among them. Each message is processed by one consumer within that group.
+
+If another service uses a different consumer group, it can independently receive the same events:
+```
+                         ┌─ Inventory group
+orders topic ────────────┤
+                         └─ Analytics group
+```
+Both applications see the order events, but they track their progress independently.
+
+In .NET, the commonly used client library is `Confluent.Kafka`. A simplified producer looks like this:
+```C#
+using Confluent.Kafka;
+
+var config = new ProducerConfig
+{
+    BootstrapServers = "localhost:9092"
+};
+
+using var producer = new ProducerBuilder<string, string>(config).Build();
+
+await producer.ProduceAsync(
+    "orders",
+    new Message<string, string>
+    {
+        Key = "order-123",
+        Value = """
+        {
+            "orderId": 123,
+            "customerId": 456,
+            "total": 99.95
+        }
+        """
+    });
+
+Console.WriteLine("Order event published");
+```
+And a consumer might look like:
+```C#
+using Confluent.Kafka;
+
+var config = new ConsumerConfig
+{
+    BootstrapServers = "localhost:9092",
+    GroupId = "inventory-service",
+    AutoOffsetReset = AutoOffsetReset.Earliest
+};
+
+using var consumer = new ConsumerBuilder<string, string>(config).Build();
+
+consumer.Subscribe("orders");
+
+while (true)
+{
+    var result = consumer.Consume();
+
+    Console.WriteLine($"Received: {result.Message.Value}");
+}
+```
+One concept that often distinguishes Kafka from traditional queues is the offset. Kafka generally doesn't delete a message merely because a consumer read it. Instead, Kafka stores the event for a configured retention period, and each consumer group remembers how far it has read:
+```
+Partition:
+
+offset
+  0       1       2       3       4
+┌─────┬─────┬─────┬─────┬─────┐
+│ E1  │ E2  │ E3  │ E4  │ E5  │
+└─────┴─────┴─────┴─────┴─────┘
+                    ▲
+               consumer
+               position
+```
+That has an important consequence: a consumer can often replay historical events. For example, if you create a new analytics service, it can potentially process the previous week's order events rather than only new ones.
+
+Another important feature is ordering. Kafka guarantees ordering within a `partition`, not necessarily across the entire `topic`. That's why message `keys` matter. If you produce events with:
+```
+Key = orderId
+```
+Kafka can consistently place events for the same order into the same partition, which is useful when event order matters:
+```
+Order 123 Created
+Order 123 Paid
+Order 123 Shipped
+        │
+        ▼
+
+Partition 2
+Created → Paid → Shipped
+```
+
+Kafka fits particularly well with C# microservices when you're building systems that need event-driven communication, high throughput, loose coupling, event replay, or multiple independent consumers.
+
+For example:
+```
+ASP.NET Core Orders API
+          │
+          ▼
+        Kafka
+          │
+    ┌─────┼─────────┐
+    ▼     ▼         ▼
+.NET    .NET      .NET
+Email  Billing   Analytics
+Worker Worker    Worker
+```
+The main conceptual shift is that instead of writing:
+```C#
+await inventoryService.ReserveStock(order);
+await emailService.SendConfirmation(order);
+await analyticsService.TrackOrder(order);
+```
+your service might do:
+```C#
+await kafka.PublishAsync(
+    "orders",
+    new OrderCreated(order.Id));
+```
+The downstream systems react independently.
+
+Kafka therefore isn't really a C# feature or library. Kafka is infrastructure, while your C# applications are producers and consumers connected to that infrastructure.
+
+If you're coming from ASP.NET Core, the closest analogy is that Kafka is somewhat like having an extremely scalable, persistent event bus sitting between your services.
 
 ## Glossary
 * **Background GC** *- applies only to generation 2 collections and is enabled by default*
