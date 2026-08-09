@@ -134,6 +134,7 @@
     - [BDD](#bdd) 
     - [TDD vs BDD](#tdd-vs-bdd)
 - [CI/CD](#cicd)
+- [Containerisation](#containerisation)
 - [REST](#rest)
 - [S.O.L.I.D Principles](#solid-principles)
   - [S — Single Responsibility Principle](#s--single-responsibility-principle)
@@ -3119,6 +3120,75 @@ Typical CI/CD Pipeline
 - Automated tests are run.
 - If tests pass, the application is packaged.
 - The package is deployed to a staging environment (Continuous Delivery) or directly to production (Continuous Deployment).
+
+## Containerisation
+Containerisation means packaging your application together with everything it needs to run into a portable, isolated unit called a container.
+
+A useful mental model in the context of a .NET Web API is:
+> Your .NET API + .NET runtime + required libraries + configuration → container image → running container
+
+**Advantages of Containerisation**
+- Multiple developers can test / deploy there code using the same image, avoiding environment differences.
+- Containers also provide isolation. For example, an application might consist of several containers.
+
+You're taking your Web API and defining a standardised box in which it runs. That same box can then be run on your laptop, another developer's machine, CI/CD infrastructure, Azure, AWS, Kubernetes, or another container platform with much less environmental variation.
+
+Containerisation Steps:
+- You describe the environment your API needs in a `Dockerfile`.
+- You then build an image from that `Dockerfile` (packaged blueprint for running your application).
+- You create a container from the image.
+- You access the container (running instance of the image) via specified `url` e.g. `localhost:5000`
+
+> The important distinction is that the image is the package; the container is a running instance of that package.
+
+You describe the environment your API needs in a `Dockerfile`. For example:
+```dockerfile
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+
+WORKDIR /src
+
+COPY . .
+RUN dotnet publish -c Release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
+
+WORKDIR /app
+
+COPY --from=build /app .
+
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "MyApi.dll"]
+```
+You then build an image from that Dockerfile:
+/
+The image is essentially a packaged blueprint for running your application.
+```bash
+docker build -t my-api .
+```
+You create a container from the image:
+```bash
+docker run -p 5000:8080 my-api
+```
+Now you can access the API through:
+```
+localhost:5000
+       │
+       │ port mapping
+       ▼
+┌──────────────────────────┐
+│ Docker Container         │
+│                          │
+│  ASP.NET Core API        │
+│          │               │
+│          ▼               │
+│       :8080              │
+│                          │
+│  .NET Runtime            │
+│  Application DLLs        │
+│  Dependencies            │
+└──────────────────────────┘
+```
 
 ## REST
 **REST (Representational State Transfer)** is a widely used architectural style for designing networked applications, particularly APIs, that allows client-server communication using HTTP methods like `GET`, `POST`, `PUT`, and `DELETE`. It was introduced to improve web efficiency through constraints like statelessness, uniform interfaces, and cacheability. 
