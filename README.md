@@ -126,14 +126,14 @@
  	- [OpenAI Codex](#openai-codex)
   	- [How does it fit together?](#how-does-it-fit-together)
   	- [MCP Protocol](#mcp-protocol)
-- [CI/CD](#cicd)
 - [Testing](#testing)
  	- [Testing](#unit-testing)
   		- [Testing frameworks](#testing-frameworks)
   		- [Mocking](#mocking) 
     - [TDD](#tdd) 
     - [BDD](#bdd) 
-    - [TDD vs BDD](#tdd-vs-bdd) 
+    - [TDD vs BDD](#tdd-vs-bdd)
+- [CI/CD](#cicd)
 - [REST](#rest)
 - [S.O.L.I.D Principles](#solid-principles)
   - [S — Single Responsibility Principle](#s--single-responsibility-principle)
@@ -3003,20 +3003,6 @@ And the MCP server might return:
 }
 ```
 
-## CI/CD
-CI/CD stands for Continuous Integration and Continuous Delivery/Continuous Deployment. It is a DevOps practice that automates building, testing, and deploying software.
-
-- **Continuous Integration (CI):** Developers frequently merge code into a shared repository. Each change automatically triggers a build and automated tests to catch bugs early and ensure the new code integrates correctly.
-- **Continuous Delivery (CD):** After passing all tests, the application is automatically prepared for release. Deployment to production still requires a manual approval.
-- **Continuous Deployment (CD):** Goes one step further by automatically deploying every successful change to production without manual intervention.
-
-Typical CI/CD Pipeline
-- Developer commits code to a Git repository.
-- CI server (e.g., GitHub Actions, Azure DevOps, Jenkins) builds the application.
-- Automated tests are run.
-- If tests pass, the application is packaged.
-- The package is deployed to a staging environment (Continuous Delivery) or directly to production (Continuous Deployment).
-
 ## Testing
 ### Unit Testing
 #### Testing frameworks
@@ -3119,6 +3105,20 @@ This style is called Gherkin, and tools such as `Reqnroll` or historically `Spec
 > TDD: “Does this unit of code work correctly?”
 > 
 > BDD: “Does the system behave the way the user/business expects?”
+
+## CI/CD
+CI/CD stands for Continuous Integration and Continuous Delivery/Continuous Deployment. It is a DevOps practice that automates building, testing, and deploying software.
+
+- **Continuous Integration (CI):** Developers frequently merge code into a shared repository. Each change automatically triggers a build and automated tests to catch bugs early and ensure the new code integrates correctly.
+- **Continuous Delivery (CD):** After passing all tests, the application is automatically prepared for release. Deployment to production still requires a manual approval.
+- **Continuous Deployment (CD):** Goes one step further by automatically deploying every successful change to production without manual intervention.
+
+Typical CI/CD Pipeline
+- Developer commits code to a Git repository.
+- CI server (e.g., GitHub Actions, Azure DevOps, Jenkins) builds the application.
+- Automated tests are run.
+- If tests pass, the application is packaged.
+- The package is deployed to a staging environment (Continuous Delivery) or directly to production (Continuous Deployment).
 
 ## REST
 **REST (Representational State Transfer)** is a widely used architectural style for designing networked applications, particularly APIs, that allows client-server communication using HTTP methods like `GET`, `POST`, `PUT`, and `DELETE`. It was introduced to improve web efficiency through constraints like statelessness, uniform interfaces, and cacheability. 
