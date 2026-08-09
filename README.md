@@ -38,6 +38,9 @@
       	- [Do AppDomains still exist?](#do-appdomains-still-exist)
       		- [.NET Framework](#net-framework)
       	 	- [In modern .NET](#in-modern-net)
+  	- [Viewing Memory in Visual Studio](#viewing-memory-in-visual-studio)
+    	- [Viewing the Stack](#viewing-the-stack)
+    	- [Viewing the Heap](#viewing-the-heap)
   - [Releasing Memory](#releasing-memory)
   - [Releasing Unmanaged Resources](#releasing-unmanaged-resources)
   - [WeakReference Class](#weakreference-class)
@@ -580,6 +583,32 @@ Each process gets:
 > - Gen 2
 > - LOH (Large Object Heap)
 > - POH (Pinned Object Heap in newer .NET versions)
+
+#### Viewing Memory in Visual Studio
+##### Viewing the Stack
+> [!NOTE]
+>
+> Caveat: this isn't a raw visualization of the physical stack memory. In managed C#, Visual Studio normally presents the useful abstraction: stack frames, methods, parameters, and local variables.
+
+While stopped at a breakpoint, open `Debug → Windows → Call Stack`. This shows the active chain of method calls, for example:
+```
+Main()
+  → ProcessOrder()
+      → CalculateTotal()
+```
+You can inspect the current method's local variables through `Debug → Windows → Locals`, and parameters/variables through `Autos`, `Watch`, or the debugger `DataTips`.
+
+##### Viewing the Heap
+For the managed heap, Visual Studio has Memory Usage profiling:
+
+`Debug → Windows → Show Diagnostic Tools → Memory Usage`
+
+You can take a heap snapshot while the program is running/debugging. The snapshot lets you inspect things such as:
+- Which object types exist on the managed heap
+- Number of instances
+- Memory consumed
+- References keeping objects alive
+- Differences between two snapshots, which is particularly useful for finding memory leaks
 
 ### Releasing Memory
 [**Garbage collection**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#what-happens-during-a-garbage-collection) is the process of releasing and compacting [**heap memory**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#the-managed-heap) and occurs most frequently in Gen0. The [**LOH**](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/large-object-heap#loh-performance-implications) and Gen 2 are collected together, if either one's threshold is exceeded, a generation 2 collection is triggered.
