@@ -93,7 +93,8 @@
       - [`async/await` Scheduling](#asyncawait-scheduling)
       - [Iterating with `async` Enumerables](#iterating-with-async-enumerables)
       - [Async Scenarios](#async-scenarios)
-      - [FixedWindowRateLimiter](#fixedwindowratelimiter) 
+      - [FixedWindowRateLimiter](#fixedwindowratelimiter)
+- [Debugging Multiple Threads in Visual Studio](#debugging-multiple-threads-in-visual-studio)
 - [What's in the CIL](#whats-in-the-cil)
   - [Method Parameters](#method-parameters)
   - [Boxing and Unboxing](#boxing-and-unboxing)
@@ -1751,6 +1752,27 @@ for (int i = 1; i <= 10; i++)
     }
 }
 ```
+
+## Debugging Multiple Threads in Visual Studio
+When debugging code that is actually running on multiple threads, the main problem is that normal stepping can become misleading: while you're stopped on one thread, other threads may hit breakpoints, change shared state, acquire locks, or become the debugger's current thread.
+
+In Visual Studio, make the Threads window your control centre:
+
+`Debug → Windows → Threads`
+
+It shows every thread, its ID/name, location, and state, and lets you freeze, thaw, flag, and switch between threads.
+
+A very useful workflow is this. Put a breakpoint near the code you're investigating and let the process stop. Open Threads, identify the thread you care about, then freeze unrelated threads. You can right-click individual threads and choose Freeze, then later Thaw them. Microsoft explicitly recommends freeze/thaw when you need to control which threads execute.
+
+This is often the easiest way to reason through complicated multithreaded code. It makes `F10/F11` stepping effectively single-threaded because only the thread that is not frozen is allowed to progress.
+
+For seeing why threads are blocked, open:
+
+`Debug → Windows → Parallel Stacks`
+
+and choose Threads. Visual Studio combines all thread call stacks into one graphical view, grouping threads that are executing similar paths.
+
+Another feature worth enabling is thread markers in the editor. Visual Studio can show glyphs beside source lines indicating that other threads are currently stopped there. You can right-click one and switch directly to that thread. The current thread is indicated separately from non-current threads.
 
 ## What's in the CIL
 
