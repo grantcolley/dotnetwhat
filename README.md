@@ -3141,7 +3141,7 @@ Containerisation Steps:
 
 > The important distinction is that the image is the package; the container is a running instance of that package.
 
-You describe the environment your API needs in a `Dockerfile`. For example:
+1. You describe the environment your API needs in a `Dockerfile`. For example:
 ```dockerfile
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
@@ -3160,17 +3160,17 @@ EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "MyApi.dll"]
 ```
-You then build an image from that Dockerfile:
+2. You then build an image from that Dockerfile:
 /
 The image is essentially a packaged blueprint for running your application.
 ```bash
 docker build -t my-api .
 ```
-You create a container from the image:
+3. You create a container from the image:
 ```bash
 docker run -p 5000:8080 my-api
 ```
-Now you can access the API through:
+4. Now you can access the API through:
 ```
 localhost:5000
        │
