@@ -1272,7 +1272,7 @@ public void Multithread_Increment()
 
 Unlike `lock`, which only allows one thread into a critical section, `SemaphoreSlim` can allow `N` concurrent threads.
 
-A `lock` cannot be awaited, `SemaphoreSlim` was designed specifically to support asynchronous code and can be awaited. Using `SemaphoreSlim` as an async lock is one of the most common uses.
+A `lock` cannot be awaited because the lock must be released by the thread that entered it. `SemaphoreSlim` on the other hand was designed specifically to support asynchronous code and can be awaited. A semaphore can be released from a different thread that awaited it. So after awaiting the semaphore, if continuation is on a different thread it can still be release. Using `SemaphoreSlim` as an async lock is one of the most common uses.
 
 ```C#
 private readonly SemaphoreSlim _semaphore = new(initialCount: 1, maxCount: 1);
