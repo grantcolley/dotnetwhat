@@ -1453,6 +1453,68 @@ When creating a [Thread](https://learn.microsoft.com/en-us/dotnet/api/system.thr
         }
 ```
 
+Creating a Thread is relatively expensive because a .NET thread generally corresponds to a native OS thread. You're not just creating a C# object—the runtime has to ask the operating system to create and manage an execution context.
+
+A useful mental model is:
+```
+new Thread(...)
+      │
+      ▼
+.NET Thread object
+      │
+      ▼
+CLR/runtime asks OS for a thread
+      │
+      ├── Allocate stack memory
+      ├── Create OS/kernel bookkeeping
+      ├── Set up CPU register context
+      ├── Configure thread-local storage
+      ├── Integrate with CLR/GC
+      └── Make thread schedulable
+```
+So thread creation crosses several layers:
+```
+your code
+   ↓
+.NET runtime
+   ↓
+operating system
+   ↓
+kernel scheduler
+   ↓
+CPU
+```
+When the thread function finishes the reverse cleanup needs to happen.
+
+The runtime/OS has to tear down the thread's execution state, release its stack/resources, remove scheduler-related state, clean up thread-local/runtime data and eventually release the OS thread object.
+
+Again, this involves the CLR and OS rather than being a simple managed-object deallocation.
+
+**This is why .NET has the ThreadPool**
+
+Instead of repeatedly doing:
+```
+create thread
+    ↓
+do work
+    ↓
+destroy thread
+
+create thread
+    ↓
+do work
+    ↓
+destroy thread
+```
+.NET keeps a pool of reusable worker threads:
+```
+                 ┌── Thread 1
+Work ───────────►│
+Work ───────────►├── Thread 2
+Work ───────────►│
+                 └── Thread 3
+```
+
 #### ThreadPool
 The [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) contains a pool of pre-existing threads waiting in the background. They are optimised for short running code where the same thread can pick up multiple tasks one after the other. When all thread on the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool) is in use then any new requests must wait until one becomes free. Unlike when you create a new thread, you can't change the properties of an existing thread from the [ThreadPool](https://learn.microsoft.com/en-us/dotnet/api/system.threading.threadpool).
 
