@@ -1757,7 +1757,7 @@ If no `SynchronizationContext` exists `await` falls back to the `TaskScheduler.D
 	 - Stack
 	 - CPU core
 	 - Instruction execution.
-- **ThreadPool** is a shared pool of worker threads, dynamically sized and optimized for short-lived work, and esed by `Async` continuations and `Task.Run`.
+- **ThreadPool** is a shared pool of worker threads, dynamically sized and optimized for short-lived work, and used by `Async` continuations and `Task.Run`.
 
 >  [!Note]
 >
