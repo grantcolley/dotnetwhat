@@ -1734,9 +1734,25 @@ awaiter.OnCompleted(() =>
 
 ![async/await flowchart](/readme-images/async-await-flowchart.png?raw=true "async/await flowchart")
 
+##### Running code after the `await`
+Code after the `await` is not guaranteed to always run on the same thread `await` was called. So `async` methods do ***NOT*** stay on one stack.
+\
+When an `await` happens:
+- The current stack frame is unwound
+- State is stored on the heap
+- When resumed, execution may continue on:
+	- A different thread
+	- A different stack
+
+When an `await` completes, the runtime decides where to resume based on:
+- Is there a `SynchronizationContext`?
+- Did you use `ConfigureAwait(false)`?
+
+
+##### ConfigureAwait(true/false)
 By default, awaiting a task will attempt to capture the scheduler from `SynchronisationContext.Current` or `TaskScheduler.Current`. When the callback is ready to be invoked, it’ll use the captured scheduler if available. 
-`ConfigureAwait(continueOnCapturedContext: false)` avoids forcing the callback to be invoked on the original context or scheduler. ConfigureAwait(continueOnCapturedContext: true)
-`ConfigureAwait(true)` does nothing meaninglful, except to explicitly show not using `ConfigureAwait(false)` is intentional e.g. to silence static analysis warnings.
+\
+`ConfigureAwait(false)` avoids forcing the callback to be invoked on the original context or scheduler. `ConfigureAwait(true)` does nothing meaningful, except to explicitly show not using `ConfigureAwait(false)` is intentional e.g. to silence static analysis warnings.
 
 ##### `async/await` Scheduling
 In `async/await`, these three concepts answer slightly different scheduling questions and understanding how these three interact fully explains where your async code runs and why.
@@ -1752,12 +1768,17 @@ Represents an execution environment, often associated with a particular thread. 
 - `ThreadPool / Threads` — “What actually executes the code?”
 \
 Importantly, `async` does not mean “run on another thread.” For true asynchronous I/O, while you're awaiting the operation, no thread needs to sit there waiting. Once the operation completes, its continuation gets scheduled somewhere appropriate.
-**ThreadPool / Threads** — “Where does code actually execute?”
 	- **Threads** are the physical execution units of your program which includes:
 		 - Stack
 		 - CPU core
 		 - Instruction execution.
 	- **ThreadPool** is a shared pool of worker threads, dynamically sized and optimized for short-lived work, and used by `Async` continuations and `Task.Run`.
+
+A useful mental model is:
+\
+`await` → continuation needs scheduling → `SynchronizationContext` / `TaskScheduler` influence where → a thread eventually executes the continuation.
+
+So `async/await` is primarily about not blocking threads, rather than about creating threads.
 
 >  [!Note]
 >
