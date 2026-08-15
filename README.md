@@ -1739,25 +1739,25 @@ By default, awaiting a task will attempt to capture the scheduler from `Synchron
 `ConfigureAwait(true)` does nothing meaninglful, except to explicitly show not using `ConfigureAwait(false)` is intentional e.g. to silence static analysis warnings.
 
 ##### `async/await` Scheduling
-Three core concepts involved in async/await scheduling in .NET:
-- `SynchronizationContext` — “After an `await`, do I need to resume on a specific thread?”
-- `TaskScheduler` — “Who schedules my continuation?”
-- **ThreadPool / Threads** — “Where does code actually execute?”
+In `async/await`, these three concepts answer slightly different scheduling questions and understanding how these three interact fully explains where your async code runs and why.
 
-Understanding how these three interact fully explains where your async code runs and why.
+- `SynchronizationContext` — “Where should my continuation run?”
+\
+Represents an execution environment, often associated with a particular thread. UI frameworks use it to ensure code after an await can return to the UI thread. By default, await captures the current SynchronizationContext when one exists. `ConfigureAwait(false)` generally says, “I don't need to return to this context.”
 
-`SynchronizationContext` — “After an `await`, do I need to resume on a specific thread?”
-If a `SynchronizationContext.Current` exists the runtime captures it and resumes the continuation through that context.
+- `TaskScheduler` — “How should Tasks be scheduled?”
+\
+`TaskScheduler` is used by the Task Parallel Library to decide where/how a Task executes. `TaskScheduler.Default` schedules work onto the ThreadPool.
 
-`TaskScheduler` — “Who schedules my continuation?”
-If no `SynchronizationContext` exists `await` falls back to the `TaskScheduler.Default` and continuation runs on a ThreadPool thread.
-
+- `ThreadPool / Threads` — “What actually executes the code?”
+\
+Importantly, `async` does not mean “run on another thread.” For true asynchronous I/O, while you're awaiting the operation, no thread needs to sit there waiting. Once the operation completes, its continuation gets scheduled somewhere appropriate.
 **ThreadPool / Threads** — “Where does code actually execute?”
-- **Threads** are the physical execution units of your program which includes:
-	 - Stack
-	 - CPU core
-	 - Instruction execution.
-- **ThreadPool** is a shared pool of worker threads, dynamically sized and optimized for short-lived work, and used by `Async` continuations and `Task.Run`.
+	- **Threads** are the physical execution units of your program which includes:
+		 - Stack
+		 - CPU core
+		 - Instruction execution.
+	- **ThreadPool** is a shared pool of worker threads, dynamically sized and optimized for short-lived work, and used by `Async` continuations and `Task.Run`.
 
 >  [!Note]
 >
