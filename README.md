@@ -93,8 +93,9 @@
   - [ValueTask\<T>](#valuetaskt)
   - [Task\<T> vs ValueTask\<T>](#taskt-vs-valuetaskt)
   - [`async/await`](#asyncawait)
-  	  - []()
-      - []() 
+  	  - [Running code after the `await`](#running-code-after-the-await)
+      - [`SynchronizationContext`](#synchronizationcontext)
+      - [`ConfigureAwait(true/false)`](#configureawaittruefalse)
       - [`async/await` Scheduling](#asyncawait-scheduling)
       - [Iterating with `async` Enumerables](#iterating-with-async-enumerables)
       - [Async Scenarios](#async-scenarios)
@@ -1750,11 +1751,26 @@ When an `await` completes, the runtime decides where to resume based on:
 - Is there a `SynchronizationContext`?
 - Did you use `ConfigureAwait(false)`?
 
-
-##### ConfigureAwait(true/false)
+##### `SynchronizationContext`
 By default, awaiting a task will attempt to capture the scheduler from `SynchronisationContext.Current` or `TaskScheduler.Current`. When the callback is ready to be invoked, it’ll use the captured scheduler if available. 
+
+ThreadPool threads normally have no `SynchronizationContext` at all. So `SynchronisationContext.Current = null`.
+
+WPF/WinForms UI thread has `SynchronizationContext`, which effectively says: "Post this continuation back to my UI event loop." This is important because UI frameworks require UI objects to be accessed from their owning UI thread.
+
+| Starting environment   | `SynchronizationContext.Current` | After `await`                   |
+| ---------------------- | -------------------------------- | ------------------------------- |
+| WPF/WinForms UI thread | UI-specific context              | Back to UI thread               |
+| ThreadPool thread      | `null`                           | Any suitable ThreadPool thread  |
+| ASP.NET Core request   | `null`                           | Any suitable ThreadPool thread  |
+
+##### `ConfigureAwait(true/false)`
+`ConfigureAwait(false)` avoids forcing the callback to be invoked on the original context or scheduler. It explicitly tells .NET “I do not care about resuming on the original context.” and will:
+- Skip context capture,
+- Always resume on a ThreadPool thread
+- Never resume on the UI thread
 \
-`ConfigureAwait(false)` avoids forcing the callback to be invoked on the original context or scheduler. `ConfigureAwait(true)` does nothing meaningful, except to explicitly show not using `ConfigureAwait(false)` is intentional e.g. to silence static analysis warnings.
+`ConfigureAwait(true)` is the default behavior on the UI thread because it has `SynchronizationContext`. So `ConfigureAwait(true)` does nothing meaningful, except to explicitly show not using `ConfigureAwait(false)` is intentional e.g. to silence static analysis warnings.
 
 ##### `async/await` Scheduling
 In `async/await`, these three concepts answer slightly different scheduling questions and understanding how these three interact fully explains where your async code runs and why.
@@ -1781,31 +1797,6 @@ A useful mental model is:
 `await` → continuation needs scheduling → `SynchronizationContext` / `TaskScheduler` influence where → a thread eventually executes the continuation.
 
 So `async/await` is primarily about not blocking threads, rather than about creating threads.
-
->  [!Note]
->
-> Code after the `await` is not guaranteed to always run on the same thread `await` was called.
->
-> Calling `await` on a UI thread is a special case. If `await` is called on the UI thread, code that runs after the await will continue on the UI thread.  
->
-> Async methods do NOT stay on one stack.
-> When an await happens:
-> - The current stack frame is unwound
-> - State is stored on the heap
-> - When resumed, execution may continue on:
-> 	- A different thread
-> 	- A different stack
-> 
-> When an await completes, the runtime decides where to resume based on:
-> - Is there a `SynchronizationContext`?
-> - Did you use `ConfigureAwait(false)`?
-> 
-> `ConfigureAwait(false)` is the default behavior when there is no `SynchronizationContext`, and explicitly tells .NET “I do not care about resuming on the original context.” and will:
-> - Skip context capture,
-> - Always resume on a ThreadPool thread
-> - Never resume on the UI thread
-> 
-> `ConfigureAwait(true)` is the default behavior on the UI thread because it has `SynchronizationContext`. UI apps have a `SynchronizationContext` because UI components can only be accessed on the UI thread and the context forces the continuation back to that thread.
 
 >  [!Note]
 >
