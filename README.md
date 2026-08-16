@@ -1054,7 +1054,7 @@ Interlocked.CompareExchange(ref state, 1, 0); //Change to 1 only if current valu
 ```
 
 ##### Volatile
-`volatile` doesn't make operations on it thread-safe, rather it tells the compiler and CPU:
+`volatile` is primarily about visibility. `volatile` alone doesn't make operations on it thread-safe, rather it tells the compiler and CPU:
 
 > "Always read this value directly from memory, and don't reorder accesses around it."
 
@@ -1085,9 +1085,16 @@ while (!cached)
 - reads are not cached in registers
 - memory ordering around the access
 
+##### `Volatile.Read()` / `Volatile.Write()`
+`Volatile.Read()` is atomic. It also has acquire semantics and so the read is thread-safe.
+
+`Volatile.Write()` is atomic. It also has release semantics, and so the write is thread-safe.
+
+However, they do not make compound operations atomic, or thread-safe.
+
 > [!TIP]
 >
-> `Volatile.Read` is useful when one thread publishes a value and another thread consumes it. 
+> `Volatile.Read()` / `Volatile.Write()` is useful when one thread publishes a value and another thread consumes it. 
 
 ##### Interlocked vs lock
 ```C#
