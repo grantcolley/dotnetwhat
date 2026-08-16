@@ -303,6 +303,8 @@ Variables store [**value types**](https://learn.microsoft.com/en-us/dotnet/cshar
 
 When assigning a variable that stores a value type to another variable, the actual value of the type is copied. When a variable stores a reference type, the reference to the object is copied.  
 
+> [!NOTE]
+>
 > Immutability of the value ≠ immutability of the variable.
 
 ### Value Types
