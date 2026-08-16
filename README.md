@@ -117,6 +117,7 @@
   - [Array](#array)
   - [List\<T>](#listt)
   - [Dictionary\<TKey,TValue>](#dictionarytkeytvalue)
+  - [StringBuilder](#stringbuilder)
   - [Records](#records)
   - [Enums](#enums)
 - [Performance](#performance)
@@ -2639,6 +2640,28 @@ hashCode = -123456789 & 0x7FFFFFFF
 // step 3 - the hash code is then modulo'd by the number of buckets to find the right one
 int bucketIndex = hashCode % buckets.Length;
 ```
+
+#### StringBuilder
+A `string` is an immutable buffer of characters i.e. a fixed size read-only `char` array. Updating a `string` involve creating a new `string` object, while the original `string` becomes garbage.
+
+`StringBuilder` is essentially a mutable buffer of characters. Its main purpose is to avoid repeatedly creating new string objects when you're building or modifying text.
+
+You might imagine that `StringBuilder` simply allocates a larger array and copies everything into it. Historically, implementations have varied, but modern .NET's `StringBuilder` is effectively organized into chunks.
+
+Suppose you keep appending:
+```
+Chunk 1             Chunk 2             Chunk 3
+┌──────────────┐    ┌──────────────┐    ┌──────────────────┐
+│ Hello world… │ ←  │ more text... │ ←  │ newest text...   │
+└──────────────┘    └──────────────┘    └──────────────────┘
+```
+When the current chunk fills up, `StringBuilder` can create another chunk rather than copying the entire accumulated string into an increasingly large contiguous buffer.
+
+So, building a large string with `StringBuilder` doesn't necessarily require one enormous continuously resized backing array.
+
+`Length` vs `Capacity`
+- `Length` is how many characters are currently present.
+- `Capacity` is how much space the builder currently has available before it needs to expand.
 
 #### Records
 Record is a compile time contruct that represent a class or struct that works with immutable (read-only) data, and has structural equality semantics i.e. if the values are erqual, the object is equal. At runtime records are treated as classes or structs with additional rules enforcing immutability and structural equality semantics. Records are useful for simply storing and passing read-only values. Records can implement intrerfaces and in the case of class Records, can inherit from another base class Record.
