@@ -2664,7 +2664,7 @@ So, building a large string with `StringBuilder` doesn't necessarily require one
 - `Capacity` is how much space the builder currently has available before it needs to expand.
 
 #### Records
-Record is a compile time contruct that represent a class or struct that works with immutable (read-only) data, and has structural equality semantics i.e. if the values are erqual, the object is equal. At runtime records are treated as classes or structs with additional rules enforcing immutability and structural equality semantics. Records are useful for simply storing and passing read-only values. Records can implement intrerfaces and in the case of class Records, can inherit from another base class Record.
+Record is a compile time contruct that represent a class or struct that works with immutable (read-only) data, and has structural equality semantics i.e. if the values are erqual, the object is equal. At runtime records are treated as classes or structs with additional rules enforcing immutability and structural equality semantics. Records are useful for simply storing and passing read-only values. Records can implement interfaces and in the case of class Records, can inherit from another base class Record.
 
 ```C#
 public record Point{}; // Point is a class
