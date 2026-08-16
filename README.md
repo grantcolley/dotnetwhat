@@ -131,7 +131,7 @@
 - [ASP.NET Core Web API middleware pipeline](#aspnet-core-web-api-middleware-pipeline)
 - [AI in the IDE](#ai-in-the-ide)
 	- [Visual Studio GitHub Copilot Chat](#visual-studio-github-copilot-chat)
- 	- [VS Code Chat/Codex](##vs-code-chatcodex)
+ 	- [VS Code Chat/Codex](#vs-code-chatcodex)
   	- [How does it fit together?](#how-does-it-fit-together)
   	- [MCP Protocol](#mcp-protocol)
 - [Testing](#testing)
