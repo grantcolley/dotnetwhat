@@ -130,8 +130,8 @@
   - [Fluent Syntax vs Query Expressions](#fluent-syntax-vs-query-expressions)
 - [ASP.NET Core Web API middleware pipeline](#aspnet-core-web-api-middleware-pipeline)
 - [AI in the IDE](#ai-in-the-ide)
-	- [GitHub Copilot Chat](#github-copilot-chat)
- 	- [OpenAI Codex](#openai-codex)
+	- [Visual Studio GitHub Copilot Chat](#visual-studio-github-copilot-chat)
+ 	- [VS Code Chat/Codex](##vs-code-chatcodex)
   	- [How does it fit together?](#how-does-it-fit-together)
   	- [MCP Protocol](#mcp-protocol)
 - [Testing](#testing)
@@ -2976,11 +2976,100 @@ Client
 ```
 
 ## AI in the IDE
-#### GitHub Copilot Chat
-GitHub Copilot. Use the Copilot free plan in Visual Studio. GitHub Pro subscription does not include Copilot Pro.
+#### Visual Studio GitHub Copilot Chat
+> GitHub Copilot Chat. Use the Copilot free plan in Visual Studio. GitHub Pro subscription does not include Copilot Pro.
 
-#### OpenAI Codex
-Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
+In your Visual Studio Copilot Chat UI, Agent and GPT-5 mini are two different layers:
+
+Agent = how Copilot operates.
+GPT-5 mini = the LLM doing the language/reasoning work.
+
+So conceptually:
+```
+Visual Studio
+   │
+   └── GitHub Copilot Chat
+          │
+          ├── Mode: Agent
+          │      ├── inspect solution/files
+          │      ├── decide what to change
+          │      ├── edit files
+          │      ├── invoke VS/MCP tools
+          │      ├── run commands/tests
+          │      └── iterate based on results
+          │
+          └── Model: GPT-5 mini
+                 └── reasoning / code generation
+```
+Agent isn't GPT-5 mini-specific. Visual Studio explicitly separates the agent/mode from the model picker. Microsoft currently supports multiple models, including GPT-5 mini, GPT-5, Claude models, Gemini models, etc., and also supports bringing your own model.
+
+Agent mode is the orchestration loop: it determines context, invokes tools, makes edits, observes build/test/tool results and can take subsequent actions. Microsoft describes it as continuing and refining its steps rather than stopping after one response.
+
+So if you change `Agent + GPT-5 mini` to `Agent + Claude Sonnet` you are broadly keeping the same Visual Studio agent infrastructure and tool environment, but replacing the LLM that drives its decisions.
+
+On each agentic turn, Visual Studio’s Copilot agent typically sends the model a constructed context package rather than “your whole solution verbatim.”
+
+#### VS Code Chat/Codex
+In VS Code you actually have two somewhat different AI stacks sitting next to each other, which makes the terminology confusing.
+
+1. OpenAI Codex in VS Code
+> Codex – OpenAI’s coding agent. Visual Studio Code offers the best integration with your ChatGPT Pro subscription as long as you install the official Codex extension and login using your ChatGPT account.
+
+When you use the OpenAI Codex IDE extension while signed in with your ChatGPT Plus account, you're using OpenAI's Codex coding agent. Plus includes Codex access, and the IDE extension can inspect your repository, edit files, execute commands and tests, and iterate on the results.
+
+Architecturally, think:
+```
+VS Code
+   │
+   └── OpenAI Codex extension
+          │
+          ├── Codex agent/harness
+          │     ├── repository context
+          │     ├── tools
+          │     ├── shell
+          │     ├── file editing
+          │     └── agent loop
+          │
+          └── selected Codex/OpenAI model
+```
+
+2. VS Code's Chat with Agent + Auto
+
+That's a different system.
+
+VS Code's integrated Chat is primarily the GitHub Copilot/VS Code agent harness. Microsoft describes the harness as the component that assembles context, exposes tools, runs the agent loop and interprets model tool calls.
+```
+Agent = HOW the task is executed
+Auto  = WHICH LLM VS Code chooses
+```
+So you might conceptually get:
+```
+             VS CODE AGENT
+                  │
+             "Auto model"
+                  │
+          ┌───────┴────────┐
+          ↓                ↓
+     simple task       hard task
+          │                │
+     smaller/faster     stronger
+        model             model
+```
+The comparison:
+|                          | Codex extension                        | VS Code Chat Agent                          |
+| ------------------------ | -------------------------------------- | ------------------------------------------- |
+| **Agent/harness**        | OpenAI Codex                           | VS Code/GitHub Copilot                      |
+| **Model**                | Codex-supported OpenAI model           | Selectable/Auto                             |
+| **Model provider**       | OpenAI                                 | potentially OpenAI, Anthropic, Google, etc. |
+| **Agent loop**           | Codex                                  | VS Code                                     |
+| **Reads repo**           | Yes                                    | Yes                                         |
+| **Edits files**          | Yes                                    | Yes                                         |
+| **Runs terminal/tests**  | Yes                                    | Yes                                         |
+| **Your entitlement**     | ChatGPT Plus                           | normally GitHub Copilot entitlement         |
+| **Auto model selection** | Codex has its own model/config choices | VS Code Auto dynamically routes requests    |
+
+And this leads to something quite important:
+> GPT model + agent harness determines the coding experience, not the GPT model alone.
 
 #### How does it fit together?
 
