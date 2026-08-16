@@ -5335,7 +5335,7 @@ Key improvements:
 
 > [!TIP]
 >
-> When using a Dictionary, use `ContainsKey(...)` which requires a single lookup, instead of two with `ContainsKey(...)` followed by `result[key]`.
+> When using a Dictionary, use `TryGetValue(...)` which requires a single lookup, instead of two with `ContainsKey(...)` followed by `result[key]`.
 >
 > ```C#
 >   // GOOD - one lookup
