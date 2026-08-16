@@ -3074,6 +3074,7 @@ GitHub Copilot
 Agent (Tech Lead)
 "Let's inspect the code, run the tests, identify the issue,
 fix it, verify it, then create a PR."
+Integrated into IDE not tied to a particular LLM
  │
  ▼
 LLM (Senior Developer)
@@ -3106,10 +3107,14 @@ Shows you the completed work.
 \
 This is the part that often "clicks" for people:
 - The LLM is the software developer. It can write code and solve problems, but it doesn't directly access your repositories or infrastructure.
-- The Agent is the tech lead. It decides what needs to happen next and coordinates the overall workflow.
+- The Agent is the tech lead. It decides what needs to happen next and coordinates the overall workflow. Not tied to a particular LLM.
 - The MCP Client is the engineering coordinator. It knows how to interact with GitHub, Azure DevOps, databases, Docker, and other tools.
 - The MCP Servers are the engineering systems. They own the repositories, pipelines, databases, containers, and services.
 - ChatGPT or GitHub Copilot is your development environment. It's the application where you collaborate with the AI and where all of these components come together.
+
+> [!NOTE]
+>
+> The Agent is integrated into IDE and generally not tied to a particular LLM.
 
 **One-line summary**
 > Think of GitHub Copilot as a development team in your IDE: the LLM is the developer, the agent is the tech lead, the MCP client is the engineering coordinator, and the MCP servers are the engineering tools and systems they use to get the job done.
