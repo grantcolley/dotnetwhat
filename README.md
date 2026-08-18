@@ -2986,6 +2986,12 @@ Client
 #### Visual Studio GitHub Copilot Chat
 > GitHub Copilot Chat. Use the Copilot free plan in Visual Studio. GitHub Pro subscription does not include Copilot Pro.
 
+> [!TIP]
+>
+> In short:
+>
+> You give the job to GitHub Copilot Agent. Copilot gives reasoning jobs to GPT-5 mini. GPT-5 mini tells Copilot what it wants to do. Copilot performs those actions in Visual Studio and feeds the results back to GPT-5 mini until the job is finished.
+
 In your Visual Studio Copilot Chat UI, Agent and GPT-5 mini are two different layers:
 
 Agent = how Copilot operates.
