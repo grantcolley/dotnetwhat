@@ -2622,7 +2622,7 @@ A collision happens when two different keys produce the same bucket index (after
 - Map it to a bucket index.
 - Traverse the linked list in entries (via next) to find the key.
 
-In .NET 9.0 `Dictionary<TKey, TValue>` uses a hash table with chaining (linked list). It is optimized for `O(1)` average-time complexity on lookup, insert, and remove.
+In .NET 9.0 `Dictionary<TKey, TValue>` uses a hash table with object chaining (linked list of objects). It is optimized for `O(1)` average-time complexity on lookup, insert, and remove.
 
 The `Entry` structure:
 ```C#
