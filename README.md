@@ -3641,6 +3641,12 @@ A subclass should be able to replace its base class without breaking the program
 >
 > Classic discussion point: inheritance is often abused. **Composition/interfaces** are frequently safer.
 
+> [!TIP]
+>
+> "This object is a bird but when I ask it to fly it waddles instead."
+>
+> A `Penguin` shouldn't inherit from a `Bird` and override `Fly()` with a waddle.
+
 Bad Example - Setting width also changes height, thereby changing the expected behavior of the base class. 
 ```C#
 public class Rectangle
