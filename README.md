@@ -151,6 +151,7 @@
   - [I — Interface Segregation Principle](#i--interface-segregation-principle)
   - [D — Dependency Inversion Principle](#d--dependency-inversion-principle)
   - [Difference Between LSP and ISP](#difference-between-lsp-and-isp)
+  - [Can S.O.L.I.D be overused?](#can-solid-be-overused)
 - [Design Patterns](#design-patterns)
 	- [Strategy](#strategy)
  	- [Factory Method](#factory-method)
@@ -3545,6 +3546,8 @@ POST   /users/42/orders
 #### S — Single Responsibility Principle
 A class should have one reason to change. This means it should focus on a single, cohesive responsibility.
 
+> “Think of SRP in terms of reasons to change rather than simply making classes small. If persistence and notification rules change for completely different reasons, I don't want them coupled in the same class.”
+
 Example - Instead of one `Invoice` class printing, saving, and calculating everything, responsibilities are split.
 ```C#
 // ❌ Violates SRP: OrderService handles persistence, validation, and notifications
@@ -3599,6 +3602,8 @@ public class OrderService
 #### O — Open/Closed Principle
 Classes should be open for extension but closed for modification. This means you should be able to add new functionality to a system without changing existing, tested code. 
 
+> Adding another discount shouldn't require a huge `switch` statement buried inside existing business logic.
+
 Example - You can add new discounts without changing `PriceCalculator`.
 ```C#
 // Base abstraction
@@ -3632,7 +3637,11 @@ You can add new discount types without touching `PriceCalculator`.
 #### L — Liskov Substitution Principle
 A subclass should be able to replace its base class without breaking the program. The issue is about correct behavior when substituting subclasses. It is better to avoid inheritance when the behavior does not truly match.
 
-Bad Example - Setting width also changes height, thereby changing the expected behaviour of the base class. 
+> If `B` derives from `A`, using `B` where `A` is expected shouldn't change the correctness of the program.
+>
+> Classic discussion point: inheritance is often abused. **Composition/interfaces** are frequently safer.
+
+Bad Example - Setting width also changes height, thereby changing the expected behavior of the base class. 
 ```C#
 public class Rectangle
 {
@@ -3690,7 +3699,9 @@ public class Square : IShape
 #### I — Interface Segregation Principle
 Clients should not be forced to depend on methods they do not use. The issue is fat interfaces. It is better to split interfaces into focused contracts.
 
-Bad Example - Fat interfaces. A modern printer might not support faxing.
+> Prefer focused interfaces with unrelated methods.
+
+Bad Example - Fat interface. A modern printer might not support faxing.
 ```C#
 public interface ISmartDevice
 {
@@ -3765,6 +3776,8 @@ public class OfficePrinter : IPrinter, IScanner, IFaxMachine
 #### D — Dependency Inversion Principle
 High-level code should depend on abstractions (interfaces), not concrete classes. It ensures high-level business logic remains decoupled from low-level implementation details. Dependencies can be injected into a class.
 
+> DI makes testability and mocking easier.
+
 Example - `NotificationService` depends on `IEmailService`, not directly on `EmailService`.
 ```C#
 public interface IEmailService
@@ -3807,8 +3820,11 @@ The key difference is:
 | LSP       | Inheritance correctness | Subclass changes expected behavior         | “Can I safely use the child anywhere the parent is expected?” |
 | ISP       | Interface design        | Classes forced to implement unused methods | “Am I forcing classes to implement things they don’t need?”   |
 
+#### Can S.O.L.I.D be overused?
+> “Definitely. Systems with an interface for every class and several layers of abstraction where there's only one implementation and no realistic reason for variation. SOLID should reduce coupling and make change easier. If an abstraction makes the system harder to understand without providing that benefit, I wouldn't introduce it purely for theoretical purity.”
+
 ## Design Patterns
-| Pattern                     | Memory aid                 | Key concepts           |
+| Pattern                     | Memory aid                 | Key concepts           			   |
 | --------------------------- | -------------------------- | ------------------------------------- |
 | **Strategy**                | **Choose behavior**        | Interfaces, DI, Open/Closed Principle |
 | **Factory Method**          | **Create object**          | Object creation                       |
