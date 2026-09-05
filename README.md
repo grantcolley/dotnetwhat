@@ -63,6 +63,18 @@
       - [Volatile](#volatile)
       - [`Interlocked` vs `lock`](#interlocked-vs-lock)
       - [When to use them?](#when-to-use-them)
+- [Collections](#collections)
+  - [List\<T>](#listt)
+  - [Dictionary\<TKey, TValue>](#dictionarytkey-tvalue)
+  - [HashSet\<T>](#hashsett)
+  - [Stack\<T>](#stackt)
+  - [Queue\<T>](#queuet)
+  - [SortedDictionary\<TKey, TValue>](#sorteddictionarytkey-tvalue)
+  - [SortedSet\<T>](#sortedsett)
+  - [Useful patterns](#useful-patterns)
+    - [Counting occurrences](#counting-occurrences)
+    - [Check for duplicates](#check-for-duplicates)
+    - [Matching brackets](#matching-brackets)
 - [Thread Safety](#thread-safety)
   - [Thread-Safe Constructs](#thread-safe-constructs)
     - [Mutual Exclusion](#mutual-exclusion)
@@ -1130,6 +1142,370 @@ If you need to update several variables together, use a `lock`.
 > [!TIP]
 >
 > In new C# code, `volatile` is relatively uncommon. The `System.Threading.Volatile` class (`Volatile.Read` and `Volatile.Write`) is often preferred because it makes memory-ordering intent explicit at the point of access. For most state coordination, you'll more commonly reach for `Interlocked` or a `lock`, depending on whether you need a single atomic operation or to protect a larger critical section.
+
+## Collections
+#### List\<T>
+```C#
+List<string> names = new List<string>();
+
+// Add to end
+names.Add("Alice");                  // O(1) amortized
+names.Add("Bob");                    // O(1) amortized
+names.Add("Charlie");                // O(1) amortized
+
+// Get by index
+string first = names[0];             // O(1)
+
+// Set by index
+names[0] = "Alex";                   // O(1)
+
+// Get number of elements
+int count = names.Count;             // O(1)
+
+// Check whether an item exists
+bool contains = names.Contains("Bob"); // O(n)
+
+// Find an item
+string? found = names.Find(x => x == "Bob"); //O(n)
+
+// Insert at a specific position
+names.Insert(1, "David");            // O(n)
+
+// Remove a specific value
+names.Remove("Bob");                 // O(n)
+
+// Remove at a specific index
+names.RemoveAt(0);                   // O(n)
+```
+Cheat sheet
+```
+List<T>
+
+Add(end)       O(1) amortized
+Get by index   O(1)
+Set by index   O(1)
+Count          O(1)
+
+Contains       O(n)
+Find           O(n)
+Insert         O(n)
+Remove(value)  O(n)
+RemoveAt       O(n)
+```
+
+#### Dictionary\<TKey, TValue>
+```C#
+Dictionary<int, string> trades = new Dictionary<int, string>();
+
+// Add a trade
+trades.Add(1001, "EUR/USD");                   // O(1) average
+trades.Add(1002, "GBP/USD");                   // O(1) average
+trades.Add(1003, "USD/JPY");                   // O(1) average
+
+// Get trade name by trade number
+string tradeName = trades[1001];               // O(1) average
+
+// Set/update trade name by trade number
+trades[1001] = "EUR/USD Spot";                  // O(1) average
+
+// Add a trade using the indexer
+trades[1004] = "GBP/EUR";                       // O(1) average
+
+// Get number of trades
+int count = trades.Count;                       // O(1)
+
+// Check whether a trade number exists
+bool hasTrade = trades.ContainsKey(1002);       // O(1) average
+
+// Check whether a trade name exists
+bool hasTradeName = trades.ContainsValue("GBP/USD"); // O(n)
+
+// Safely find a trade by trade number
+bool found = trades.TryGetValue(1003, out string? foundTradeName); // O(1) average
+
+// Remove a trade by trade number
+trades.Remove(1002);                            // O(1) average
+
+// Remove all trades
+trades.Clear();                                 // O(n)
+```
+Cheat sheet
+```
+Dictionary<int, string> trades
+
+Add(tradeNumber, tradeName)     O(1) average
+Get by tradeNumber              O(1) average
+Set by tradeNumber              O(1) average
+ContainsKey(tradeNumber)        O(1) average
+TryGetValue(tradeNumber)        O(1) average
+Remove(tradeNumber)             O(1) average
+Count                           O(1)
+
+ContainsValue(tradeName)        O(n)
+Clear                           O(n)
+```
+> [!TIP]
+> ```C#
+> // Instead of this:
+> if (trades.ContainsKey(1001))
+> {
+>     string name = trades[1001];
+> }
+> 
+> // Do this:
+> if (trades.TryGetValue(1001, out string? name))
+> {
+>     Console.WriteLine(name);
+> }
+> ```
+
+#### HashSet\<T>
+The big advantage of `HashSet<T>` is average `O(1)` add, lookup, and removal.
+
+Unlike a `List<string>`, a `HashSet<string>` doesn't allow duplicates.
+
+```C#
+HashSet<string> tradeNames = new HashSet<string>();
+
+// Add a trade name
+tradeNames.Add("EUR/USD");                     // O(1) average
+tradeNames.Add("GBP/USD");                     // O(1) average
+tradeNames.Add("USD/JPY");                     // O(1) average
+
+// Add a duplicate
+bool added = tradeNames.Add("EUR/USD");        // O(1) average
+// added == false because "EUR/USD" already exists
+
+// Check whether a trade name exists
+bool hasTrade = tradeNames.Contains("GBP/USD"); // O(1) average
+
+// Remove a trade name
+tradeNames.Remove("GBP/USD");                  // O(1) average
+
+// Get number of unique trade names
+int count = tradeNames.Count;                  // O(1)
+
+// Remove all trade names
+tradeNames.Clear();                            // O(n)
+```
+Cheat sheet
+```
+HashSet<string> tradeNames
+
+Add(value)          O(1) average
+Contains(value)     O(1) average
+Remove(value)       O(1) average
+Count               O(1)
+Clear               O(n)
+```
+
+#### Stack\<T>
+A `Stack<T>` follows LIFO — Last In, First Out.
+
+Stacks are commonly used for nested structures, undo operations, reversing and expression parsing e.g. matching brackets
+
+```C#
+Stack<string> trades = new Stack<string>();
+
+// Add/push a trade onto the top
+trades.Push("EUR/USD");                    // O(1)
+trades.Push("GBP/USD");                    // O(1)
+trades.Push("USD/JPY");                    // O(1)
+
+// Look at the top item without removing it
+string top = trades.Peek();                // O(1)
+
+// Remove and return the top item
+string trade = trades.Pop();               // O(1)
+
+// Check whether a trade exists
+bool hasTrade = trades.Contains("EUR/USD"); // O(n)
+
+// Get number of trades
+int count = trades.Count;                  // O(1)
+
+// Remove all trades
+trades.Clear();                            // O(n)
+```
+Cheat sheet
+```
+Stack<T>
+
+Push(value)         O(1)
+Pop()               O(1)
+Peek()              O(1)
+Count               O(1)
+
+Contains(value)     O(n)
+Clear()             O(n)
+```
+
+#### Queue\<T>
+A Queue<T> follows FIFO — First In, First Out.
+
+```C#
+Queue<string> trades = new Queue<string>();
+
+// Add/enqueue a trade at the back
+trades.Enqueue("EUR/USD");                 // O(1)
+trades.Enqueue("GBP/USD");                 // O(1)
+trades.Enqueue("USD/JPY");                 // O(1)
+
+// Look at the front item without removing it
+string next = trades.Peek();               // O(1)
+
+// Remove and return the front item
+string trade = trades.Dequeue();           // O(1)
+
+// Check whether a trade exists
+bool hasTrade = trades.Contains("GBP/USD"); // O(n)
+
+// Get number of trades
+int count = trades.Count;                  // O(1)
+
+// Remove all trades
+trades.Clear();                            // O(n)
+```
+Cheat sheet
+```
+Queue<T>
+
+Enqueue(value)      O(1) amortized
+Dequeue()           O(1)
+Peek()              O(1)
+Count               O(1)
+
+Contains(value)     O(n)
+Clear()             O(n)
+```
+
+#### SortedDictionary\<TKey, TValue>
+For `SortedDictionary<TKey, TValue>`, we can use the same trade example. The key difference from Dictionary is that keys are maintained in sorted order, but most key operations become `O(log n)` rather than average `O(1)`.
+
+Why use `SortedDictionary<TKey, TValue>`? The only benefit of sorted keys is when iterating the dictionary they are returned in sorted order.
+
+> [!TIP]
+>
+> A normal `Dictionary<int, string>` is a hash table, whereas `SortedDictionary<int, string>` is implemented using a balanced binary search tree.
+
+Cheat sheet
+```
+SortedDictionary<int, string> trades
+
+Add(tradeNumber, tradeName)     O(log n)
+Get by tradeNumber              O(log n)
+Set by tradeNumber              O(log n)
+ContainsKey(tradeNumber)        O(log n)
+TryGetValue(tradeNumber)        O(log n)
+Remove(tradeNumber)             O(log n)
+
+Count                           O(1)
+ContainsValue(tradeName)        O(n)
+Clear                           O(n)
+```
+
+#### SortedSet\<T>
+A `SortedSet<T>` is similar to a `HashSet<T>` in that it stores unique values, but it also keeps those values sorted. The trade-off is that the main operations are `O(log n)` instead of average `O(1)`.
+
+Like `SortedDictionary<TKey, TValue>`, `SortedSet<T>` uses a balanced tree internally.
+
+Cheat sheet
+```
+SortedSet<string> tradeNames
+
+Add(value)          O(log n)
+Contains(value)     O(log n)
+Remove(value)       O(log n)
+
+Min                 O(log n)
+Max                 O(log n)
+
+Count               O(1)
+Clear               O(n)
+```
+
+#### Useful patterns
+
+##### Counting occurrences
+```C#
+string[] names =
+{
+    "Alice",
+    "Bob",
+    "Alice",
+    "Charlie",
+    "Bob",
+    "Alice"
+};
+
+Dictionary<string, int> counts =
+    new Dictionary<string, int>();
+
+foreach (string name in names)
+{
+    if (counts.ContainsKey(name))
+    {
+        counts[name]++;
+    }
+    else
+    {
+        counts[name] = 1;
+    }
+}
+```
+
+##### Check for duplicates
+```C#
+HashSet<string> seen = new HashSet<string>();
+
+foreach (string trade in trades)
+{
+    if (!seen.Add(trade))
+    {
+        Console.WriteLine($"Duplicate: {trade}");
+    }
+}
+```
+
+#### Matching brackets
+Given a string containing only the characters `(`, `)`, `{`, `}`, `[` and `]`, determine whether the brackets are correctly balanced.
+
+Input `{[()]}`
+```C#
+bool IsValid(string input)
+{
+    if(string.IsNullOrWhiteSpace(input))
+		return false;
+	
+    Stack<char> stack = new Stack<char>();
+
+    foreach (char c in input)
+    {
+        if (c == '(' || c == '[' || c == '{')
+        {
+            stack.Push(c);
+        }
+        else
+        {
+            if (stack.Count == 0)
+                return false;
+
+            char top = stack.Pop();
+
+            if (c == ')' && top != '(')
+                return false;
+
+            if (c == ']' && top != '[')
+                return false;
+
+            if (c == '}' && top != '{')
+                return false;
+        }
+    }
+
+    return stack.Count == 0;
+}
+```
 
 ### Thread Safety
 #### Thread-Safe Constructs
