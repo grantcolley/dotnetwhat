@@ -5196,7 +5196,7 @@ Since the work per iteration is constant `O(1) × n = O(n)`
 
 The algorithm uses only three integer variables:
 ```C#
-htt prev = 0;
+int prev = 0;
 int next = 1;
 int sum = 0;
 ```
